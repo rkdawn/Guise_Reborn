@@ -40,26 +40,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         },
     ),
     BundledTemplateSpec(
-        seedId = "df-common-meizu-meizu-20pro",
-        version = 1,
-        nameText = "MEIZU 20 Pro",
-        descriptionText = "作者 未知",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "meizu",
-                brand = "meizu",
-                model = "MEIZU 20 Pro",
-                device = "meizu20Pro",
-                fingerPrint = "meizu/meizu_20Pro_CN/meizu20Pro:14/UKQ1.230917.001/17001233086:user/release-keys",
-                buildId = "UKQ1.230917.001",
-                androidVersion = "14",
-                characteristics = "nosdcard",
-                product = "meizu_20Pro_CN",
-                sdkInt = 34,
-            )
-        },
-    ),
-    BundledTemplateSpec(
         seedId = "df-common-oppo-oppo-find-x8-ultra",
         version = 1,
         nameText = "Find X8 Ultra",
@@ -73,23 +53,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
                 fingerPrint = "oppo/PKJ110/PKJ110:15/AP3A.240617.008/1758264862075:user/release-keys",
                 marketname = "Find X8 Ultra",
                 product = "PKJ110",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-pixel-pixel-9a",
-        version = 1,
-        nameText = "Pixel 9a",
-        descriptionText = "作者 Github@jekee550",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Google",
-                brand = "Google",
-                model = "GXQ96",
-                device = "tegu",
-                fingerPrint = "google/tegu/tegu:16/BP4A.260205.001/2026030701:user/release-keys",
-                marketname = "Pixel 9a",
-                product = "tegu",
             )
         },
     ),
@@ -1288,6 +1251,587 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
                 brand = "Xiaomi",
                 model = "23046RP50C",
                 characteristics = "tablet",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-galaxy-s23",
+        version = 1,
+        nameText = "Galaxy S23",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "samsung",
+                brand = "samsung",
+                model = "SM-S9110",
+                device = "dm1q",
+                marketname = "Galaxy S23",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-galaxy-s23plus",
+        version = 1,
+        nameText = "Galaxy S23+",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "samsung",
+                brand = "samsung",
+                model = "SM-S9160",
+                device = "dm2q",
+                marketname = "Galaxy S23+",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-galaxy-s23-ultra",
+        version = 1,
+        nameText = "Galaxy S23 Ultra",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "samsung",
+                brand = "samsung",
+                model = "SM-S9180",
+                device = "dm3q",
+                marketname = "Galaxy S23 Ultra",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-galaxy-s24",
+        version = 1,
+        nameText = "Galaxy S24",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "samsung",
+                brand = "samsung",
+                model = "SM-S9210",
+                device = "e1q",
+                marketname = "Galaxy S24",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-galaxy-s24plus",
+        version = 1,
+        nameText = "Galaxy S24+",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "samsung",
+                brand = "samsung",
+                model = "SM-S9260",
+                device = "e2q",
+                marketname = "Galaxy S24+",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-galaxy-s24-ultra",
+        version = 1,
+        nameText = "Galaxy S24 Ultra",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "samsung",
+                brand = "samsung",
+                model = "SM-S9280",
+                device = "e3q",
+                marketname = "Galaxy S24 Ultra",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-galaxy-s25",
+        version = 1,
+        nameText = "Galaxy S25",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "samsung",
+                brand = "samsung",
+                model = "SM-S9310",
+                device = "pa1q",
+                marketname = "Galaxy S25",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-galaxy-s25plus",
+        version = 1,
+        nameText = "Galaxy S25+",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "samsung",
+                brand = "samsung",
+                model = "SM-S9360",
+                device = "pa2q",
+                marketname = "Galaxy S25+",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-galaxy-s25-edge",
+        version = 1,
+        nameText = "Galaxy S25 Edge",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "samsung",
+                brand = "samsung",
+                model = "SM-S9370",
+                marketname = "Galaxy S25 Edge",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-galaxy-s25-ultra",
+        version = 1,
+        nameText = "Galaxy S25 Ultra",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "samsung",
+                brand = "samsung",
+                model = "SM-S9380",
+                device = "pa3q",
+                marketname = "Galaxy S25 Ultra",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-galaxy-s26",
+        version = 1,
+        nameText = "Galaxy S26",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "samsung",
+                brand = "samsung",
+                model = "SM-S9420",
+                marketname = "Galaxy S26",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-galaxy-s26plus",
+        version = 1,
+        nameText = "Galaxy S26+",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "samsung",
+                brand = "samsung",
+                model = "SM-S9470",
+                marketname = "Galaxy S26+",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-galaxy-s26-ultra",
+        version = 1,
+        nameText = "Galaxy S26 Ultra",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "samsung",
+                brand = "samsung",
+                model = "SM-S9480",
+                marketname = "Galaxy S26 Ultra",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-galaxy-z-fold5",
+        version = 1,
+        nameText = "Galaxy Z Fold5",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "samsung",
+                brand = "samsung",
+                model = "SM-F9460",
+                device = "q5q",
+                marketname = "Galaxy Z Fold5",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-galaxy-z-flip6",
+        version = 1,
+        nameText = "Galaxy Z Flip6",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "samsung",
+                brand = "samsung",
+                model = "SM-F7410",
+                device = "b6q",
+                marketname = "Galaxy Z Flip6",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-huawei-mate-60-pro",
+        version = 1,
+        nameText = "HUAWEI Mate 60 Pro",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "HUAWEI",
+                brand = "HUAWEI",
+                model = "ALN-AL00",
+                marketname = "HUAWEI Mate 60 Pro",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-huawei-mate-60",
+        version = 1,
+        nameText = "HUAWEI Mate 60",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "HUAWEI",
+                brand = "HUAWEI",
+                model = "BRA-AL00",
+                marketname = "HUAWEI Mate 60",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-huawei-mate-70",
+        version = 1,
+        nameText = "HUAWEI Mate 70",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "HUAWEI",
+                brand = "HUAWEI",
+                model = "CLS-AL00",
+                marketname = "HUAWEI Mate 70",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-huawei-pura-70",
+        version = 1,
+        nameText = "HUAWEI Pura 70",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "HUAWEI",
+                brand = "HUAWEI",
+                model = "ADY-AL00",
+                marketname = "HUAWEI Pura 70",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-huawei-pura-80",
+        version = 1,
+        nameText = "HUAWEI Pura 80",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "HUAWEI",
+                brand = "HUAWEI",
+                model = "HED-AL00",
+                marketname = "HUAWEI Pura 80",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-huawei-mate-x5",
+        version = 1,
+        nameText = "HUAWEI Mate X5",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "HUAWEI",
+                brand = "HUAWEI",
+                model = "ALT-AL10",
+                marketname = "HUAWEI Mate X5",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-vivo-x100",
+        version = 1,
+        nameText = "vivo X100",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "vivo",
+                brand = "vivo",
+                model = "V2309A",
+                device = "PD2309",
+                marketname = "vivo X100",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-vivo-x100-pro",
+        version = 1,
+        nameText = "vivo X100 Pro",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "vivo",
+                brand = "vivo",
+                model = "V2324A",
+                device = "PD2324",
+                marketname = "vivo X100 Pro",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-vivo-x200",
+        version = 1,
+        nameText = "vivo X200",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "vivo",
+                brand = "vivo",
+                model = "V2415A",
+                marketname = "vivo X200",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-vivo-x200-pro",
+        version = 1,
+        nameText = "vivo X200 Pro",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "vivo",
+                brand = "vivo",
+                model = "V2419A",
+                marketname = "vivo X200 Pro",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-vivo-x-fold3-pro",
+        version = 1,
+        nameText = "vivo X Fold3 Pro",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "vivo",
+                brand = "vivo",
+                model = "V2337A",
+                marketname = "vivo X Fold3 Pro",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-oppo-find-x7",
+        version = 1,
+        nameText = "OPPO Find X7",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "OPPO",
+                brand = "OPPO",
+                model = "PHZ110",
+                marketname = "OPPO Find X7",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-oppo-find-x7-ultra",
+        version = 1,
+        nameText = "OPPO Find X7 Ultra",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "OPPO",
+                brand = "OPPO",
+                model = "PHY110",
+                marketname = "OPPO Find X7 Ultra",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-oppo-find-x8",
+        version = 1,
+        nameText = "OPPO Find X8",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "OPPO",
+                brand = "OPPO",
+                model = "PKB110",
+                marketname = "OPPO Find X8",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-oppo-find-x8-pro",
+        version = 1,
+        nameText = "OPPO Find X8 Pro",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "OPPO",
+                brand = "OPPO",
+                model = "PKC110",
+                marketname = "OPPO Find X8 Pro",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-oppo-find-n3",
+        version = 1,
+        nameText = "OPPO Find N3",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "OPPO",
+                brand = "OPPO",
+                model = "PHN110",
+                marketname = "OPPO Find N3",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-oneplus-11",
+        version = 1,
+        nameText = "OnePlus 11",
+        descriptionText = "游戏 · 手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "OnePlus",
+                brand = "OnePlus",
+                model = "PHB110",
+                device = "salami",
+                marketname = "OnePlus 11",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-oneplus-12",
+        version = 1,
+        nameText = "OnePlus 12",
+        descriptionText = "游戏 · 手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "OnePlus",
+                brand = "OnePlus",
+                model = "PJD110",
+                device = "waffle",
+                marketname = "OnePlus 12",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-oneplus-13",
+        version = 1,
+        nameText = "OnePlus 13",
+        descriptionText = "游戏 · 手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "OnePlus",
+                brand = "OnePlus",
+                model = "PJZ110",
+                marketname = "OnePlus 13",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-honor-magic-v3",
+        version = 1,
+        nameText = "HONOR Magic V3",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "HONOR",
+                brand = "HONOR",
+                model = "FCP-AN10",
+                marketname = "HONOR Magic V3",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-honor-magic-v5",
+        version = 1,
+        nameText = "HONOR Magic V5",
+        descriptionText = "手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "HONOR",
+                brand = "HONOR",
+                model = "MHG-AN00",
+                marketname = "HONOR Magic V5",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-redmagic-9-pro",
+        version = 1,
+        nameText = "REDMAGIC 9 Pro",
+        descriptionText = "游戏 · 手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "ZTE",
+                brand = "nubia",
+                model = "NX769J",
+                device = "REDMAGIC 9 Pro",
+                fingerPrint = "nubia/NX769J/NX769J:14/UKQ1.230917.001/20240813.173312:user/release-keys",
+                buildId = "UKQ1.230917.001",
+                marketname = "REDMAGIC 9 Pro",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-redmagic-11-pro",
+        version = 1,
+        nameText = "REDMAGIC 11 Pro",
+        descriptionText = "游戏 · 手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "ZTE",
+                brand = "nubia",
+                model = "NX809J",
+                device = "REDMAGIC 11 PRO",
+                fingerPrint = "REDMAGIC/NX809J-UN/NX809J:16/BP2A.250605.031.A3/20251017.000000:user/release-keys",
+                buildId = "BP2A.250605.031.A3",
+                marketname = "REDMAGIC 11 Pro",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-rog-phone-8",
+        version = 1,
+        nameText = "ROG Phone 8",
+        descriptionText = "游戏 · 手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "asus",
+                brand = "asus",
+                model = "AI2401",
+                marketname = "ROG Phone 8",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-rog-phone-9",
+        version = 1,
+        nameText = "ROG Phone 9",
+        descriptionText = "游戏 · 手工补充（2026-10 联网核实）",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "asus",
+                brand = "asus",
+                model = "AI2501",
+                marketname = "ROG Phone 9",
             )
         },
     ),
