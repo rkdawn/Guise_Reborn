@@ -43,6 +43,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -97,24 +98,59 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
 
+// =============================================================================
+// 模板页（整页重构版）
+//
+// 单页可折叠分区列表：我的模板 → 自建分组 → 厂商分区。
+// 交互（与整体设计语言对齐的扁平行，无卡片）：
+//   点分区标题        → 展开/折叠
+//   长按分区标题      → 进入编辑态，可不松手直接拖动换位
+//   编辑态            → 全部折叠；行内红色删除（我的模板除外）、右侧拖拽手柄、
+//                       点自建组名改名；顶栏切换为「完成」，返回键退出
+//   长按模板行        → 编辑 / 导出二维码 / 移动 / 删除
+//   顶栏 ⋮ 菜单       → 建组 / 导入 / 导出
+//
+// 手势两条铁律（历史上各踩过一次，勿违反）：
+//   1. pointerInput 的 key 不能包含手势过程中会变化的状态（如 editMode），
+//      否则 key 一变 Compose 重启手势协程，进行中的拖拽被掐断；
+//   2. 并行的 detectTapGestures 不要传 onLongPress（空 lambda 也不行）——
+//      传了它就会参与长按竞争并消费长按事件，把拖拽检测器饿死。
+// =============================================================================
+
 private val requestEnable = mutableStateOf(false)
 private val requestEnableTemplate = mutableStateOf<Template?>(null)
 
-/** Brand identity used for grouping; blank brands collapse into one "other" bucket. */
+// ---------------------------------------------------------------------------
+// 分组模型
+// ---------------------------------------------------------------------------
+
+/** 「我的模板」分区 key。带前导空格，保证不会与品牌 key 撞名。 */
+private const val GROUP_KEY_MINE = " mine"
+
+/** 自建分组的 key 前缀，与品牌 key 隔离。 */
+private const val GROUP_KEY_PREFIX_CUSTOM = "custom:"
+
+/** 分区行间距（LazyColumn spacedBy 与拖拽步长共用，必须一致）。 */
+private val SECTION_SPACING = 4.dp
+
+/** 品牌标识：取配置里的 brand，空白归入「我的模板」。 */
 private fun templateBrandKey(template: Template): String =
     runCatching { ModuleConfig.fromJson(template.configuration).brand.trim() }
         .getOrNull().orEmpty().lowercase()
 
-private const val GROUP_KEY_MINE = " mine"
-
-/** 自建分组的 section key 前缀，避免与品牌 key 冲突。 */
-private const val GROUP_KEY_PREFIX_CUSTOM = "custom:"
-
 /**
- * Canonical brand display names keyed by lowercase brand. Source data mixes
- * casings (samsung/Redmi/REDMI/vivo); sections always show the official form.
- * Unknown brands (e.g. user-created) fall back to their most frequent casing.
+ * 分区归属：显式指定了自建分组 → 该分组；有品牌 → 品牌分区；
+ * 其余（无品牌的用户模板）→ 「我的模板」。
  */
+private fun templateGroupKey(template: Template): String {
+    template.groupName?.takeIf { it.isNotBlank() }
+        ?.let { return GROUP_KEY_PREFIX_CUSTOM + it }
+    val brand = templateBrandKey(template)
+    if (brand.isNotEmpty()) return brand
+    return GROUP_KEY_MINE
+}
+
+/** 品牌官方写法（源数据大小写混乱：samsung/Redmi/REDMI/vivo）。 */
 private val canonicalBrandDisplayNames = mapOf(
     "xiaomi" to "Xiaomi",
     "redmi" to "REDMI",
@@ -130,24 +166,63 @@ private val canonicalBrandDisplayNames = mapOf(
     "google" to "Google",
 )
 
-/**
- * Section grouping: a template explicitly assigned to a custom group goes
- * there; otherwise templates with a brand go to that brand's section; all
- * brand-less templates form the first "我的模板" section.
- */
-private fun templateGroupKey(template: Template): String {
-    template.groupName?.takeIf { it.isNotBlank() }
-        ?.let { return GROUP_KEY_PREFIX_CUSTOM + it }
-    val brand = templateBrandKey(template)
-    if (brand.isNotEmpty()) return brand
-    return GROUP_KEY_MINE
+/** 一个分区：稳定 key、展示名、名称自然排序后的模板。 */
+private data class TemplateSection(
+    val key: String,
+    val displayName: String,
+    val templates: List<Template>,
+) {
+    val isMine get() = key == GROUP_KEY_MINE
+    val isCustom get() = key.startsWith(GROUP_KEY_PREFIX_CUSTOM)
 }
 
 /**
- * Numeric-aware name ordering: digit runs compare by value, everything else
- * case-insensitively. Keeps model generations intuitive
- * (K70 < K80 < K90 < K100, Xiaomi 13 < 14 < 15 < 17).
+ * 组装分区列表：
+ * - 名册（TemplateGroupStore）里的空自建分组也要出现；
+ * - 排序：用户手动拖拽过的顺序优先，未记录过的分区按
+ *   「我的模板 < 自建分组 < 厂商（按展示名）」排在末尾。
  */
+private fun buildSections(templates: List<Template>, mineLabel: String): List<TemplateSection> {
+    val grouped = templates.groupBy(::templateGroupKey).toMutableMap()
+    TemplateGroupStore.customGroups().forEach { name ->
+        grouped.putIfAbsent(GROUP_KEY_PREFIX_CUSTOM + name, emptyList())
+    }
+    val savedOrder = TemplateGroupStore.sectionOrder()
+    return grouped.map { (key, group) ->
+        val display = when {
+            key == GROUP_KEY_MINE -> mineLabel
+            key.startsWith(GROUP_KEY_PREFIX_CUSTOM) ->
+                key.removePrefix(GROUP_KEY_PREFIX_CUSTOM)
+            else -> canonicalBrandDisplayNames[key]
+                // 未知品牌：出现次数最多的原始写法胜出
+                ?: group.map {
+                    runCatching { ModuleConfig.fromJson(it.configuration).brand.trim() }
+                        .getOrDefault("")
+                }.groupingBy { it }.eachCount()
+                    .maxByOrNull { it.value }?.key.orEmpty()
+        }
+        TemplateSection(
+            key = key,
+            displayName = display,
+            templates = group.sortedWith { a, b -> naturalNameCompare(a.name, b.name) },
+        )
+    }.sortedWith(
+        compareBy<TemplateSection> {
+            savedOrder.indexOf(it.key).let { index -> if (index >= 0) index else Int.MAX_VALUE }
+        }.thenBy {
+            when {
+                it.isMine -> 0
+                it.isCustom -> 1
+                else -> 2
+            }
+        }.thenBy(String.CASE_INSENSITIVE_ORDER) { it.displayName }
+    )
+}
+
+// ---------------------------------------------------------------------------
+// 数字感知的名称排序（K70 < K80 < K100，Xiaomi 13 < 14 < 17）
+// ---------------------------------------------------------------------------
+
 private val naturalSortChunkRegex = Regex("""(\d+)|(\D+)""")
 
 private fun naturalNameCompare(a: String, b: String): Int {
@@ -159,7 +234,7 @@ private fun naturalNameCompare(a: String, b: String): Int {
         val chunkA = iterA.next()
         val chunkB = iterB.next()
         val cmp = if (chunkA[0].isDigit() && chunkB[0].isDigit()) {
-            // BigInteger: digit runs can exceed Long (e.g. incremental build ids).
+            // BigInteger：数字段可能超过 Long（如构建号）
             chunkA.toBigInteger().compareTo(chunkB.toBigInteger())
         } else {
             chunkA.compareTo(chunkB, ignoreCase = true)
@@ -173,9 +248,477 @@ private fun naturalNameCompare(a: String, b: String): Int {
     }
 }
 
+// ---------------------------------------------------------------------------
+// 分区拖拽排序状态机
+// ---------------------------------------------------------------------------
+
+/**
+ * 长按（或编辑态按住手柄）开始拖拽：拖动中按实测行高换算目标位置就地
+ * 换位，松手后由调用方持久化。行高由布局实时回写——编辑态行高与普通态
+ * 不同，必须每次测量，不能用首次值缓存。
+ */
+@Stable
+private class SectionDragState {
+    /** 正在拖拽的分区 key；null = 未拖拽。 */
+    var draggingKey by mutableStateOf<String?>(null)
+        private set
+
+    /** 累计位移：被拖分区视觉跟随 + 换位换算。 */
+    var offsetPx by mutableFloatStateOf(0f)
+        private set
+
+    /** 分区头行高 + 列表间距，onGloballyPositioned 每次布局回写。 */
+    var stridePx by mutableFloatStateOf(0f)
+
+    /** 拖拽中的实时顺序。 */
+    val liveOrder = mutableStateListOf<String>()
+
+    val isDragging: Boolean get() = draggingKey != null
+
+    fun start(key: String, currentOrder: List<String>) {
+        liveOrder.clear()
+        liveOrder.addAll(currentOrder)
+        draggingKey = key
+        offsetPx = 0f
+    }
+
+    fun dragBy(key: String, deltaY: Float) {
+        offsetPx += deltaY
+        if (stridePx <= 0f) return
+        val from = liveOrder.indexOf(key)
+        if (from < 0) return
+        val target = (from + (offsetPx / stridePx).roundToInt())
+            .coerceIn(0, liveOrder.lastIndex)
+        if (target != from) {
+            liveOrder.add(target, liveOrder.removeAt(from))
+            offsetPx -= (target - from) * stridePx
+        }
+    }
+
+    /** 正常松手：返回待持久化的顺序（未拖过为 null）并重置。 */
+    fun finish(): List<String>? {
+        val order = if (liveOrder.isNotEmpty()) liveOrder.toList() else null
+        reset()
+        return order
+    }
+
+    fun cancel() = reset()
+
+    private fun reset() {
+        draggingKey = null
+        offsetPx = 0f
+        liveOrder.clear()
+    }
+}
+
+// ---------------------------------------------------------------------------
+// 主界面
+// ---------------------------------------------------------------------------
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@Composable
+internal fun TemplateScreen() {
+    val navController = LocalNavController.current
+    val templates = LauncherState.templates.value
+
+    // —— 各模板已配置应用数（ON_RESUME 时重算）——
+    val configurationRevision = PackageConfig.configurationRevision.intValue
+    val templateSignatures = remember(templates) {
+        templates.map { it.id to it.configuration }
+    }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var resumeGeneration by remember { mutableIntStateOf(0) }
+    var appliedCounts by remember { mutableStateOf<Map<String, Int>>(emptyMap()) }
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) resumeGeneration++
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+    LaunchedEffect(templateSignatures, configurationRevision, resumeGeneration) {
+        appliedCounts = withContext(Dispatchers.IO) {
+            val usageBySignature = ModuleConfig.getAllSaved()
+                .asSequence()
+                .filter { it.enabled }
+                .groupingBy(ModuleConfig::parameterSignature)
+                .eachCount()
+            templateSignatures.associate { (templateId, configuration) ->
+                val signature = ModuleConfig.fromJson(configuration).parameterSignature()
+                templateId to (usageBySignature[signature] ?: 0)
+            }
+        }
+    }
+
+    // —— 分区数据：groupRevision 驱动名册/排序变化后的重算 ——
+    var groupRevision by remember { mutableIntStateOf(0) }
+    val mineLabel = stringResource(R.string.template_group_mine)
+    val sections = remember(templates, groupRevision, mineLabel) {
+        buildSections(templates, mineLabel)
+    }
+    // 折叠状态；缺省折叠，页面打开时是紧凑的索引视图。
+    val collapsedKeys = remember { mutableStateMapOf<String, Boolean>() }
+
+    // —— 编辑态 + 拖拽排序 ——
+    var editMode by remember { mutableStateOf(false) }
+    val dragState = remember { SectionDragState() }
+
+    fun startSectionDrag(key: String) {
+        editMode = true
+        dragState.start(key, sections.map { it.key })
+    }
+
+    fun finishSectionDrag(persist: Boolean) {
+        if (persist) {
+            dragState.finish()?.let(TemplateGroupStore::saveSectionOrder)
+        } else {
+            dragState.cancel()
+        }
+        groupRevision++
+    }
+
+    fun exitEditMode() {
+        dragState.cancel()
+        editMode = false
+    }
+
+    // 拖拽中按实时顺序渲染，松手后回到正式顺序。
+    val visibleSections = if (dragState.isDragging && dragState.liveOrder.isNotEmpty()) {
+        dragState.liveOrder.mapNotNull { key -> sections.firstOrNull { it.key == key } }
+    } else {
+        sections
+    }
+
+    // —— 对话框状态 ——
+    var showCreateGroupDialog by remember { mutableStateOf(false) }
+    var renameGroupTarget by remember { mutableStateOf<String?>(null) }
+    var moveGroupTemplate by remember { mutableStateOf<Template?>(null) }
+    var deleteGroupTarget by remember { mutableStateOf<TemplateSection?>(null) }
+
+    // 编辑态下返回键退出编辑态而不是退出页面。
+    BackHandler(enabled = editMode) { exitEditMode() }
+
+    Scaffold(
+        topBar = {
+            var topBarMenuExpanded by remember { mutableStateOf(false) }
+            var transferDialog by remember { mutableStateOf<TemplateTransferMode?>(null) }
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(R.string.action_template),
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.W500,
+                    )
+                },
+                actions = {
+                    if (editMode) {
+                        TextButton(onClick = { exitEditMode() }) {
+                            Text(stringResource(R.string.template_group_edit_done))
+                        }
+                    } else {
+                        IconButton(onClick = { topBarMenuExpanded = true }) {
+                            SimplifyIcon(Icons.Default.MoreVert)
+                        }
+                        transferDialog?.let { mode ->
+                            TemplateTransferDialog(
+                                mode = mode,
+                                onDismiss = { transferDialog = null },
+                                onScanQr = {
+                                    navController.navigate(NavRoutingTypes.SCAN_TEMPLATE_QR.name)
+                                },
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = topBarMenuExpanded,
+                            onDismissRequest = { topBarMenuExpanded = false },
+                        ) {
+                            SimplifyDropdownMenuItem(
+                                text = stringResource(R.string.template_group_create),
+                                onClick = {
+                                    topBarMenuExpanded = false
+                                    showCreateGroupDialog = true
+                                },
+                            )
+                            SimplifyDropdownMenuItem(
+                                text = stringResource(R.string.import_data),
+                                onClick = {
+                                    topBarMenuExpanded = false
+                                    transferDialog = TemplateTransferMode.IMPORT
+                                },
+                            )
+                            SimplifyDropdownMenuItem(
+                                text = stringResource(R.string.export_data),
+                                onClick = {
+                                    topBarMenuExpanded = false
+                                    transferDialog = TemplateTransferMode.EXPORT
+                                },
+                            )
+                        }
+                    }
+                },
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { navController.navigate(NavRoutingTypes.ADD_TEMPLATE.name) },
+                containerColor = MaterialTheme.colorScheme.primary,
+            ) {
+                SimplifyIcon(Icons.Default.Add)
+            }
+        },
+    ) { paddingValues ->
+        LazyColumn(
+            modifier = Modifier.padding(
+                top = paddingValues.calculateTopPadding(),
+                bottom = paddingValues.calculateBottomPadding(),
+            ),
+            contentPadding = PaddingValues(vertical = 4.dp),
+            verticalArrangement = Arrangement.spacedBy(SECTION_SPACING),
+        ) {
+            visibleSections.forEach { section ->
+                val storedCollapsed = collapsedKeys[section.key] != false
+                // 编辑态全部强制折叠：标题行等高，拖拽才好对位。
+                val collapsed = storedCollapsed || editMode
+                stickyHeader(key = "header-${section.key}") {
+                    SectionHeader(
+                        section = section,
+                        collapsed = collapsed,
+                        editMode = editMode,
+                        dragState = dragState,
+                        onTap = {
+                            when {
+                                editMode && section.isCustom ->
+                                    renameGroupTarget = section.displayName
+                                editMode -> Unit
+                                else -> collapsedKeys[section.key] = !storedCollapsed
+                            }
+                        },
+                        onDeleteRequest = { deleteGroupTarget = section },
+                        onDragStart = { startSectionDrag(section.key) },
+                        onDragFinish = ::finishSectionDrag,
+                    )
+                }
+                if (!collapsed) {
+                    section.templates.forEach { template ->
+                        item(key = "tpl-${template.id}") {
+                            TemplateRow(
+                                template = template,
+                                appliedAppCount = appliedCounts[template.id] ?: 0,
+                                onMoveToGroup = { moveGroupTemplate = template },
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        requestEnableTemplate.value?.let {
+            EnableTemplateDialog(state = requestEnable, template = it)
+        }
+
+        // —— 整组删除确认 ——
+        deleteGroupTarget?.let { section ->
+            DeleteGroupDialog(
+                section = section,
+                onConfirm = {
+                    if (section.isCustom) {
+                        LauncherState.deleteGroup(section.displayName, section.templates)
+                    } else {
+                        LauncherState.deleteTemplates(section.templates)
+                    }
+                    TemplateGroupStore.removeSectionKey(section.key)
+                    groupRevision++
+                    deleteGroupTarget = null
+                },
+                onDismiss = { deleteGroupTarget = null },
+            )
+        }
+
+        // —— 创建分组 ——
+        if (showCreateGroupDialog) {
+            GroupNameDialog(
+                title = stringResource(R.string.template_group_create),
+                initialName = "",
+                existingNames = sections.map { it.displayName },
+                onDismiss = { showCreateGroupDialog = false },
+                onConfirm = { name ->
+                    TemplateGroupStore.add(name)
+                    groupRevision++
+                    showCreateGroupDialog = false
+                },
+            )
+        }
+
+        // —— 重命名自建分组：名册 + 组内模板 + 排序记录一起跟随 ——
+        renameGroupTarget?.let { oldName ->
+            GroupNameDialog(
+                title = stringResource(R.string.template_group_rename),
+                initialName = oldName,
+                existingNames = sections.map { it.displayName },
+                onDismiss = { renameGroupTarget = null },
+                onConfirm = { newName ->
+                    LauncherState.renameGroup(oldName, newName)
+                    TemplateGroupStore.renameSectionKey(
+                        GROUP_KEY_PREFIX_CUSTOM + oldName,
+                        GROUP_KEY_PREFIX_CUSTOM + newName,
+                    )
+                    groupRevision++
+                    renameGroupTarget = null
+                },
+            )
+        }
+
+        // —— 移动模板到分组（「自动」= 恢复按品牌分组）——
+        moveGroupTemplate?.let { template ->
+            MoveToGroupDialog(
+                onDismiss = { moveGroupTemplate = null },
+                onSelect = { groupName ->
+                    LauncherState.setTemplateGroup(template, groupName)
+                    moveGroupTemplate = null
+                },
+            )
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// 分区标题行
+// ---------------------------------------------------------------------------
+
+@Composable
+private fun SectionHeader(
+    section: TemplateSection,
+    collapsed: Boolean,
+    editMode: Boolean,
+    dragState: SectionDragState,
+    onTap: () -> Unit,
+    onDeleteRequest: () -> Unit,
+    onDragStart: () -> Unit,
+    onDragFinish: (persist: Boolean) -> Unit,
+) {
+    val spacingPx = with(LocalDensity.current) { SECTION_SPACING.toPx() }
+    val dragging = dragState.draggingKey == section.key
+    Surface(
+        // 拖拽中的分区提层 + 位移跟随 + 底色反馈。
+        color = if (dragging) {
+            MaterialTheme.colorScheme.surfaceVariant
+        } else {
+            MaterialTheme.colorScheme.surface
+        },
+        modifier = Modifier
+            .zIndex(if (dragging) 1f else 0f)
+            .graphicsLayer {
+                translationY = if (dragging) dragState.offsetPx else 0f
+            },
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .onGloballyPositioned { coordinates ->
+                    // 每次布局都更新：编辑态行高与普通态不同。
+                    dragState.stridePx = coordinates.size.height + spacingPx
+                }
+                .padding(horizontal = 16.dp)
+                .pointerInput(section.key) {
+                    // 点按：折叠/展开；编辑态下点自建组名改名。
+                    // 不传 onLongPress（见文件头铁律 2）。
+                    detectTapGestures(onTap = { onTap() })
+                }
+                .pointerInput(section.key) {
+                    // 长按命中即 onDragStart（不等位移）→ 进编辑态并可直接拖。
+                    // key 不含 editMode（见文件头铁律 1）。
+                    detectDragGesturesAfterLongPress(
+                        onDragStart = { onDragStart() },
+                        onDrag = { change, dragAmount ->
+                            change.consume()
+                            dragState.dragBy(section.key, dragAmount.y)
+                        },
+                        onDragEnd = { onDragFinish(true) },
+                        onDragCancel = { onDragFinish(false) },
+                    )
+                }
+                .padding(top = 12.dp, bottom = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (editMode) {
+                if (section.isMine) {
+                    Spacer(modifier = Modifier.size(32.dp))
+                } else {
+                    IconButton(
+                        onClick = onDeleteRequest,
+                        modifier = Modifier.size(32.dp),
+                    ) {
+                        SimplifyIcon(
+                            Icons.Default.RemoveCircleOutline,
+                            tint = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.size(20.dp),
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.width(6.dp))
+            }
+            Text(
+                text = section.displayName,
+                modifier = Modifier.weight(1f),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.W500,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            if (editMode) {
+                SimplifyIcon(
+                    Icons.Default.DragHandle,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .size(28.dp)
+                        .pointerInput(section.key) {
+                            // 编辑态下的直接拖拽入口：按住手柄即拖，无需再次
+                            // 长按。独立挂点，不与标题行的点按/长按检测器竞争。
+                            detectDragGestures(
+                                onDragStart = { onDragStart() },
+                                onDrag = { change, dragAmount ->
+                                    change.consume()
+                                    dragState.dragBy(section.key, dragAmount.y)
+                                },
+                                onDragEnd = { onDragFinish(true) },
+                                onDragCancel = { onDragFinish(false) },
+                            )
+                        },
+                )
+            } else {
+                Text(
+                    text = stringResource(
+                        R.string.template_group_count_short,
+                        section.templates.size,
+                    ),
+                    style = MaterialTheme.typography.labelMedium,
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                )
+                Spacer(modifier = Modifier.width(2.dp))
+                SimplifyIcon(
+                    if (collapsed) {
+                        Icons.AutoMirrored.Filled.KeyboardArrowRight
+                    } else {
+                        Icons.Default.KeyboardArrowDown
+                    },
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(20.dp),
+                )
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// 模板行（扁平行：名称 + 型号副标题；长按弹出操作菜单）
+// ---------------------------------------------------------------------------
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun TemplateCard(
+private fun TemplateRow(
     template: Template,
     appliedAppCount: Int,
     onMoveToGroup: () -> Unit,
@@ -198,40 +741,63 @@ private fun TemplateCard(
         }
     }
     val installed = !isExclusive || exclusiveIcon != null
-    var expanded by remember { mutableStateOf(false) }
+    var menuExpanded by remember { mutableStateOf(false) }
 
-    val headIcon = @Composable {
-        if (isExclusive) {
-            val modifier = Modifier
-                .size(25.dp)
-                .padding(bottom = 5.dp)
-            if (exclusiveIcon == null) {
-                SimplifyImage(
-                    Icons.Default.DoNotDisturbOnTotalSilence,
-                    modifier = modifier,
-                )
-            } else {
-                SimplifyImage(exclusiveIcon, modifier)
-            }
-        }
-    }
-
-    // 副标题：型号代码（如 SGT-AL00）优先，其次用户描述，对齐部署页
-    // 「应用名 + 包名」的双行结构。
+    // 副标题：型号代码（如 SGT-AL00）优先，其次用户描述。
     val subtitle = remember(template.id, template.configuration, template.description) {
         val model = runCatching { ModuleConfig.fromJson(template.configuration).model.trim() }
             .getOrDefault("")
         model.ifBlank { template.description?.trim().orEmpty() }
     }
 
-    val content = @Composable {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 8.dp)
+            .clip(MaterialTheme.shapes.medium)
+            .background(
+                if (appliedAppCount > 0) {
+                    MaterialTheme.colorScheme.surfaceVariant
+                } else {
+                    Color.Transparent
+                }
+            )
+            .fillMaxWidth()
+            .combinedClickable(
+                onClick = {
+                    if (isExclusive && !installed) {
+                        GlobalSnackbarHost.showOnErrorByDismissPrevious(
+                            resources.getString(R.string.exclusive_template_app_not_installed)
+                        )
+                    } else if (isExclusive) {
+                        requestEnable.value = true
+                        requestEnableTemplate.value = template
+                    } else {
+                        LocalNavController.current.navigateWithTemplate(
+                            NavRoutingTypes.ENABLE_TEMPLATE.name,
+                            template,
+                        )
+                    }
+                },
+                onLongClick = { menuExpanded = true },
+            )
+            .padding(horizontal = 8.dp, vertical = 10.dp),
+    ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            headIcon()
             if (isExclusive) {
+                val iconModifier = Modifier
+                    .size(25.dp)
+                    .padding(bottom = 5.dp)
+                if (exclusiveIcon == null) {
+                    SimplifyImage(
+                        Icons.Default.DoNotDisturbOnTotalSilence,
+                        modifier = iconModifier,
+                    )
+                } else {
+                    SimplifyImage(exclusiveIcon, iconModifier)
+                }
                 Spacer(modifier = Modifier.width(10.dp))
             }
             Column(modifier = Modifier.weight(1f)) {
@@ -286,594 +852,104 @@ private fun TemplateCard(
                 )
             }
         }
-    }
-
-    // 扁平行：与部署页一致——圆角裁切、透明底（有应用时铺 surfaceVariant）、
-    // 无卡片边框。
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 8.dp)
-            .clip(MaterialTheme.shapes.medium)
-            .background(
-                if (appliedAppCount > 0) {
-                    MaterialTheme.colorScheme.surfaceVariant
-                } else {
-                    Color.Transparent
-                }
-            )
-            .fillMaxWidth()
-            .combinedClickable(
-                onClick = {
-                    if (isExclusive && !installed) {
-                        GlobalSnackbarHost.showOnErrorByDismissPrevious(
-                            resources.getString(R.string.exclusive_template_app_not_installed)
-                        )
-                    } else if (isExclusive) {
-                        requestEnable.value = true
-                        requestEnableTemplate.value = template
-                    } else {
-                        val navHostController = LocalNavController.current
-                        navHostController.navigateWithTemplate(
-                            NavRoutingTypes.ENABLE_TEMPLATE.name,
-                            template,
-                        )
-                    }
-                },
-                onLongClick = { expanded = true },
-            )
-            .padding(horizontal = 8.dp, vertical = 10.dp),
-    ) {
-        content()
         DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
+            expanded = menuExpanded,
+            onDismissRequest = { menuExpanded = false },
             offset = DpOffset(10.dp, (-5).dp),
         ) {
             SimplifyDropdownMenuItem(text = stringResource(R.string.edit), onClick = {
-                expanded = false
+                menuExpanded = false
                 LocalNavController.current.navigateWithTemplate(
                     NavRoutingTypes.EDIT_TEMPLATE.name,
                     template,
                 )
             })
             SimplifyDropdownMenuItem(text = stringResource(R.string.export_qr), onClick = {
-                expanded = false
+                menuExpanded = false
                 scope.launch {
-                    val result = runCatching {
-                        val bitmap = withContext(Dispatchers.Default) {
-                            encodeTemplateQrBitmap(TemplateTransfer.encode(listOf(template)))
+                    exportTemplateQrCode(template)
+                        .onSuccess {
+                            GlobalSnackbarHost.showByDismissPrevious(
+                                resources.getString(R.string.export_success, it)
+                            )
                         }
-                        try {
-                            withContext(Dispatchers.IO) {
-                                saveBitmapToDownloadDir(
-                                    "Guise-Template-${template.id}.png",
-                                    bitmap,
-                                ).getOrThrow()
-                            }
-                        } finally {
-                            bitmap.recycle()
+                        .onFailure {
+                            GlobalSnackbarHost.showOnErrorByDismissPrevious(
+                                resources.getString(R.string.export_failed, it.message.orEmpty())
+                            )
                         }
-                    }
-                    result.onSuccess {
-                        GlobalSnackbarHost.showByDismissPrevious(
-                            resources.getString(R.string.export_success, it)
-                        )
-                    }.onFailure {
-                        GlobalSnackbarHost.showOnErrorByDismissPrevious(
-                            resources.getString(R.string.export_failed, it.message.orEmpty())
-                        )
-                    }
                 }
             })
-            SimplifyDropdownMenuItem(text = stringResource(R.string.template_group_move), onClick = {
-                expanded = false
-                onMoveToGroup()
-            })
+            SimplifyDropdownMenuItem(
+                text = stringResource(R.string.template_group_move),
+                onClick = {
+                    menuExpanded = false
+                    onMoveToGroup()
+                },
+            )
             SimplifyDropdownMenuItem(text = stringResource(R.string.delete), onClick = {
-                expanded = false
+                menuExpanded = false
                 LauncherState.deleteTemplate(template)
             })
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
-@Composable
-internal fun TemplateScreen() {
-    val navController = LocalNavController.current
-    val templates = LauncherState.templates.value
-    val configurationRevision = PackageConfig.configurationRevision.intValue
-    val templateSignatures = remember(templates) {
-        templates.map { it.id to it.configuration }
+/** 导出单个模板的分享二维码到下载目录，返回保存位置的 Uri。 */
+private suspend fun exportTemplateQrCode(template: Template): Result<android.net.Uri> =
+    runCatching {
+    val bitmap = withContext(Dispatchers.Default) {
+        encodeTemplateQrBitmap(TemplateTransfer.encode(listOf(template)))
     }
-    val lifecycleOwner = LocalLifecycleOwner.current
-    var resumeGeneration by remember { mutableIntStateOf(0) }
-    var appliedCounts by remember { mutableStateOf<Map<String, Int>>(emptyMap()) }
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) resumeGeneration++
+    try {
+        withContext(Dispatchers.IO) {
+            saveBitmapToDownloadDir("Guise-Template-${template.id}.png", bitmap).getOrThrow()
         }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-    }
-    LaunchedEffect(templateSignatures, configurationRevision, resumeGeneration) {
-        appliedCounts = withContext(Dispatchers.IO) {
-            val usageBySignature = ModuleConfig.getAllSaved()
-                .asSequence()
-                .filter { it.enabled }
-                .groupingBy(ModuleConfig::parameterSignature)
-                .eachCount()
-            templateSignatures.associate { (templateId, configuration) ->
-                val signature = ModuleConfig.fromJson(configuration).parameterSignature()
-                templateId to (usageBySignature[signature] ?: 0)
-            }
-        }
-    }
-
-    // 自建分组对话框：创建 / 重命名；移动模板到分组的目标模板。
-    // 声明在 topBar 之前，菜单「建组」需要引用。
-    var showCreateGroupDialog by remember { mutableStateOf(false) }
-    var renameGroupTarget by remember { mutableStateOf<String?>(null) }
-    var moveGroupTemplate by remember { mutableStateOf<Template?>(null) }
-
-    // 编辑态：长按分区标题进入，行内显示删除按钮、可直接拖拽排序；
-    // 顶栏切换为「完成」退出。
-    var editMode by remember { mutableStateOf(false) }
-
-    val topBar = @Composable {
-        var topBarMenuExpanded by remember { mutableStateOf(false) }
-        var transferDialog by remember { mutableStateOf<TemplateTransferMode?>(null) }
-        TopAppBar(
-            title = {
-                Text(
-                    text = stringResource(R.string.action_template),
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.W500,
-                )
-            },
-            actions = {
-                if (editMode) {
-                    TextButton(onClick = { editMode = false }) {
-                        Text(stringResource(R.string.template_group_edit_done))
-                    }
-                } else {
-                    IconButton(onClick = { topBarMenuExpanded = true }) {
-                        SimplifyIcon(Icons.Default.MoreVert)
-                    }
-                    transferDialog?.let { mode ->
-                        TemplateTransferDialog(
-                            mode = mode,
-                            onDismiss = { transferDialog = null },
-                            onScanQr = {
-                                navController.navigate(NavRoutingTypes.SCAN_TEMPLATE_QR.name)
-                            },
-                        )
-                    }
-                    DropdownMenu(
-                        expanded = topBarMenuExpanded,
-                        onDismissRequest = { topBarMenuExpanded = false },
-                    ) {
-                        SimplifyDropdownMenuItem(
-                            text = stringResource(R.string.template_group_create),
-                            onClick = {
-                                topBarMenuExpanded = false
-                                showCreateGroupDialog = true
-                            },
-                        )
-                        SimplifyDropdownMenuItem(
-                            text = stringResource(R.string.import_data),
-                            onClick = {
-                                topBarMenuExpanded = false
-                                transferDialog = TemplateTransferMode.IMPORT
-                            },
-                        )
-                        SimplifyDropdownMenuItem(
-                            text = stringResource(R.string.export_data),
-                            onClick = {
-                                topBarMenuExpanded = false
-                                transferDialog = TemplateTransferMode.EXPORT
-                            },
-                        )
-                    }
-                }
-            },
-        )
-    }
-
-    val floatingButton = @Composable {
-        FloatingActionButton(
-            onClick = { navController.navigate(NavRoutingTypes.ADD_TEMPLATE.name) },
-            containerColor = MaterialTheme.colorScheme.primary,
-        ) {
-            SimplifyIcon(Icons.Default.Add)
-        }
-    }
-
-    // Single-page collapsible sections: section key -> (display name,
-    // name-sorted templates). "我的模板" (brand-less) first, then custom groups,
-    // then manufacturers alphabetically by display name. Custom groups come
-    // from TemplateGroupStore so empty groups survive; groupRevision forces
-    // recomposition when the registry changes without touching templates.
-    var groupRevision by remember { mutableIntStateOf(0) }
-    val sections = remember(templates, groupRevision) {
-        val grouped = templates.groupBy(::templateGroupKey).toMutableMap()
-        TemplateGroupStore.customGroups().forEach { name ->
-            grouped.putIfAbsent(GROUP_KEY_PREFIX_CUSTOM + name, emptyList())
-        }
-        grouped.map { (key, group) ->
-            val display = when {
-                key == GROUP_KEY_MINE -> ""
-                key.startsWith(GROUP_KEY_PREFIX_CUSTOM) ->
-                    key.removePrefix(GROUP_KEY_PREFIX_CUSTOM)
-                else -> canonicalBrandDisplayNames[key]
-                    // Unknown brand: most frequent original casing wins.
-                    ?: group.map {
-                        runCatching { ModuleConfig.fromJson(it.configuration).brand.trim() }
-                            .getOrDefault("")
-                    }.groupingBy { it }.eachCount()
-                        .maxByOrNull { it.value }?.key.orEmpty()
-            }
-            val sorted = group.sortedWith { x, y -> naturalNameCompare(x.name, y.name) }
-            Triple(key, display, sorted)
-        }.sortedWith(
-            // 手动排序优先；未记录过的分区（新增品牌/分组）按默认规则排在末尾。
-            compareBy<Triple<String, String, List<Template>>> {
-                TemplateGroupStore.sectionOrder().indexOf(it.first)
-                    .let { index -> if (index >= 0) index else Int.MAX_VALUE }
-            }.thenBy {
-                when {
-                    it.first == GROUP_KEY_MINE -> 0
-                    it.first.startsWith(GROUP_KEY_PREFIX_CUSTOM) -> 1
-                    else -> 2
-                }
-            }.thenBy(String.CASE_INSENSITIVE_ORDER) { it.second }
-        )
-    }
-
-    // Collapse state per section; sections default to collapsed so the page
-    // opens as a compact manufacturer index.
-    val collapsedSections = remember { mutableStateMapOf<String, Boolean>() }
-
-    // 长按分区标题进入编辑态并直接拖拽排序：编辑态下全部分区强制折叠为
-    // 等高标题行，松手后顺序持久化。headerStridePx 为实测标题行高+列表间距。
-    var draggingSectionKey by remember { mutableStateOf<String?>(null) }
-    var draggingOffset by remember { mutableFloatStateOf(0f) }
-    val liveOrder = remember { mutableStateListOf<String>() }
-    var headerStridePx by remember { mutableFloatStateOf(0f) }
-    val sectionSpacingPx = with(LocalDensity.current) { 4.dp.toPx() }
-
-    val startSectionDrag: (String) -> Unit = { key ->
-        editMode = true
-        liveOrder.clear()
-        liveOrder.addAll(sections.map { it.first })
-        draggingSectionKey = key
-        draggingOffset = 0f
-    }
-    val onSectionDrag: (String, Float) -> Unit = drag@{ key, dy ->
-        draggingOffset += dy
-        if (headerStridePx <= 0f) return@drag
-        val from = liveOrder.indexOf(key)
-        if (from < 0) return@drag
-        val target = (from + (draggingOffset / headerStridePx).roundToInt())
-            .coerceIn(0, liveOrder.lastIndex)
-        if (target != from) {
-            liveOrder.add(target, liveOrder.removeAt(from))
-            draggingOffset -= (target - from) * headerStridePx
-        }
-    }
-    val endSectionDrag: () -> Unit = {
-        if (liveOrder.isNotEmpty()) {
-            TemplateGroupStore.saveSectionOrder(liveOrder.toList())
-        }
-        draggingSectionKey = null
-        draggingOffset = 0f
-        liveOrder.clear()
-        groupRevision++
-    }
-    val cancelSectionDrag: () -> Unit = {
-        draggingSectionKey = null
-        draggingOffset = 0f
-        liveOrder.clear()
-    }
-
-    val displaySections = if (draggingSectionKey != null && liveOrder.isNotEmpty()) {
-        liveOrder.mapNotNull { key -> sections.firstOrNull { it.first == key } }
-    } else {
-        sections
-    }
-
-    // 编辑态下手势返回键退出编辑态而不是退出页面；同时清掉
-    // 可能进行中的拖拽状态。
-    BackHandler(enabled = editMode) {
-        cancelSectionDrag()
-        editMode = false
-    }
-
-    // Brand sections (not "我的模板") can be deleted as a whole; holds the
-    // (key, display name, templates) of the group awaiting confirmation.
-    var pendingDeleteGroup by remember {
-        mutableStateOf<Triple<String, String, List<Template>>?>(null)
-    }
-
-    @Composable
-    fun sectionDisplayName(key: String, brandDisplay: String): String =
-        if (key == GROUP_KEY_MINE) stringResource(R.string.template_group_mine) else brandDisplay
-
-    Scaffold(
-        topBar = topBar,
-        floatingActionButton = floatingButton,
-    ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier.padding(
-                top = paddingValues.calculateTopPadding(),
-                bottom = paddingValues.calculateBottomPadding(),
-            ),
-            contentPadding = PaddingValues(vertical = 4.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            displaySections.forEach { (key, brandDisplay, groupTemplates) ->
-                val storedCollapsed = collapsedSections[key] != false
-                // 编辑态下全部分区强制折叠，标题行等高才好拖拽对位。
-                val collapsed = storedCollapsed || editMode
-                stickyHeader(key = "header-$key") {
-                    val sectionName = sectionDisplayName(key, brandDisplay)
-                    Surface(
-                        color = MaterialTheme.colorScheme.surface,
-                        modifier = Modifier
-                            .zIndex(if (key == draggingSectionKey) 1f else 0f)
-                            .graphicsLayer {
-                                translationY =
-                                    if (key == draggingSectionKey) draggingOffset else 0f
-                            },
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .onGloballyPositioned { coordinates ->
-                                    // 每次都更新：编辑态行高（含删除按钮）与普通态不同，
-                                    // 只在首次测量会导致拖拽换位阈值算偏。
-                                    headerStridePx =
-                                        coordinates.size.height + sectionSpacingPx
-                                }
-                                .padding(horizontal = 16.dp)
-                                .pointerInput(key) {
-                                    // 单击折叠/展开（编辑态下点自建组名进入改名）。
-                                    // 切记不传 onLongPress：非空会让 detectTapGestures
-                                    // 参与长按竞争并消费长按事件，把并行的长按拖拽
-                                    // 检测饿死（长按排序/进编辑态全部失效的根因）。
-                                    detectTapGestures(
-                                        onTap = {
-                                            when {
-                                                editMode &&
-                                                    key.startsWith(GROUP_KEY_PREFIX_CUSTOM) ->
-                                                    renameGroupTarget = sectionName
-                                                editMode -> Unit
-                                                else -> collapsedSections[key] =
-                                                    !storedCollapsed
-                                            }
-                                        },
-                                    )
-                                }
-                                .pointerInput(key) {
-                                    // 长按命中即 onDragStart → 进入编辑态并可不松手
-                                    // 直接拖。key 不含 editMode，手势中途不重启。
-                                    detectDragGesturesAfterLongPress(
-                                        onDragStart = { startSectionDrag(key) },
-                                        onDrag = { change, dragAmount ->
-                                            change.consume()
-                                            onSectionDrag(key, dragAmount.y)
-                                        },
-                                        onDragEnd = endSectionDrag,
-                                        onDragCancel = cancelSectionDrag,
-                                    )
-                                }
-                                .padding(top = 12.dp, bottom = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            if (editMode) {
-                                if (key != GROUP_KEY_MINE) {
-                                    IconButton(
-                                        onClick = {
-                                            pendingDeleteGroup =
-                                                Triple(key, sectionName, groupTemplates)
-                                        },
-                                        modifier = Modifier.size(32.dp),
-                                    ) {
-                                        SimplifyIcon(
-                                            Icons.Default.RemoveCircleOutline,
-                                            tint = MaterialTheme.colorScheme.error,
-                                            modifier = Modifier.size(20.dp),
-                                        )
-                                    }
-                                } else {
-                                    Spacer(modifier = Modifier.size(32.dp))
-                                }
-                                Spacer(modifier = Modifier.width(6.dp))
-                            }
-                            Text(
-                                text = sectionName,
-                                modifier = Modifier.weight(1f),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.W500,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                            if (editMode) {
-                                SimplifyIcon(
-                                    Icons.Default.DragHandle,
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier
-                                        .size(28.dp)
-                                        .pointerInput(key) {
-                                            // 编辑态下的直接拖拽入口：按住手柄即拖，
-                                            // 无需再次长按。独立挂点，不与分区行的
-                                            // 点按/长按检测器竞争。
-                                            detectDragGestures(
-                                                onDragStart = { startSectionDrag(key) },
-                                                onDrag = { change, dragAmount ->
-                                                    change.consume()
-                                                    onSectionDrag(key, dragAmount.y)
-                                                },
-                                                onDragEnd = endSectionDrag,
-                                                onDragCancel = cancelSectionDrag,
-                                            )
-                                        },
-                                )
-                            } else {
-                                Text(
-                                    text = stringResource(
-                                        R.string.template_group_count_short,
-                                        groupTemplates.size,
-                                    ),
-                                    style = MaterialTheme.typography.labelMedium,
-                                    fontSize = 13.sp,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    maxLines = 1,
-                                )
-                                Spacer(modifier = Modifier.width(2.dp))
-                                SimplifyIcon(
-                                    if (collapsed) {
-                                        Icons.AutoMirrored.Filled.KeyboardArrowRight
-                                    } else {
-                                        Icons.Default.KeyboardArrowDown
-                                    },
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier.size(20.dp),
-                                )
-                            }
-                        }
-                    }
-                }
-                if (!collapsed) {
-                    // 单列扁平行：名称 + 型号副标题，与部署页同一语言。
-                    groupTemplates.forEach { template ->
-                        item(key = "tpl-${template.id}") {
-                            TemplateCard(
-                                template = template,
-                                appliedAppCount = appliedCounts[template.id] ?: 0,
-                                onMoveToGroup = { moveGroupTemplate = template },
-                            )
-                        }
-                    }
-                }
-            }
-        }
-
-        requestEnableTemplate.value?.let {
-            EnableTemplateDialog(state = requestEnable, template = it)
-        }
-
-        pendingDeleteGroup?.let { (key, display, groupTemplates) ->
-            AlertDialog(
-                onDismissRequest = { pendingDeleteGroup = null },
-                title = { Text(stringResource(R.string.template_group_delete_title)) },
-                text = {
-                    Text(
-                        stringResource(
-                            R.string.template_group_delete_message,
-                            display,
-                            groupTemplates.size,
-                        )
-                    )
-                },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            if (key.startsWith(GROUP_KEY_PREFIX_CUSTOM)) {
-                                LauncherState.deleteGroup(display, groupTemplates)
-                                groupRevision++
-                            } else {
-                                LauncherState.deleteTemplates(groupTemplates)
-                            }
-                            pendingDeleteGroup = null
-                        },
-                    ) {
-                        Text(
-                            text = stringResource(R.string.delete),
-                            color = MaterialTheme.colorScheme.error,
-                        )
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { pendingDeleteGroup = null }) {
-                        Text(stringResource(R.string.cancel))
-                    }
-                },
-            )
-        }
-
-        // 创建分组：名称唯一（不与已有分组/品牌分区重名）。
-        if (showCreateGroupDialog) {
-            GroupNameDialog(
-                title = stringResource(R.string.template_group_create),
-                initialName = "",
-                existingNames = sections.map { it.second },
-                onDismiss = { showCreateGroupDialog = false },
-                onConfirm = { name ->
-                    TemplateGroupStore.add(name)
-                    groupRevision++
-                    showCreateGroupDialog = false
-                },
-            )
-        }
-
-        // 重命名自建分组：名册与组内模板一起改。
-        renameGroupTarget?.let { oldName ->
-            GroupNameDialog(
-                title = stringResource(R.string.template_group_rename),
-                initialName = oldName,
-                existingNames = sections.map { it.second },
-                onDismiss = { renameGroupTarget = null },
-                onConfirm = { newName ->
-                    LauncherState.renameGroup(oldName, newName)
-                    TemplateGroupStore.renameSectionKey(
-                        GROUP_KEY_PREFIX_CUSTOM + oldName,
-                        GROUP_KEY_PREFIX_CUSTOM + newName,
-                    )
-                    groupRevision++
-                    renameGroupTarget = null
-                },
-            )
-        }
-
-        // 移动模板到分组：「自动」恢复按品牌分组。
-        moveGroupTemplate?.let { template ->
-            AlertDialog(
-                onDismissRequest = { moveGroupTemplate = null },
-                title = { Text(stringResource(R.string.template_group_move)) },
-                text = {
-                    Column {
-                        // null = 自动（按品牌分组），其余为全部自建分组。
-                        (listOf<String?>(null) + TemplateGroupStore.customGroups())
-                            .forEach { option ->
-                                Text(
-                                    text = option
-                                        ?: stringResource(R.string.template_group_auto),
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            LauncherState.setTemplateGroup(template, option)
-                                            moveGroupTemplate = null
-                                        }
-                                        .padding(vertical = 12.dp, horizontal = 4.dp),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                )
-                            }
-                    }
-                },
-                confirmButton = {},
-                dismissButton = {
-                    TextButton(onClick = { moveGroupTemplate = null }) {
-                        Text(stringResource(R.string.cancel))
-                    }
-                },
-            )
-        }
+    } finally {
+        bitmap.recycle()
     }
 }
 
-/** 分组命名/重命名对话框：非空且不与现有分区重名才可确认。 */
+// ---------------------------------------------------------------------------
+// 对话框
+// ---------------------------------------------------------------------------
+
+/** 整组删除确认。 */
+@Composable
+private fun DeleteGroupDialog(
+    section: TemplateSection,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.template_group_delete_title)) },
+        text = {
+            Text(
+                stringResource(
+                    R.string.template_group_delete_message,
+                    section.displayName,
+                    section.templates.size,
+                )
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(
+                    text = stringResource(R.string.delete),
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        },
+    )
+}
+
+/** 分组创建/重命名共用：非空且不与现有分区重名才可确认。 */
 @Composable
 private fun GroupNameDialog(
     title: String,
@@ -917,6 +993,39 @@ private fun GroupNameDialog(
                 Text(stringResource(R.string.confirm))
             }
         },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        },
+    )
+}
+
+/** 移动模板到分组：null = 自动（按品牌分组），其余为全部自建分组。 */
+@Composable
+private fun MoveToGroupDialog(
+    onDismiss: () -> Unit,
+    onSelect: (String?) -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.template_group_move)) },
+        text = {
+            Column {
+                (listOf<String?>(null) + TemplateGroupStore.customGroups())
+                    .forEach { option ->
+                        Text(
+                            text = option ?: stringResource(R.string.template_group_auto),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onSelect(option) }
+                                .padding(vertical = 12.dp, horizontal = 4.dp),
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                    }
+            }
+        },
+        confirmButton = {},
         dismissButton = {
             TextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.cancel))

@@ -50,6 +50,13 @@ object TemplateGroupStore {
         saveSectionOrder(order.map { if (it == oldKey) newKey else it })
     }
 
+    /** 分区删除后清掉排序记录里的死 key。 */
+    fun removeSectionKey(key: String) {
+        val order = sectionOrder()
+        if (key !in order) return
+        saveSectionOrder(order.filterNot { it == key })
+    }
+
     private fun update(transform: (Set<String>) -> Set<String>) {
         val current = prefs.getStringSet(KEY_NAMES, emptySet()) ?: emptySet()
         prefs.edit().putStringSet(KEY_NAMES, transform(current.toSet())).apply()
