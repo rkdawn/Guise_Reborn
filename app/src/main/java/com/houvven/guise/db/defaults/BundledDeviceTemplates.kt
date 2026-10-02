@@ -11,7 +11,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-iphone-iphone-16-pro-max",
         version = 1,
         nameText = "iPhone 16 Pro Max",
-        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Apple",
@@ -27,7 +26,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-iphone-iphone-17-pro-max",
         version = 1,
         nameText = "iPhone 17 Pro Max",
-        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Apple",
@@ -43,7 +41,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-oppo-oppo-find-x8-ultra",
         version = 1,
         nameText = "Find X8 Ultra",
-        descriptionText = "作者 GitHub@Seyud",
         configuration = {
             ModuleConfig(
                 manufacturer = "OPPO",
@@ -60,7 +57,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k100-pro",
         version = 1,
         nameText = "REDMI K100 Pro",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -76,7 +72,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k100-pro-max",
         version = 1,
         nameText = "REDMI K100 Pro Max",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -92,7 +87,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k70",
         version = 1,
         nameText = "Redmi K70",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -108,7 +102,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k70-pro",
         version = 1,
         nameText = "Redmi K70 Pro",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -124,7 +117,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k70-ultra",
         version = 1,
         nameText = "Redmi K70 Ultra",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -140,7 +132,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k70e",
         version = 1,
         nameText = "Redmi K70E",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -156,7 +147,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k80",
         version = 1,
         nameText = "REDMI K80",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -172,7 +162,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k80-pro",
         version = 1,
         nameText = "REDMI K80 Pro",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -188,7 +177,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k80-ultra",
         version = 1,
         nameText = "REDMI K80 Ultra",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -204,7 +192,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k90",
         version = 1,
         nameText = "REDMI K90",
-        descriptionText = "作者 Github@orangesroof",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -220,7 +207,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k90-max",
         version = 1,
         nameText = "REDMI K90 Max",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -236,7 +222,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k90-pro-max",
         version = 1,
         nameText = "REDMI K90 Pro Max",
-        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -252,7 +237,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k90-ultra",
         version = 1,
         nameText = "REDMI K90 Ultra",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -268,7 +252,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k-pad",
         version = 1,
         nameText = "REDMI K Pad",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -285,7 +268,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k-pad-2",
         version = 1,
         nameText = "REDMI K Pad 2",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -302,7 +284,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-pad-2-pro",
         version = 1,
         nameText = "REDMI Pad 2 Pro",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -319,7 +300,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-pad-pro",
         version = 1,
         nameText = "Redmi Pad Pro",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -336,7 +316,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-pad-se",
         version = 1,
         nameText = "Redmi Pad SE",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -353,7 +332,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-turbo4-pro",
         version = 1,
         nameText = "REDMI Turbo 4 Pro",
-        descriptionText = "作者 Github@orangesroof",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -369,7 +347,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-turbo5-max",
         version = 1,
         nameText = "REDMI Turbo 5 Max",
-        descriptionText = "作者 Github@orangesroof",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -385,7 +362,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-turbo-3",
         version = 1,
         nameText = "Redmi Turbo 3",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -401,7 +377,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-turbo-4",
         version = 1,
         nameText = "REDMI Turbo 4",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -417,7 +392,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-turbo-4-pro",
         version = 1,
         nameText = "REDMI Turbo 4 Pro",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -433,7 +407,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-turbo-5",
         version = 1,
         nameText = "REDMI Turbo 5",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -449,7 +422,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-turbo-5-max",
         version = 1,
         nameText = "REDMI Turbo 5 Max",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -465,7 +437,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-13",
         version = 1,
         nameText = "Xiaomi 13",
-        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -481,7 +452,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-13-pro",
         version = 1,
         nameText = "Xiaomi 13 Pro",
-        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -497,7 +467,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-13-ultra",
         version = 1,
         nameText = "Xiaomi 13 Ultra",
-        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -513,7 +482,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-14",
         version = 1,
         nameText = "Xiaomi 14",
-        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -529,7 +497,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-14-pro",
         version = 1,
         nameText = "Xiaomi 14 Pro",
-        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -545,7 +512,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-14-ultra",
         version = 1,
         nameText = "Xiaomi 14 Ultra",
-        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -561,7 +527,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-15",
         version = 1,
         nameText = "Xiaomi 15",
-        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -577,7 +542,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-15-pro",
         version = 1,
         nameText = "Xiaomi 15 Pro",
-        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -593,7 +557,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-15-ultra",
         version = 1,
         nameText = "Xiaomi 15 Ultra",
-        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -609,7 +572,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-15s-pro",
         version = 1,
         nameText = "Xiaomi 15S Pro",
-        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -625,7 +587,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-17",
         version = 1,
         nameText = "Xiaomi 17",
-        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -641,7 +602,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-17-max",
         version = 1,
         nameText = "Xiaomi 17 Max",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -657,7 +617,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-17-pro",
         version = 1,
         nameText = "Xiaomi 17 Pro",
-        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -673,7 +632,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-17-pro-max",
         version = 1,
         nameText = "Xiaomi 17 Pro Max",
-        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -689,7 +647,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-17-ultra",
         version = 1,
         nameText = "Xiaomi 17 Ultra",
-        descriptionText = "作者 Github@orangesroof",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -705,7 +662,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-17-ultra-by-leica",
         version = 1,
         nameText = "Xiaomi 17 Ultra by Leica",
-        descriptionText = "作者 GitHub@oTnTo233",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -721,7 +677,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-17t",
         version = 1,
         nameText = "Xiaomi 17T",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -737,7 +692,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-17t-pro",
         version = 1,
         nameText = "Xiaomi 17T Pro",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -753,7 +707,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-18-fold",
         version = 1,
         nameText = "Xiaomi 18 Fold",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -769,7 +722,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-18-pro",
         version = 1,
         nameText = "Xiaomi 18 Pro",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -785,7 +737,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-18-pro-max",
         version = 1,
         nameText = "Xiaomi 18 Pro Max",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -801,7 +752,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-civi-4-pro",
         version = 1,
         nameText = "Xiaomi Civi 4 Pro",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -817,7 +767,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-civi-5-pro",
         version = 1,
         nameText = "Xiaomi Civi 5 Pro",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -833,7 +782,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-mix-filp-2",
         version = 1,
         nameText = "Xiaomi MIX Flip 2",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -849,7 +797,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-mix-flip",
         version = 1,
         nameText = "Xiaomi MIX Flip",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -865,7 +812,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-mix-fold",
         version = 1,
         nameText = "Xiaomi MIX FOLD",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -881,7 +827,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-mix-fold-2",
         version = 1,
         nameText = "Xiaomi MIX Fold 2",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -897,7 +842,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-mix-fold-3",
         version = 1,
         nameText = "Xiaomi MIX Fold 3",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -913,7 +857,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-mix-fold-4",
         version = 1,
         nameText = "Xiaomi MIX Fold 4",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -929,7 +872,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-6",
         version = 1,
         nameText = "Xiaomi Pad 6",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -946,7 +888,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-6-max",
         version = 1,
         nameText = "Xiaomi Pad 6 Max",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -963,7 +904,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-6-pro",
         version = 1,
         nameText = "Xiaomi Pad 6 Pro",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -980,7 +920,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-6s-pro",
         version = 1,
         nameText = "Xiaomi Pad 6S Pro",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -997,7 +936,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-7",
         version = 1,
         nameText = "Xiaomi Pad 7",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1014,7 +952,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-7-pro",
         version = 1,
         nameText = "Xiaomi Pad 7 Pro",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1031,7 +968,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-7-ultra",
         version = 1,
         nameText = "Xiaomi Pad 7 Ultra",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1048,7 +984,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-7s-pro-12-5",
         version = 1,
         nameText = "Xiaomi Pad 7S Pro 12.5",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1065,7 +1000,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-8",
         version = 1,
         nameText = "Xiaomi Pad 8",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1082,7 +1016,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-8-pro",
         version = 1,
         nameText = "Xiaomi Pad 8 Pro",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1099,7 +1032,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-9",
         version = 1,
         nameText = "Xiaomi Pad 9",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1116,7 +1048,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-9-pro",
         version = 1,
         nameText = "Xiaomi Pad 9 Pro",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1133,7 +1064,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-9-pro-max",
         version = 1,
         nameText = "Xiaomi Pad 9 Pro Max",
-        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1150,7 +1080,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-gaming-iqoo-iqoo-12-pro",
         version = 1,
         nameText = "VIVO IQOO 12 PRO",
-        descriptionText = "游戏 · 特点：王者和平都能开启120帧（非插帧模式） · 作者 GitHub@qianxiao1234",
         configuration = {
             ModuleConfig(
                 manufacturer = "vivo",
@@ -1166,7 +1095,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-gaming-iqoo-iqoo-13",
         version = 1,
         nameText = "VIVO IQOO 13",
-        descriptionText = "游戏 · 特点：王者144帧 · 作者 GitHub@qianxiao1234",
         configuration = {
             ModuleConfig(
                 manufacturer = "vivo",
@@ -1182,7 +1110,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-gaming-iqoo-iqoo-15-ultra",
         version = 1,
         nameText = "VIVO iQOO 15 Ultra",
-        descriptionText = "游戏 · 作者 GitHub@oTnTo233",
         configuration = {
             ModuleConfig(
                 manufacturer = "vivo",
@@ -1199,7 +1126,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-gaming-oneplus-oneplus-15",
         version = 1,
         nameText = "OnePlus 15",
-        descriptionText = "游戏 · 特点：部分游戏165帧 · 作者 GitHub@oTnTo233",
         configuration = {
             ModuleConfig(
                 manufacturer = "OnePlus",
@@ -1215,7 +1141,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-gaming-oneplus-oneplus-16",
         version = 1,
         nameText = "一加 16",
-        descriptionText = "游戏 · OnePlus 16 · 作者 浅雾川",
         configuration = {
             ModuleConfig(
                 manufacturer = "OnePlus",
@@ -1231,7 +1156,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-transcend-samsung-samsung-z-fold6",
         version = 1,
         nameText = "Samsung Galaxy Z Fold6",
-        descriptionText = "破限 · 微信平板模式 · 作者 GitHub@Seyud",
         configuration = {
             ModuleConfig(
                 manufacturer = "samsung",
@@ -1244,7 +1168,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-transcend-xiaomi-xiaomi-pad-6",
         version = 1,
         nameText = "Xiaomi Pad 6",
-        descriptionText = "破限 · QQ 平板模式 · 作者 GitHub@Seyud",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1258,7 +1181,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-galaxy-s23",
         version = 1,
         nameText = "Galaxy S23",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "samsung",
@@ -1273,7 +1195,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-galaxy-s23plus",
         version = 1,
         nameText = "Galaxy S23+",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "samsung",
@@ -1288,7 +1209,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-galaxy-s23-ultra",
         version = 1,
         nameText = "Galaxy S23 Ultra",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "samsung",
@@ -1303,7 +1223,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-galaxy-s24",
         version = 1,
         nameText = "Galaxy S24",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "samsung",
@@ -1318,7 +1237,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-galaxy-s24plus",
         version = 1,
         nameText = "Galaxy S24+",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "samsung",
@@ -1333,7 +1251,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-galaxy-s24-ultra",
         version = 1,
         nameText = "Galaxy S24 Ultra",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "samsung",
@@ -1348,7 +1265,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-galaxy-s25",
         version = 1,
         nameText = "Galaxy S25",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "samsung",
@@ -1363,7 +1279,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-galaxy-s25plus",
         version = 1,
         nameText = "Galaxy S25+",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "samsung",
@@ -1378,7 +1293,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-galaxy-s25-edge",
         version = 1,
         nameText = "Galaxy S25 Edge",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "samsung",
@@ -1392,7 +1306,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-galaxy-s25-ultra",
         version = 1,
         nameText = "Galaxy S25 Ultra",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "samsung",
@@ -1407,7 +1320,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-galaxy-s26",
         version = 1,
         nameText = "Galaxy S26",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "samsung",
@@ -1421,7 +1333,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-galaxy-s26plus",
         version = 1,
         nameText = "Galaxy S26+",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "samsung",
@@ -1435,7 +1346,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-galaxy-s26-ultra",
         version = 1,
         nameText = "Galaxy S26 Ultra",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "samsung",
@@ -1449,7 +1359,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-galaxy-z-fold5",
         version = 1,
         nameText = "Galaxy Z Fold5",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "samsung",
@@ -1464,7 +1373,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-galaxy-z-flip6",
         version = 1,
         nameText = "Galaxy Z Flip6",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "samsung",
@@ -1479,7 +1387,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-huawei-mate-60-pro",
         version = 1,
         nameText = "HUAWEI Mate 60 Pro",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "HUAWEI",
@@ -1493,7 +1400,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-huawei-mate-60",
         version = 1,
         nameText = "HUAWEI Mate 60",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "HUAWEI",
@@ -1507,7 +1413,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-huawei-mate-70",
         version = 1,
         nameText = "HUAWEI Mate 70",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "HUAWEI",
@@ -1521,7 +1426,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-huawei-pura-70",
         version = 1,
         nameText = "HUAWEI Pura 70",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "HUAWEI",
@@ -1535,7 +1439,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-huawei-pura-80",
         version = 1,
         nameText = "HUAWEI Pura 80",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "HUAWEI",
@@ -1549,7 +1452,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-huawei-mate-x5",
         version = 1,
         nameText = "HUAWEI Mate X5",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "HUAWEI",
@@ -1563,7 +1465,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-vivo-x100",
         version = 1,
         nameText = "vivo X100",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "vivo",
@@ -1578,7 +1479,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-vivo-x100-pro",
         version = 1,
         nameText = "vivo X100 Pro",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "vivo",
@@ -1593,7 +1493,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-vivo-x200",
         version = 1,
         nameText = "vivo X200",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "vivo",
@@ -1607,7 +1506,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-vivo-x200-pro",
         version = 1,
         nameText = "vivo X200 Pro",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "vivo",
@@ -1621,7 +1519,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-vivo-x-fold3-pro",
         version = 1,
         nameText = "vivo X Fold3 Pro",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "vivo",
@@ -1635,7 +1532,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-oppo-find-x7",
         version = 1,
         nameText = "OPPO Find X7",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "OPPO",
@@ -1649,7 +1545,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-oppo-find-x7-ultra",
         version = 1,
         nameText = "OPPO Find X7 Ultra",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "OPPO",
@@ -1663,7 +1558,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-oppo-find-x8",
         version = 1,
         nameText = "OPPO Find X8",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "OPPO",
@@ -1677,7 +1571,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-oppo-find-x8-pro",
         version = 1,
         nameText = "OPPO Find X8 Pro",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "OPPO",
@@ -1691,7 +1584,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-oppo-find-n3",
         version = 1,
         nameText = "OPPO Find N3",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "OPPO",
@@ -1705,7 +1597,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-oneplus-11",
         version = 1,
         nameText = "OnePlus 11",
-        descriptionText = "游戏 · 手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "OnePlus",
@@ -1720,7 +1611,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-oneplus-12",
         version = 1,
         nameText = "OnePlus 12",
-        descriptionText = "游戏 · 手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "OnePlus",
@@ -1735,7 +1625,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-oneplus-13",
         version = 1,
         nameText = "OnePlus 13",
-        descriptionText = "游戏 · 手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "OnePlus",
@@ -1749,7 +1638,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-honor-magic-v3",
         version = 1,
         nameText = "HONOR Magic V3",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "HONOR",
@@ -1763,7 +1651,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-honor-magic-v5",
         version = 1,
         nameText = "HONOR Magic V5",
-        descriptionText = "手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "HONOR",
@@ -1777,7 +1664,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-redmagic-9-pro",
         version = 1,
         nameText = "REDMAGIC 9 Pro",
-        descriptionText = "游戏 · 手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "ZTE",
@@ -1794,7 +1680,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-redmagic-11-pro",
         version = 1,
         nameText = "REDMAGIC 11 Pro",
-        descriptionText = "游戏 · 手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "ZTE",
@@ -1811,7 +1696,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-rog-phone-8",
         version = 1,
         nameText = "ROG Phone 8",
-        descriptionText = "游戏 · 手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "asus",
@@ -1825,7 +1709,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-extra-rog-phone-9",
         version = 1,
         nameText = "ROG Phone 9",
-        descriptionText = "游戏 · 手工补充（2026-10 联网核实）",
         configuration = {
             ModuleConfig(
                 manufacturer = "asus",

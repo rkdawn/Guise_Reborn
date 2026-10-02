@@ -1,6 +1,7 @@
 package com.houvven.guise.ui.routing.launcher
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,8 +17,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DoNotDisturbOnTotalSilence
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
@@ -34,6 +37,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -84,13 +88,13 @@ private const val GROUP_KEY_MINE = " mine"
 
 /**
  * Section grouping: templates with a brand go to that brand's section (bundled
- * or user-created alike); brand-less user templates form the first "我的模板"
- * section; brand-less bundled ones fall into "其他".
+ * or user-created alike); all brand-less templates (user-created or bundled
+ * generic ones) form the first "我的模板" section.
  */
 private fun templateGroupKey(template: Template): String {
     val brand = templateBrandKey(template)
     if (brand.isNotEmpty()) return brand
-    return if (template.id.startsWith("bundled:")) "" else GROUP_KEY_MINE
+    return GROUP_KEY_MINE
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -352,9 +356,9 @@ internal fun TemplateScreen() {
         }
     }
 
-    // Single-page sections: section key -> (display name, name-sorted templates).
-    // "我的模板" (user-created, brand-less) first, then "其他" (bundled,
-    // brand-less), then manufacturers alphabetically by display name.
+    // Single-page collapsible sections: section key -> (display name,
+    // name-sorted templates). "我的模板" (brand-less) first, then manufacturers
+    // alphabetically by display name.
     val sections = remember(templates) {
         templates.groupBy(::templateGroupKey)
             .map { (key, group) ->
@@ -369,21 +373,17 @@ internal fun TemplateScreen() {
             }
             .sortedWith(
                 compareBy<Triple<String, String, List<Template>>> {
-                    when (it.first) {
-                        GROUP_KEY_MINE -> 0
-                        "" -> 1
-                        else -> 2
-                    }
+                    if (it.first == GROUP_KEY_MINE) 0 else 1
                 }.thenBy(String.CASE_INSENSITIVE_ORDER) { it.second }
             )
     }
 
+    // Collapse state per section; sections default to expanded.
+    val collapsedSections = remember { mutableStateMapOf<String, Boolean>() }
+
     @Composable
-    fun sectionDisplayName(key: String, brandDisplay: String): String = when (key) {
-        GROUP_KEY_MINE -> stringResource(R.string.template_group_mine)
-        "" -> stringResource(R.string.template_brand_other)
-        else -> brandDisplay
-    }
+    fun sectionDisplayName(key: String, brandDisplay: String): String =
+        if (key == GROUP_KEY_MINE) stringResource(R.string.template_group_mine) else brandDisplay
 
     Scaffold(
         topBar = topBar,
@@ -398,29 +398,45 @@ internal fun TemplateScreen() {
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             sections.forEach { (key, brandDisplay, groupTemplates) ->
+                val collapsed = collapsedSections[key] == true
                 stickyHeader(key = "header-$key") {
                     Surface(color = MaterialTheme.colorScheme.surface) {
-                        Text(
-                            text = stringResource(
-                                R.string.template_group_header,
-                                sectionDisplayName(key, brandDisplay),
-                                groupTemplates.size,
-                            ),
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .clickable { collapsedSections[key] = !collapsed }
                                 .padding(vertical = 6.dp),
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.primary,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                text = stringResource(
+                                    R.string.template_group_header,
+                                    sectionDisplayName(key, brandDisplay),
+                                    groupTemplates.size,
+                                ),
+                                modifier = Modifier.weight(1f),
+                                style = MaterialTheme.typography.titleSmall,
+                                color = MaterialTheme.colorScheme.primary,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                            SimplifyIcon(
+                                if (collapsed) {
+                                    Icons.AutoMirrored.Filled.KeyboardArrowRight
+                                } else {
+                                    Icons.Default.KeyboardArrowDown
+                                }
+                            )
+                        }
                     }
                 }
-                items(groupTemplates, key = { it.id }) { template ->
-                    TemplateCard(
-                        template = template,
-                        appliedAppCount = appliedCounts[template.id] ?: 0,
-                    )
+                if (!collapsed) {
+                    items(groupTemplates, key = { it.id }) { template ->
+                        TemplateCard(
+                            template = template,
+                            appliedAppCount = appliedCounts[template.id] ?: 0,
+                        )
+                    }
                 }
             }
         }
