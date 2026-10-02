@@ -378,7 +378,8 @@ internal fun TemplateScreen() {
             )
     }
 
-    // Collapse state per section; sections default to expanded.
+    // Collapse state per section; sections default to collapsed so the page
+    // opens as a compact manufacturer index.
     val collapsedSections = remember { mutableStateMapOf<String, Boolean>() }
 
     @Composable
@@ -398,7 +399,7 @@ internal fun TemplateScreen() {
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             sections.forEach { (key, brandDisplay, groupTemplates) ->
-                val collapsed = collapsedSections[key] == true
+                val collapsed = collapsedSections[key] != false
                 stickyHeader(key = "header-$key") {
                     Surface(color = MaterialTheme.colorScheme.surface) {
                         Row(
@@ -415,7 +416,7 @@ internal fun TemplateScreen() {
                                     groupTemplates.size,
                                 ),
                                 modifier = Modifier.weight(1f),
-                                style = MaterialTheme.typography.titleSmall,
+                                style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.primary,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
