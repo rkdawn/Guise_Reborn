@@ -20,9 +20,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.DoNotDisturbOnTotalSilence
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,6 +34,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -434,6 +437,12 @@ internal fun TemplateScreen() {
     // opens as a compact manufacturer index.
     val collapsedSections = remember { mutableStateMapOf<String, Boolean>() }
 
+    // Brand sections (not "我的模板") can be deleted as a whole; holds the
+    // (display name, templates) of the group awaiting confirmation.
+    var pendingDeleteGroup by remember {
+        mutableStateOf<Pair<String, List<Template>>?>(null)
+    }
+
     @Composable
     fun sectionDisplayName(key: String, brandDisplay: String): String =
         if (key == GROUP_KEY_MINE) stringResource(R.string.template_group_mine) else brandDisplay
@@ -453,6 +462,9 @@ internal fun TemplateScreen() {
             sections.forEach { (key, brandDisplay, groupTemplates) ->
                 val collapsed = collapsedSections[key] != false
                 stickyHeader(key = "header-$key") {
+                    // Resolved here (composable context) so the delete button's
+                    // non-composable onClick can reuse it for the dialog.
+                    val sectionName = sectionDisplayName(key, brandDisplay)
                     Surface(color = MaterialTheme.colorScheme.surface) {
                         Row(
                             modifier = Modifier
@@ -464,7 +476,7 @@ internal fun TemplateScreen() {
                             Text(
                                 text = stringResource(
                                     R.string.template_group_header,
-                                    sectionDisplayName(key, brandDisplay),
+                                    sectionName,
                                     groupTemplates.size,
                                 ),
                                 modifier = Modifier.weight(1f),
@@ -473,6 +485,18 @@ internal fun TemplateScreen() {
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                             )
+                            if (key != GROUP_KEY_MINE) {
+                                IconButton(
+                                    onClick = {
+                                        pendingDeleteGroup = sectionName to groupTemplates
+                                    },
+                                ) {
+                                    SimplifyIcon(
+                                        Icons.Default.DeleteOutline,
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                            }
                             SimplifyIcon(
                                 if (collapsed) {
                                     Icons.AutoMirrored.Filled.KeyboardArrowRight
@@ -509,6 +533,40 @@ internal fun TemplateScreen() {
 
         requestEnableTemplate.value?.let {
             EnableTemplateDialog(state = requestEnable, template = it)
+        }
+
+        pendingDeleteGroup?.let { (display, groupTemplates) ->
+            AlertDialog(
+                onDismissRequest = { pendingDeleteGroup = null },
+                title = { Text(stringResource(R.string.template_group_delete_title)) },
+                text = {
+                    Text(
+                        stringResource(
+                            R.string.template_group_delete_message,
+                            display,
+                            groupTemplates.size,
+                        )
+                    )
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            LauncherState.deleteTemplates(groupTemplates)
+                            pendingDeleteGroup = null
+                        },
+                    ) {
+                        Text(
+                            text = stringResource(R.string.delete),
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { pendingDeleteGroup = null }) {
+                        Text(stringResource(R.string.cancel))
+                    }
+                },
+            )
         }
     }
 }

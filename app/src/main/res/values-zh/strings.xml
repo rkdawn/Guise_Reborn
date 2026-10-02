@@ -46,6 +46,8 @@
     <string name="template_group_count">共 %1$d 个模板</string>
     <string name="template_group_mine">我的模板</string>
     <string name="template_group_header">%1$s · %2$d</string>
+    <string name="template_group_delete_title">删除分组</string>
+    <string name="template_group_delete_message">将删除「%1$s」分组下的全部 %2$d 个模板，此操作不可恢复。</string>
     <string name="template_export_none">没有可导出的自定义模板（内置模板会自动同步，无需导出）</string>
     <string name="net_type">网络类型</string>
     <string name="net_wifi_ssid">WiFi名称</string>

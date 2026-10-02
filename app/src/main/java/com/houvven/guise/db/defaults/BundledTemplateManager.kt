@@ -95,6 +95,19 @@ object BundledTemplateManager {
         }
     }
 
+    /** Batch variant of [delete] for removing a whole brand group at once. */
+    fun deleteAll(templates: List<Template>) {
+        val dao = TemplateDBHelper.templateDao
+        TemplateDBHelper.runInTransaction {
+            templates.forEach { template ->
+                dao.getBundledTemplateStateByTemplateId(template.id)?.let { state ->
+                    dao.upsertBundledTemplateState(state.copy(deleted = true))
+                }
+                dao.delete(template)
+            }
+        }
+    }
+
     private fun BundledTemplateSpec.toTemplate(context: Context): Template = Template(
         id = "$TEMPLATE_ID_PREFIX$seedId",
         name = nameText ?: context.getString(nameRes),

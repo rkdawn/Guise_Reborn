@@ -65,6 +65,8 @@
     <string name="template_group_count">%1$d templates</string>
     <string name="template_group_mine">My Templates</string>
     <string name="template_group_header">%1$s · %2$d</string>
+    <string name="template_group_delete_title">Delete group</string>
+    <string name="template_group_delete_message">Delete all %2$d templates in "%1$s"? This cannot be undone.</string>
     <string name="template_export_none">No custom templates to export (bundled templates sync automatically)</string>
     <string name="net_type">Internet Type</string>
     <string name="net_wifi_ssid">WiFi-SSID</string>

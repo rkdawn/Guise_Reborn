@@ -8,67 +8,6 @@ import com.houvven.guise.xposed.config.ModuleConfig
 // tools/convert_device_faker_templates.py - do not edit by hand.
 internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
     BundledTemplateSpec(
-        seedId = "df-common-iphone-iphone-16-pro-max",
-        version = 1,
-        nameText = "iPhone 16 Pro Max",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Apple",
-                brand = "Apple",
-                model = "iPhone 16 Pro Max",
-                device = "A3297",
-                marketname = "iPhone 16 Pro Max",
-                product = "A3297",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-iphone-iphone-17-pro-max",
-        version = 1,
-        nameText = "iPhone 17 Pro Max",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Apple",
-                brand = "Apple",
-                model = "iPhone 17 Pro Max",
-                device = "A3527",
-                marketname = "iPhone 17 Pro Max",
-                product = "A3527",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-oppo-oppo-find-x8-ultra",
-        version = 1,
-        nameText = "Find X8 Ultra",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "OPPO",
-                brand = "OPPO",
-                model = "PKJ110",
-                device = "PKJ110",
-                fingerPrint = "oppo/PKJ110/PKJ110:15/AP3A.240617.008/1758264862075:user/release-keys",
-                marketname = "Find X8 Ultra",
-                product = "PKJ110",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-redmi-k100-pro",
-        version = 1,
-        nameText = "REDMI K100 Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "REDMI",
-                model = "M511CD",
-                device = "athens",
-                marketname = "REDMI K100 Pro",
-                product = "athens",
-            )
-        },
-    ),
-    BundledTemplateSpec(
         seedId = "df-common-xiaomi-redmi-k100-pro-max",
         version = 1,
         nameText = "REDMI K100 Pro Max",
@@ -80,187 +19,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
                 device = "songyuan",
                 marketname = "REDMI K100 Pro Max",
                 product = "songyuan",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-redmi-k70",
-        version = 1,
-        nameText = "Redmi K70",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Redmi",
-                model = "23113RKC6C",
-                device = "vermeer",
-                marketname = "Redmi K70",
-                product = "vermeer",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-redmi-k70-pro",
-        version = 1,
-        nameText = "Redmi K70 Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Redmi",
-                model = "23117RK66C",
-                device = "manet",
-                marketname = "Redmi K70 Pro",
-                product = "manet",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-redmi-k70-ultra",
-        version = 1,
-        nameText = "Redmi K70 Ultra",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Redmi",
-                model = "2407FRK8EC",
-                device = "rothko",
-                marketname = "Redmi K70 Ultra",
-                product = "rothko",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-redmi-k70e",
-        version = 1,
-        nameText = "Redmi K70E",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Redmi",
-                model = "2311DRK48C",
-                device = "duchamp",
-                marketname = "Redmi K70E",
-                product = "duchamp",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-redmi-k80",
-        version = 1,
-        nameText = "REDMI K80",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "REDMI",
-                model = "24117RK2CC",
-                device = "zorn",
-                marketname = "REDMI K80",
-                product = "zorn",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-redmi-k80-pro",
-        version = 1,
-        nameText = "REDMI K80 Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "REDMI",
-                model = "24122RKC7C",
-                device = "miro",
-                marketname = "REDMI K80 Pro",
-                product = "miro",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-redmi-k80-ultra",
-        version = 1,
-        nameText = "REDMI K80 Ultra",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "REDMI",
-                model = "25060RK16C",
-                device = "dali",
-                marketname = "REDMI K80 Ultra",
-                product = "dali",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-redmi-k90",
-        version = 1,
-        nameText = "REDMI K90",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Redmi",
-                model = "2510DRK44C",
-                device = "annibale",
-                marketname = "REDMI K90",
-                product = "annibale",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-redmi-k90-max",
-        version = 1,
-        nameText = "REDMI K90 Max",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "REDMI",
-                model = "2604FRK1EC",
-                device = "prague",
-                marketname = "REDMI K90 Max",
-                product = "prague",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-redmi-k90-pro-max",
-        version = 1,
-        nameText = "REDMI K90 Pro Max",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Redmi",
-                model = "25102RKBEC",
-                device = "myron",
-                marketname = "REDMI K90 Pro Max",
-                product = "myron",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-redmi-k90-ultra",
-        version = 1,
-        nameText = "REDMI K90 Ultra",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "REDMI",
-                model = "M332BF",
-                device = "warsaw",
-                marketname = "REDMI K90 Ultra",
-                product = "warsaw",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-redmi-k-pad",
-        version = 1,
-        nameText = "REDMI K Pad",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "REDMI",
-                model = "25079RPDCC",
-                device = "turner",
-                marketname = "REDMI K Pad",
-                characteristics = "tablet",
-                product = "turner",
             )
         },
     ),
@@ -297,128 +55,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         },
     ),
     BundledTemplateSpec(
-        seedId = "df-common-xiaomi-redmi-pad-pro",
-        version = 1,
-        nameText = "Redmi Pad Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Redmi",
-                model = "2405CRPFDC",
-                device = "dizi",
-                marketname = "Redmi Pad Pro",
-                characteristics = "tablet",
-                product = "dizi",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-redmi-pad-se",
-        version = 1,
-        nameText = "Redmi Pad SE",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Redmi",
-                model = "23073RPBFC",
-                device = "xun",
-                marketname = "Redmi Pad SE",
-                characteristics = "tablet",
-                product = "xun",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-redmi-turbo4-pro",
-        version = 1,
-        nameText = "REDMI Turbo 4 Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Redmi",
-                model = "25053RT47C",
-                device = "onyx",
-                marketname = "REDMI Turbo 4 Pro",
-                product = "onyx",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-redmi-turbo5-max",
-        version = 1,
-        nameText = "REDMI Turbo 5 Max",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "2602BRT18C",
-                device = "dash",
-                marketname = "REDMI Turbo 5 Max",
-                product = "dash",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-redmi-turbo-3",
-        version = 1,
-        nameText = "Redmi Turbo 3",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Redmi",
-                model = "24069RA21C",
-                device = "peridot",
-                marketname = "Redmi Turbo 3",
-                product = "peridot",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-redmi-turbo-4",
-        version = 1,
-        nameText = "REDMI Turbo 4",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "REDMI",
-                model = "24129RT7CC",
-                device = "rodin",
-                marketname = "REDMI Turbo 4",
-                product = "rodin",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-redmi-turbo-4-pro",
-        version = 1,
-        nameText = "REDMI Turbo 4 Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "REDMI",
-                model = "25053RT47C",
-                device = "onyx",
-                marketname = "REDMI Turbo 4 Pro",
-                product = "onyx",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-redmi-turbo-5",
-        version = 1,
-        nameText = "REDMI Turbo 5",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "REDMI",
-                model = "2511FRT34C",
-                device = "klee",
-                marketname = "REDMI Turbo 5",
-                product = "klee",
-            )
-        },
-    ),
-    BundledTemplateSpec(
         seedId = "df-common-xiaomi-redmi-turbo-5-max",
         version = 1,
         nameText = "REDMI Turbo 5 Max",
@@ -430,276 +66,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
                 device = "dash",
                 marketname = "REDMI Turbo 5 Max",
                 product = "dash",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-13",
-        version = 1,
-        nameText = "Xiaomi 13",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "2211133C",
-                device = "fuxi",
-                marketname = "Xiaomi 13",
-                product = "fuxi",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-13-pro",
-        version = 1,
-        nameText = "Xiaomi 13 Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "2210132C",
-                device = "nuwa",
-                marketname = "Xiaomi 13 Pro",
-                product = "nuwa",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-13-ultra",
-        version = 1,
-        nameText = "Xiaomi 13 Ultra",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "2304FPN6DC",
-                device = "ishtar",
-                marketname = "Xiaomi 13 Ultra",
-                product = "ishtar",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-14",
-        version = 1,
-        nameText = "Xiaomi 14",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "23127PN0CC",
-                device = "houji",
-                marketname = "Xiaomi 14",
-                product = "houji",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-14-pro",
-        version = 1,
-        nameText = "Xiaomi 14 Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "23116PN5BC",
-                device = "shennong",
-                marketname = "Xiaomi 14 Pro",
-                product = "shennong",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-14-ultra",
-        version = 1,
-        nameText = "Xiaomi 14 Ultra",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "24031PN0DC",
-                device = "aurora",
-                marketname = "Xiaomi 14 Ultra",
-                product = "aurora",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-15",
-        version = 1,
-        nameText = "Xiaomi 15",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "24129PN74C",
-                device = "dada",
-                marketname = "Xiaomi 15",
-                product = "dada",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-15-pro",
-        version = 1,
-        nameText = "Xiaomi 15 Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "2410DPN6CC",
-                device = "haotian",
-                marketname = "Xiaomi 15 Pro",
-                product = "haotian",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-15-ultra",
-        version = 1,
-        nameText = "Xiaomi 15 Ultra",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "25019PNF3C",
-                device = "xuanyuan",
-                marketname = "Xiaomi 15 Ultra",
-                product = "xuanyuan",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-15s-pro",
-        version = 1,
-        nameText = "Xiaomi 15S Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "25042PN24C",
-                device = "dijun",
-                marketname = "Xiaomi 15S Pro",
-                product = "dijun",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-17",
-        version = 1,
-        nameText = "Xiaomi 17",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "25113PN0EC",
-                device = "pudding",
-                marketname = "Xiaomi 17",
-                product = "pudding",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-17-max",
-        version = 1,
-        nameText = "Xiaomi 17 Max",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "2605EPN8EC",
-                device = "byron",
-                marketname = "Xiaomi 17 Max",
-                product = "byron",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-17-pro",
-        version = 1,
-        nameText = "Xiaomi 17 Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "25098PN5AC",
-                device = "pandora",
-                marketname = "Xiaomi 17 Pro",
-                product = "pandora",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-17-pro-max",
-        version = 1,
-        nameText = "Xiaomi 17 Pro Max",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "2509FPN0BC",
-                device = "popsicle",
-                marketname = "Xiaomi 17 Pro Max",
-                product = "popsicle",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-17-ultra",
-        version = 1,
-        nameText = "Xiaomi 17 Ultra",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "2512BPNDAC",
-                device = "nezha",
-                marketname = "Xiaomi 17 Ultra",
-                product = "nezha",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-17-ultra-by-leica",
-        version = 1,
-        nameText = "Xiaomi 17 Ultra by Leica",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "25128PNA1C",
-                device = "nezha",
-                marketname = "Xiaomi 17 Ultra by Leica",
-                product = "nezha",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-17t",
-        version = 1,
-        nameText = "Xiaomi 17T",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "M531DA",
-                device = "chagall",
-                marketname = "Xiaomi 17T",
-                product = "chagall",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-17t-pro",
-        version = 1,
-        nameText = "Xiaomi 17T Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "M025EC",
-                device = "warhol",
-                marketname = "Xiaomi 17T Pro",
-                product = "warhol",
             )
         },
     ),
@@ -719,21 +85,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         },
     ),
     BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-18-pro",
-        version = 1,
-        nameText = "Xiaomi 18 Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "M610BB",
-                device = "hongkong",
-                marketname = "Xiaomi 18 Pro",
-                product = "hongkong",
-            )
-        },
-    ),
-    BundledTemplateSpec(
         seedId = "df-common-xiaomi-xiaomi-18-pro-max",
         version = 1,
         nameText = "Xiaomi 18 Pro Max",
@@ -745,21 +96,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
                 device = "madrid",
                 marketname = "Xiaomi 18 Pro Max",
                 product = "madrid",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-civi-4-pro",
-        version = 1,
-        nameText = "Xiaomi Civi 4 Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "24053PY09C",
-                device = "chenfeng",
-                marketname = "Xiaomi Civi 4 Pro",
-                product = "chenfeng",
             )
         },
     ),
@@ -794,273 +130,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         },
     ),
     BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-mix-flip",
-        version = 1,
-        nameText = "Xiaomi MIX Flip",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "2405CPX3DC",
-                device = "ruyi",
-                marketname = "Xiaomi MIX Flip",
-                product = "ruyi",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-mix-fold",
-        version = 1,
-        nameText = "Xiaomi MIX FOLD",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "M2011J18C",
-                device = "cetus",
-                marketname = "Xiaomi MIX FOLD",
-                product = "cetus",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-mix-fold-2",
-        version = 1,
-        nameText = "Xiaomi MIX Fold 2",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "22061218C",
-                device = "zizhan",
-                marketname = "Xiaomi MIX Fold 2",
-                product = "zizhan",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-mix-fold-3",
-        version = 1,
-        nameText = "Xiaomi MIX Fold 3",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "2308CPXD0C",
-                device = "babylon",
-                marketname = "Xiaomi MIX Fold 3",
-                product = "babylon",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-mix-fold-4",
-        version = 1,
-        nameText = "Xiaomi MIX Fold 4",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "24072PX77C",
-                device = "goku",
-                marketname = "Xiaomi MIX Fold 4",
-                product = "goku",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-pad-6",
-        version = 1,
-        nameText = "Xiaomi Pad 6",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "23043RP34C",
-                device = "pipa",
-                marketname = "Xiaomi Pad 6",
-                characteristics = "tablet",
-                product = "pipa",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-pad-6-max",
-        version = 1,
-        nameText = "Xiaomi Pad 6 Max",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "2307BRPDCC",
-                device = "yudi",
-                marketname = "Xiaomi Pad 6 Max",
-                characteristics = "tablet",
-                product = "yudi",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-pad-6-pro",
-        version = 1,
-        nameText = "Xiaomi Pad 6 Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "23046RP50C",
-                device = "liuqin",
-                marketname = "Xiaomi Pad 6 Pro",
-                characteristics = "tablet",
-                product = "liuqin",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-pad-6s-pro",
-        version = 1,
-        nameText = "Xiaomi Pad 6S Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "24018RPACC",
-                device = "sheng",
-                marketname = "Xiaomi Pad 6S Pro",
-                characteristics = "tablet",
-                product = "sheng",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-pad-7",
-        version = 1,
-        nameText = "Xiaomi Pad 7",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "2410CRP4CC",
-                device = "uke",
-                marketname = "Xiaomi Pad 7",
-                characteristics = "tablet",
-                product = "uke",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-pad-7-pro",
-        version = 1,
-        nameText = "Xiaomi Pad 7 Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "24091RPADC",
-                device = "muyu",
-                marketname = "Xiaomi Pad 7 Pro",
-                characteristics = "tablet",
-                product = "muyu",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-pad-7-ultra",
-        version = 1,
-        nameText = "Xiaomi Pad 7 Ultra",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "25032RP42C",
-                device = "jinghu",
-                marketname = "Xiaomi Pad 7 Ultra",
-                characteristics = "tablet",
-                product = "jinghu",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-pad-7s-pro-12-5",
-        version = 1,
-        nameText = "Xiaomi Pad 7S Pro 12.5",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "25053RP5CC",
-                device = "violin",
-                marketname = "Xiaomi Pad 7S Pro 12.5",
-                characteristics = "tablet",
-                product = "violin",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-pad-8",
-        version = 1,
-        nameText = "Xiaomi Pad 8",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "25097RP43C",
-                device = "yupei",
-                marketname = "Xiaomi Pad 8",
-                characteristics = "tablet",
-                product = "yupei",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-pad-8-pro",
-        version = 1,
-        nameText = "Xiaomi Pad 8 Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "25091RP04C",
-                device = "piano",
-                marketname = "Xiaomi Pad 8 Pro",
-                characteristics = "tablet",
-                product = "piano",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-pad-9",
-        version = 1,
-        nameText = "Xiaomi Pad 9",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "M656BA",
-                device = "yupei",
-                marketname = "Xiaomi Pad 9",
-                characteristics = "tablet",
-                product = "yupei",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-common-xiaomi-xiaomi-pad-9-pro",
-        version = 1,
-        nameText = "Xiaomi Pad 9 Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "2612CRPFFC",
-                device = "shuntian",
-                marketname = "Xiaomi Pad 9 Pro",
-                characteristics = "tablet",
-                product = "shuntian",
-            )
-        },
-    ),
-    BundledTemplateSpec(
         seedId = "df-common-xiaomi-xiaomi-pad-9-pro-max",
         version = 1,
         nameText = "Xiaomi Pad 9 Pro Max",
@@ -1073,36 +142,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
                 marketname = "Xiaomi Pad 9 Pro Max",
                 characteristics = "tablet",
                 product = "yingtian",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-gaming-iqoo-iqoo-12-pro",
-        version = 1,
-        nameText = "VIVO IQOO 12 PRO",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "vivo",
-                brand = "vivo",
-                model = "V2329A",
-                device = "V2329A",
-                marketname = "VIVO IQOO 12 PRO",
-                product = "V2329A",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-gaming-iqoo-iqoo-13",
-        version = 1,
-        nameText = "VIVO IQOO 13",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "vivo",
-                brand = "vivo",
-                model = "V2408A",
-                device = "V2408A",
-                marketname = "VIVO IQOO 13",
-                product = "V2408A",
             )
         },
     ),
@@ -1138,211 +177,6 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         },
     ),
     BundledTemplateSpec(
-        seedId = "df-gaming-oneplus-oneplus-16",
-        version = 1,
-        nameText = "一加 16",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "OnePlus",
-                brand = "OnePlus",
-                model = "PYB110",
-                device = "PYB110",
-                marketname = "一加 16",
-                product = "PYB110",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-transcend-samsung-samsung-z-fold6",
-        version = 1,
-        nameText = "Samsung Galaxy Z Fold6",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "samsung",
-                brand = "samsung",
-                model = "SM-F9560",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-transcend-xiaomi-xiaomi-pad-6",
-        version = 1,
-        nameText = "Xiaomi Pad 6",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "Xiaomi",
-                brand = "Xiaomi",
-                model = "23046RP50C",
-                characteristics = "tablet",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-galaxy-s23",
-        version = 1,
-        nameText = "Galaxy S23",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "samsung",
-                brand = "samsung",
-                model = "SM-S9110",
-                device = "dm1q",
-                marketname = "Galaxy S23",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-galaxy-s23plus",
-        version = 1,
-        nameText = "Galaxy S23+",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "samsung",
-                brand = "samsung",
-                model = "SM-S9160",
-                device = "dm2q",
-                marketname = "Galaxy S23+",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-galaxy-s23-ultra",
-        version = 1,
-        nameText = "Galaxy S23 Ultra",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "samsung",
-                brand = "samsung",
-                model = "SM-S9180",
-                device = "dm3q",
-                marketname = "Galaxy S23 Ultra",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-galaxy-s24",
-        version = 1,
-        nameText = "Galaxy S24",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "samsung",
-                brand = "samsung",
-                model = "SM-S9210",
-                device = "e1q",
-                marketname = "Galaxy S24",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-galaxy-s24plus",
-        version = 1,
-        nameText = "Galaxy S24+",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "samsung",
-                brand = "samsung",
-                model = "SM-S9260",
-                device = "e2q",
-                marketname = "Galaxy S24+",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-galaxy-s24-ultra",
-        version = 1,
-        nameText = "Galaxy S24 Ultra",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "samsung",
-                brand = "samsung",
-                model = "SM-S9280",
-                device = "e3q",
-                marketname = "Galaxy S24 Ultra",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-galaxy-s25",
-        version = 1,
-        nameText = "Galaxy S25",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "samsung",
-                brand = "samsung",
-                model = "SM-S9310",
-                device = "pa1q",
-                marketname = "Galaxy S25",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-galaxy-s25plus",
-        version = 1,
-        nameText = "Galaxy S25+",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "samsung",
-                brand = "samsung",
-                model = "SM-S9360",
-                device = "pa2q",
-                marketname = "Galaxy S25+",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-galaxy-s25-edge",
-        version = 1,
-        nameText = "Galaxy S25 Edge",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "samsung",
-                brand = "samsung",
-                model = "SM-S9370",
-                marketname = "Galaxy S25 Edge",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-galaxy-s25-ultra",
-        version = 1,
-        nameText = "Galaxy S25 Ultra",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "samsung",
-                brand = "samsung",
-                model = "SM-S9380",
-                device = "pa3q",
-                marketname = "Galaxy S25 Ultra",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-galaxy-s26",
-        version = 1,
-        nameText = "Galaxy S26",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "samsung",
-                brand = "samsung",
-                model = "SM-S9420",
-                marketname = "Galaxy S26",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-galaxy-s26plus",
-        version = 1,
-        nameText = "Galaxy S26+",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "samsung",
-                brand = "samsung",
-                model = "SM-S9470",
-                marketname = "Galaxy S26+",
-            )
-        },
-    ),
-    BundledTemplateSpec(
         seedId = "df-extra-galaxy-s26-ultra",
         version = 1,
         nameText = "Galaxy S26 Ultra",
@@ -1356,294 +190,80 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         },
     ),
     BundledTemplateSpec(
-        seedId = "df-extra-galaxy-z-fold5",
+        seedId = "df-extra-galaxy-z-fold7",
         version = 1,
-        nameText = "Galaxy Z Fold5",
+        nameText = "Galaxy Z Fold7",
         configuration = {
             ModuleConfig(
                 manufacturer = "samsung",
                 brand = "samsung",
-                model = "SM-F9460",
-                device = "q5q",
-                marketname = "Galaxy Z Fold5",
+                model = "SM-F9660",
+                marketname = "Galaxy Z Fold7",
             )
         },
     ),
     BundledTemplateSpec(
-        seedId = "df-extra-galaxy-z-flip6",
+        seedId = "df-extra-galaxy-z-flip7",
         version = 1,
-        nameText = "Galaxy Z Flip6",
+        nameText = "Galaxy Z Flip7",
         configuration = {
             ModuleConfig(
                 manufacturer = "samsung",
                 brand = "samsung",
-                model = "SM-F7410",
-                device = "b6q",
-                marketname = "Galaxy Z Flip6",
+                model = "SM-F7660",
+                marketname = "Galaxy Z Flip7",
             )
         },
     ),
     BundledTemplateSpec(
-        seedId = "df-extra-huawei-mate-60-pro",
+        seedId = "df-extra-huawei-mate-80-pro",
         version = 1,
-        nameText = "HUAWEI Mate 60 Pro",
+        nameText = "HUAWEI Mate 80 Pro",
         configuration = {
             ModuleConfig(
                 manufacturer = "HUAWEI",
                 brand = "HUAWEI",
-                model = "ALN-AL00",
-                marketname = "HUAWEI Mate 60 Pro",
+                model = "SGT-AL00",
+                marketname = "HUAWEI Mate 80 Pro",
             )
         },
     ),
     BundledTemplateSpec(
-        seedId = "df-extra-huawei-mate-60",
+        seedId = "df-extra-huawei-pura-90-pro-max",
         version = 1,
-        nameText = "HUAWEI Mate 60",
+        nameText = "HUAWEI Pura 90 Pro Max",
         configuration = {
             ModuleConfig(
                 manufacturer = "HUAWEI",
                 brand = "HUAWEI",
-                model = "BRA-AL00",
-                marketname = "HUAWEI Mate 60",
+                model = "SCA-AL00",
+                marketname = "HUAWEI Pura 90 Pro Max",
             )
         },
     ),
     BundledTemplateSpec(
-        seedId = "df-extra-huawei-mate-70",
+        seedId = "df-extra-huawei-mate-x7",
         version = 1,
-        nameText = "HUAWEI Mate 70",
+        nameText = "HUAWEI Mate X7",
         configuration = {
             ModuleConfig(
                 manufacturer = "HUAWEI",
                 brand = "HUAWEI",
-                model = "CLS-AL00",
-                marketname = "HUAWEI Mate 70",
+                model = "DEL-AL10",
+                marketname = "HUAWEI Mate X7",
             )
         },
     ),
     BundledTemplateSpec(
-        seedId = "df-extra-huawei-pura-70",
+        seedId = "df-extra-honor-magic8-pro",
         version = 1,
-        nameText = "HUAWEI Pura 70",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "HUAWEI",
-                brand = "HUAWEI",
-                model = "ADY-AL00",
-                marketname = "HUAWEI Pura 70",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-huawei-pura-80",
-        version = 1,
-        nameText = "HUAWEI Pura 80",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "HUAWEI",
-                brand = "HUAWEI",
-                model = "HED-AL00",
-                marketname = "HUAWEI Pura 80",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-huawei-mate-x5",
-        version = 1,
-        nameText = "HUAWEI Mate X5",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "HUAWEI",
-                brand = "HUAWEI",
-                model = "ALT-AL10",
-                marketname = "HUAWEI Mate X5",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-vivo-x100",
-        version = 1,
-        nameText = "vivo X100",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "vivo",
-                brand = "vivo",
-                model = "V2309A",
-                device = "PD2309",
-                marketname = "vivo X100",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-vivo-x100-pro",
-        version = 1,
-        nameText = "vivo X100 Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "vivo",
-                brand = "vivo",
-                model = "V2324A",
-                device = "PD2324",
-                marketname = "vivo X100 Pro",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-vivo-x200",
-        version = 1,
-        nameText = "vivo X200",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "vivo",
-                brand = "vivo",
-                model = "V2415A",
-                marketname = "vivo X200",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-vivo-x200-pro",
-        version = 1,
-        nameText = "vivo X200 Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "vivo",
-                brand = "vivo",
-                model = "V2419A",
-                marketname = "vivo X200 Pro",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-vivo-x-fold3-pro",
-        version = 1,
-        nameText = "vivo X Fold3 Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "vivo",
-                brand = "vivo",
-                model = "V2337A",
-                marketname = "vivo X Fold3 Pro",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-oppo-find-x7",
-        version = 1,
-        nameText = "OPPO Find X7",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "OPPO",
-                brand = "OPPO",
-                model = "PHZ110",
-                marketname = "OPPO Find X7",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-oppo-find-x7-ultra",
-        version = 1,
-        nameText = "OPPO Find X7 Ultra",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "OPPO",
-                brand = "OPPO",
-                model = "PHY110",
-                marketname = "OPPO Find X7 Ultra",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-oppo-find-x8",
-        version = 1,
-        nameText = "OPPO Find X8",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "OPPO",
-                brand = "OPPO",
-                model = "PKB110",
-                marketname = "OPPO Find X8",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-oppo-find-x8-pro",
-        version = 1,
-        nameText = "OPPO Find X8 Pro",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "OPPO",
-                brand = "OPPO",
-                model = "PKC110",
-                marketname = "OPPO Find X8 Pro",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-oppo-find-n3",
-        version = 1,
-        nameText = "OPPO Find N3",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "OPPO",
-                brand = "OPPO",
-                model = "PHN110",
-                marketname = "OPPO Find N3",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-oneplus-11",
-        version = 1,
-        nameText = "OnePlus 11",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "OnePlus",
-                brand = "OnePlus",
-                model = "PHB110",
-                device = "salami",
-                marketname = "OnePlus 11",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-oneplus-12",
-        version = 1,
-        nameText = "OnePlus 12",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "OnePlus",
-                brand = "OnePlus",
-                model = "PJD110",
-                device = "waffle",
-                marketname = "OnePlus 12",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-oneplus-13",
-        version = 1,
-        nameText = "OnePlus 13",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "OnePlus",
-                brand = "OnePlus",
-                model = "PJZ110",
-                marketname = "OnePlus 13",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-honor-magic-v3",
-        version = 1,
-        nameText = "HONOR Magic V3",
+        nameText = "HONOR Magic8 Pro",
         configuration = {
             ModuleConfig(
                 manufacturer = "HONOR",
                 brand = "HONOR",
-                model = "FCP-AN10",
-                marketname = "HONOR Magic V3",
+                model = "BKQ-AN10",
+                marketname = "HONOR Magic8 Pro",
             )
         },
     ),
@@ -1661,18 +281,66 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         },
     ),
     BundledTemplateSpec(
-        seedId = "df-extra-redmagic-9-pro",
+        seedId = "df-extra-oppo-find-x9-ultra",
         version = 1,
-        nameText = "REDMAGIC 9 Pro",
+        nameText = "OPPO Find X9 Ultra",
         configuration = {
             ModuleConfig(
-                manufacturer = "ZTE",
-                brand = "nubia",
-                model = "NX769J",
-                device = "REDMAGIC 9 Pro",
-                fingerPrint = "nubia/NX769J/NX769J:14/UKQ1.230917.001/20240813.173312:user/release-keys",
-                buildId = "UKQ1.230917.001",
-                marketname = "REDMAGIC 9 Pro",
+                manufacturer = "OPPO",
+                brand = "OPPO",
+                model = "PMA110",
+                marketname = "OPPO Find X9 Ultra",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-oppo-find-n5",
+        version = 1,
+        nameText = "OPPO Find N5",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "OPPO",
+                brand = "OPPO",
+                model = "PKH110",
+                marketname = "OPPO Find N5",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-vivo-x300-pro",
+        version = 1,
+        nameText = "vivo X300 Pro",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "vivo",
+                brand = "vivo",
+                model = "V2502A",
+                marketname = "vivo X300 Pro",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-vivo-x-fold5",
+        version = 1,
+        nameText = "vivo X Fold5",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "vivo",
+                brand = "vivo",
+                model = "V2436A",
+                marketname = "vivo X Fold5",
+            )
+        },
+    ),
+    BundledTemplateSpec(
+        seedId = "df-extra-iphone-18-pro-max",
+        version = 1,
+        nameText = "iPhone 18 Pro Max",
+        configuration = {
+            ModuleConfig(
+                manufacturer = "Apple",
+                brand = "Apple",
+                marketname = "iPhone 18 Pro Max",
             )
         },
     ),

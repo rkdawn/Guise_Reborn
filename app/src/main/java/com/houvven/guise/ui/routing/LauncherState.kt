@@ -64,6 +64,11 @@ object LauncherState {
         refreshTemplates()
     }
 
+    fun deleteTemplates(group: List<Template>) {
+        BundledTemplateManager.deleteAll(group)
+        refreshTemplates()
+    }
+
     fun updateTemplate(template: Template) {
         templateDao.update(template)
         refreshTemplates()
