@@ -5,12 +5,9 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.gestures.awaitEachGesture
-import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.awaitLongPressOrCancellation
-import androidx.compose.foundation.gestures.awaitTouchSlopOrCancellation
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.drag
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -54,7 +51,6 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -243,7 +239,8 @@ private fun TemplateCard(
                     Text(
                         text = template.name,
                         modifier = Modifier.weight(1f),
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleSmall,
+                        fontSize = 15.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -266,7 +263,8 @@ private fun TemplateCard(
                 if (subtitle.isNotBlank()) {
                     Text(
                         text = subtitle,
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontSize = 13.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.75f),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -419,11 +417,8 @@ internal fun TemplateScreen() {
     var moveGroupTemplate by remember { mutableStateOf<Template?>(null) }
 
     // 编辑态：长按分区标题进入，行内显示删除按钮、可直接拖拽排序；
-    // 顶栏切换为「完成」退出。editModeState 供手势协程读当前值——
-    // 手势通道的 key 不能含 editMode，否则长按开始拖拽的瞬间
-    // （startSectionDrag 置 true）会重启 pointerInput，把这次拖拽掐断。
+    // 顶栏切换为「完成」退出。
     var editMode by remember { mutableStateOf(false) }
-    val editModeState by rememberUpdatedState(editMode)
 
     val topBar = @Composable {
         var topBarMenuExpanded by remember { mutableStateOf(false) }
@@ -587,8 +582,12 @@ internal fun TemplateScreen() {
         sections
     }
 
-    // 编辑态下手势返回键退出编辑态而不是退出页面。
-    BackHandler(enabled = editMode) { editMode = false }
+    // 编辑态下手势返回键退出编辑态而不是退出页面；同时清掉
+    // 可能进行中的拖拽状态。
+    BackHandler(enabled = editMode) {
+        cancelSectionDrag()
+        editMode = false
+    }
 
     // Brand sections (not "我的模板") can be deleted as a whole; holds the
     // (key, display name, templates) of the group awaiting confirmation.
@@ -638,9 +637,10 @@ internal fun TemplateScreen() {
                                 }
                                 .padding(horizontal = 16.dp)
                                 .pointerInput(key) {
-                                    // 单击折叠/展开（编辑态下点自建组名进入改名）；
-                                    // onLongPress 空实现占住长按，避免拖拽松手后
-                                    // 误触发 onTap。
+                                    // 单击折叠/展开（编辑态下点自建组名进入改名）。
+                                    // 切记不传 onLongPress：非空会让 detectTapGestures
+                                    // 参与长按竞争并消费长按事件，把并行的长按拖拽
+                                    // 检测饿死（长按排序/进编辑态全部失效的根因）。
                                     detectTapGestures(
                                         onTap = {
                                             when {
@@ -652,33 +652,20 @@ internal fun TemplateScreen() {
                                                     !storedCollapsed
                                             }
                                         },
-                                        onLongPress = {},
                                     )
                                 }
                                 .pointerInput(key) {
-                                    // 单一手势通道，key 不含 editMode：手势中途不重启。
-                                    // 编辑态外需长按激活；编辑态内越过触控阈值即拖。
-                                    awaitEachGesture {
-                                        val down = awaitFirstDown(requireUnconsumed = false)
-                                        val dragPointerId = if (editModeState) {
-                                            down.id
-                                        } else {
-                                            awaitLongPressOrCancellation(down.id)?.id
-                                        } ?: return@awaitEachGesture
-                                        // 普通点击（未过阈值）不进入拖拽，留给点按手势。
-                                        awaitTouchSlopOrCancellation(dragPointerId) { change, _ ->
+                                    // 长按命中即 onDragStart → 进入编辑态并可不松手
+                                    // 直接拖。key 不含 editMode，手势中途不重启。
+                                    detectDragGesturesAfterLongPress(
+                                        onDragStart = { startSectionDrag(key) },
+                                        onDrag = { change, dragAmount ->
                                             change.consume()
-                                        } ?: return@awaitEachGesture
-                                        startSectionDrag(key)
-                                        val completed = drag(dragPointerId) { change ->
-                                            change.consume()
-                                            onSectionDrag(
-                                                key,
-                                                change.position.y - change.previousPosition.y,
-                                            )
-                                        }
-                                        if (completed) endSectionDrag() else cancelSectionDrag()
-                                    }
+                                            onSectionDrag(key, dragAmount.y)
+                                        },
+                                        onDragEnd = endSectionDrag,
+                                        onDragCancel = cancelSectionDrag,
+                                    )
                                 }
                                 .padding(top = 12.dp, bottom = 4.dp),
                             verticalAlignment = Alignment.CenterVertically,
@@ -716,7 +703,22 @@ internal fun TemplateScreen() {
                                 SimplifyIcon(
                                     Icons.Default.DragHandle,
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier.size(20.dp),
+                                    modifier = Modifier
+                                        .size(28.dp)
+                                        .pointerInput(key) {
+                                            // 编辑态下的直接拖拽入口：按住手柄即拖，
+                                            // 无需再次长按。独立挂点，不与分区行的
+                                            // 点按/长按检测器竞争。
+                                            detectDragGestures(
+                                                onDragStart = { startSectionDrag(key) },
+                                                onDrag = { change, dragAmount ->
+                                                    change.consume()
+                                                    onSectionDrag(key, dragAmount.y)
+                                                },
+                                                onDragEnd = endSectionDrag,
+                                                onDragCancel = cancelSectionDrag,
+                                            )
+                                        },
                                 )
                             } else {
                                 Text(
