@@ -52,7 +52,7 @@
     <string name="template_group_rename">改名</string>
     <string name="template_group_move">移动</string>
     <string name="template_group_auto">自动</string>
-    <string name="template_group_sort">排序</string>
+    <string name="template_group_manage">管理</string>
     <string name="template_group_name_hint">分组名称</string>
     <string name="template_group_name_duplicate">已存在同名分组</string>
     <string name="template_export_none">没有可导出的自定义模板（内置模板会自动同步，无需导出）</string>

@@ -71,7 +71,7 @@
     <string name="template_group_rename">Rename</string>
     <string name="template_group_move">Move</string>
     <string name="template_group_auto">Auto</string>
-    <string name="template_group_sort">Reorder</string>
+    <string name="template_group_manage">Manage</string>
     <string name="template_group_name_hint">Group name</string>
     <string name="template_group_name_duplicate">A group with this name already exists</string>
     <string name="template_export_none">No custom templates to export (bundled templates sync automatically)</string>
