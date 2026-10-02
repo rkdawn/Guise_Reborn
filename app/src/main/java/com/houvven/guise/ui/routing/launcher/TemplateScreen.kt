@@ -59,6 +59,7 @@ import com.houvven.guise.R
 import com.houvven.guise.db.Template
 import com.houvven.guise.db.TemplateTransfer
 import com.houvven.guise.ui.GlobalSnackbarHost
+import com.houvven.guise.ui.components.SearchBox
 import com.houvven.guise.ui.components.simplify.SimplifyDropdownMenuItem
 import com.houvven.guise.ui.components.simplify.SimplifyIcon
 import com.houvven.guise.ui.components.simplify.SimplifyImage
@@ -82,6 +83,7 @@ private object TemplateTypeFilter {
 }
 
 private val typeFilter = mutableIntStateOf(TemplateTypeFilter.ALL)
+private val searchKey = mutableStateOf("")
 private val requestEnable = mutableStateOf(false)
 private val requestEnableTemplate = mutableStateOf<Template?>(null)
 
@@ -408,14 +410,21 @@ internal fun TemplateScreen() {
             )
         ) {
             TypeFilter()
+            SearchBox(value = searchKey.value, onValueChange = { searchKey.value = it })
             LazyColumn(
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
+                val key = searchKey.value.trim()
+                val searched = if (key.isEmpty()) templates else templates.filter {
+                    it.name.contains(key, ignoreCase = true) ||
+                        it.description?.contains(key, ignoreCase = true) == true ||
+                        it.configuration.contains(key, ignoreCase = true)
+                }
                 val visibleTemplates = if (typeFilter.intValue == TemplateTypeFilter.ALL) {
-                    templates
+                    searched
                 } else {
-                    templates.filter { it.type == typeFilter.intValue }
+                    searched.filter { it.type == typeFilter.intValue }
                 }
                 items(visibleTemplates, key = { it.id }) { template ->
                     TemplateCard(
