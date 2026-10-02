@@ -52,6 +52,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -110,11 +111,14 @@ import kotlin.math.roundToInt
 //   长按模板行        → 编辑 / 导出二维码 / 移动 / 删除
 //   顶栏 ⋮ 菜单       → 建组 / 导入 / 导出
 //
-// 手势两条铁律（历史上各踩过一次，勿违反）：
+// 手势三条铁律（每条都踩过一次，勿违反）：
 //   1. pointerInput 的 key 不能包含手势过程中会变化的状态（如 editMode），
 //      否则 key 一变 Compose 重启手势协程，进行中的拖拽被掐断；
 //   2. 并行的 detectTapGestures 不要传 onLongPress（空 lambda 也不行）——
-//      传了它就会参与长按竞争并消费长按事件，把拖拽检测器饿死。
+//      传了它就会参与长按竞争并消费长按事件，把拖拽检测器饿死；
+//   3. pointerInput 协程只启动一次，捕获的是「首次组合」的 lambda——
+//      回调必须经 rememberUpdatedState 读最新值，否则 lambda 里冻结的
+//      局部变量（如 storedCollapsed）永远停留在首次值，点按永不生效。
 // =============================================================================
 
 private val requestEnable = mutableStateOf(false)
@@ -598,6 +602,12 @@ private fun SectionHeader(
 ) {
     val spacingPx = with(LocalDensity.current) { SECTION_SPACING.toPx() }
     val dragging = dragState.draggingKey == section.key
+    // 铁律 3：pointerInput 协程只启动一次，捕获首次组合的 lambda；
+    // 经 rememberUpdatedState 转发，保证手势回调永远读到最新值
+    // （否则 onTap 里冻结的 storedCollapsed 会让分区「展开后关不掉」）。
+    val currentOnTap by rememberUpdatedState(onTap)
+    val currentOnDragStart by rememberUpdatedState(onDragStart)
+    val currentOnDragFinish by rememberUpdatedState(onDragFinish)
     Surface(
         // 拖拽中的分区提层 + 位移跟随 + 底色反馈。
         color = if (dragging) {
@@ -622,19 +632,19 @@ private fun SectionHeader(
                 .pointerInput(section.key) {
                     // 点按：折叠/展开；编辑态下点自建组名改名。
                     // 不传 onLongPress（见文件头铁律 2）。
-                    detectTapGestures(onTap = { onTap() })
+                    detectTapGestures(onTap = { currentOnTap() })
                 }
                 .pointerInput(section.key) {
                     // 长按命中即 onDragStart（不等位移）→ 进编辑态并可直接拖。
                     // key 不含 editMode（见文件头铁律 1）。
                     detectDragGesturesAfterLongPress(
-                        onDragStart = { onDragStart() },
+                        onDragStart = { currentOnDragStart() },
                         onDrag = { change, dragAmount ->
                             change.consume()
                             dragState.dragBy(section.key, dragAmount.y)
                         },
-                        onDragEnd = { onDragFinish(true) },
-                        onDragCancel = { onDragFinish(false) },
+                        onDragEnd = { currentOnDragFinish(true) },
+                        onDragCancel = { currentOnDragFinish(false) },
                     )
                 }
                 .padding(top = 12.dp, bottom = 4.dp),
@@ -676,13 +686,13 @@ private fun SectionHeader(
                             // 编辑态下的直接拖拽入口：按住手柄即拖，无需再次
                             // 长按。独立挂点，不与标题行的点按/长按检测器竞争。
                             detectDragGestures(
-                                onDragStart = { onDragStart() },
+                                onDragStart = { currentOnDragStart() },
                                 onDrag = { change, dragAmount ->
                                     change.consume()
                                     dragState.dragBy(section.key, dragAmount.y)
                                 },
-                                onDragEnd = { onDragFinish(true) },
-                                onDragCancel = { onDragFinish(false) },
+                                onDragEnd = { currentOnDragFinish(true) },
+                                onDragCancel = { currentOnDragFinish(false) },
                             )
                         },
                 )
