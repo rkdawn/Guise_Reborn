@@ -43,6 +43,7 @@
     <string name="device_characteristics">设备特性</string>
     <string name="device_characteristics_summary">例如 tablet —— 用于解锁平板/折叠屏形态判定</string>
     <string name="template_brand_other">其他</string>
+    <string name="template_group_count">共 %1$d 个模板</string>
     <string name="net_type">网络类型</string>
     <string name="net_wifi_ssid">WiFi名称</string>
     <string name="net_sim_code">SIM运营商代码</string>

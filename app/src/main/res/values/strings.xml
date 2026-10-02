@@ -62,6 +62,7 @@
     <string name="device_characteristics">Characteristics</string>
     <string name="device_characteristics_summary">e.g. tablet — unlocks tablet/foldable UI checks</string>
     <string name="template_brand_other">Other</string>
+    <string name="template_group_count">%1$d templates</string>
     <string name="net_type">Internet Type</string>
     <string name="net_wifi_ssid">WiFi-SSID</string>
     <string name="net_wifi_bssid" translatable="false">WiFi-BSSID</string>

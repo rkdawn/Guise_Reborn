@@ -1,10 +1,10 @@
 package com.houvven.guise.ui.routing.launcher
 
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,9 +17,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DoNotDisturbOnTotalSilence
 import androidx.compose.material.icons.filled.MoreVert
@@ -86,11 +87,9 @@ private object TemplateTypeFilter {
 
 private val typeFilter = mutableIntStateOf(TemplateTypeFilter.ALL)
 private val searchKey = mutableStateOf("")
-private val brandFilter = mutableStateOf<String?>(null)
+private val selectedBrandGroup = mutableStateOf<String?>(null)
 private val requestEnable = mutableStateOf(false)
 private val requestEnableTemplate = mutableStateOf<Template?>(null)
-
-private const val BRAND_KEY_OTHER = ""
 
 /** Brand identity used for grouping; blank brands collapse into one "other" bucket. */
 private fun templateBrandKey(template: Template): String =
@@ -374,9 +373,9 @@ internal fun TemplateScreen() {
     }
 
     @Composable
-    fun TypeFilter() {
-        val commonCount = templates.count { it.type == Template.Type.COMMON }
-        val exclusiveCount = templates.count { it.type == Template.Type.EXCLUSIVE }
+    fun TypeFilter(source: List<Template>) {
+        val commonCount = source.count { it.type == Template.Type.COMMON }
+        val exclusiveCount = source.count { it.type == Template.Type.EXCLUSIVE }
 
         @Composable
         fun TypeFilterChip(label: String, count: Int, value: Int) {
@@ -391,7 +390,7 @@ internal fun TemplateScreen() {
         Row(modifier = Modifier.padding(start = 15.dp)) {
             TypeFilterChip(
                 label = stringResource(R.string.template_type_all),
-                count = templates.size,
+                count = source.size,
                 value = TemplateTypeFilter.ALL,
             )
             Spacer(modifier = Modifier.width(5.dp))
@@ -409,56 +408,44 @@ internal fun TemplateScreen() {
         }
     }
 
+    // Level 1 groups: brand key -> (display name, template count), sorted by count.
+    val brandGroups = remember(templates) {
+        templates.groupBy(::templateBrandKey)
+            .mapValues { (_, group) ->
+                // Most frequent original casing wins (e.g. REDMI vs Redmi).
+                group.map {
+                    runCatching { ModuleConfig.fromJson(it.configuration).brand.trim() }
+                        .getOrDefault("")
+                }.groupingBy { it }.eachCount()
+                    .maxByOrNull { it.value }?.key.orEmpty() to group.size
+            }
+            .toList()
+            .sortedByDescending { it.second.second }
+    }
+
     @Composable
-    fun BrandFilter() {
-        val brandGroups = remember(templates) {
-            templates.groupBy(::templateBrandKey)
-                .mapValues { (_, group) ->
-                    // Most frequent original casing wins (e.g. REDMI vs Redmi).
-                    group.map {
-                        runCatching { ModuleConfig.fromJson(it.configuration).brand.trim() }
-                            .getOrDefault("")
-                    }.groupingBy { it }.eachCount()
-                        .maxByOrNull { it.value }?.key.orEmpty() to group.size
-                }
-                .toList()
-                .sortedByDescending { it.second.second }
-        }
-        if (brandGroups.size <= 1) return
-        Row(
-            modifier = Modifier
-                .horizontalScroll(rememberScrollState())
-                .padding(start = 15.dp, top = 4.dp),
-        ) {
-            FilterChip(
-                selected = brandFilter.value == null,
-                onClick = { brandFilter.value = null },
-                label = {
+    fun BrandGroupCard(display: String, count: Int, onClick: () -> Unit) {
+        Card(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 14.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        stringResource(
-                            R.string.template_type_with_count,
-                            stringResource(R.string.template_type_all),
-                            templates.size,
-                        )
+                        text = display,
+                        style = MaterialTheme.typography.titleMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
-                },
-            )
-            brandGroups.forEach { (key, group) ->
-                val (display, count) = group
-                Spacer(modifier = Modifier.width(5.dp))
-                FilterChip(
-                    selected = brandFilter.value == key,
-                    onClick = { brandFilter.value = key },
-                    label = {
-                        Text(
-                            stringResource(
-                                R.string.template_type_with_count,
-                                display.ifBlank { stringResource(R.string.template_brand_other) },
-                                count,
-                            )
-                        )
-                    },
-                )
+                    Text(
+                        text = stringResource(R.string.template_group_count, count),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.62f),
+                    )
+                }
+                SimplifyIcon(Icons.AutoMirrored.Filled.KeyboardArrowRight)
             }
         }
     }
@@ -473,32 +460,68 @@ internal fun TemplateScreen() {
                 bottom = paddingValues.calculateBottomPadding(),
             )
         ) {
-            BrandFilter()
-            TypeFilter()
-            SearchBox(value = searchKey.value, onValueChange = { searchKey.value = it })
-            LazyColumn(
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                val key = searchKey.value.trim()
-                val searched = if (key.isEmpty()) templates else templates.filter {
-                    it.name.contains(key, ignoreCase = true) ||
-                        it.description?.contains(key, ignoreCase = true) == true ||
-                        it.configuration.contains(key, ignoreCase = true)
+            val selectedBrand = selectedBrandGroup.value
+            if (selectedBrand == null) {
+                // Level 1: manufacturer list
+                LazyColumn(
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    items(brandGroups, key = { it.first }) { (key, group) ->
+                        val (display, count) = group
+                        BrandGroupCard(
+                            display = display.ifBlank {
+                                stringResource(R.string.template_brand_other)
+                            },
+                            count = count,
+                            onClick = {
+                                typeFilter.intValue = TemplateTypeFilter.ALL
+                                searchKey.value = ""
+                                selectedBrandGroup.value = key
+                            },
+                        )
+                    }
                 }
-                val brandFiltered = brandFilter.value?.let { selectedBrand ->
-                    searched.filter { templateBrandKey(it) == selectedBrand }
-                } ?: searched
-                val visibleTemplates = if (typeFilter.intValue == TemplateTypeFilter.ALL) {
-                    brandFiltered
-                } else {
-                    brandFiltered.filter { it.type == typeFilter.intValue }
-                }
-                items(visibleTemplates, key = { it.id }) { template ->
-                    TemplateCard(
-                        template = template,
-                        appliedAppCount = appliedCounts[template.id] ?: 0,
+            } else {
+                // Level 2: templates of the selected manufacturer
+                val brandTemplates = templates.filter { templateBrandKey(it) == selectedBrand }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = { selectedBrandGroup.value = null }) {
+                        SimplifyIcon(Icons.AutoMirrored.Filled.ArrowBack)
+                    }
+                    Text(
+                        text = brandGroups.firstOrNull { it.first == selectedBrand }
+                            ?.second?.first
+                            ?.ifBlank { stringResource(R.string.template_brand_other) }
+                            .orEmpty(),
+                        style = MaterialTheme.typography.titleMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
+                }
+                TypeFilter(brandTemplates)
+                SearchBox(value = searchKey.value, onValueChange = { searchKey.value = it })
+                LazyColumn(
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    val key = searchKey.value.trim()
+                    val searched = if (key.isEmpty()) brandTemplates else brandTemplates.filter {
+                        it.name.contains(key, ignoreCase = true) ||
+                            it.description?.contains(key, ignoreCase = true) == true ||
+                            it.configuration.contains(key, ignoreCase = true)
+                    }
+                    val visibleTemplates = if (typeFilter.intValue == TemplateTypeFilter.ALL) {
+                        searched
+                    } else {
+                        searched.filter { it.type == typeFilter.intValue }
+                    }
+                    items(visibleTemplates, key = { it.id }) { template ->
+                        TemplateCard(
+                            template = template,
+                            appliedAppCount = appliedCounts[template.id] ?: 0,
+                        )
+                    }
                 }
             }
 
@@ -506,5 +529,9 @@ internal fun TemplateScreen() {
                 EnableTemplateDialog(state = requestEnable, template = it)
             }
         }
+    }
+
+    BackHandler(enabled = selectedBrandGroup.value != null) {
+        selectedBrandGroup.value = null
     }
 }
