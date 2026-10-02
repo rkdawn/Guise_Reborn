@@ -1,9 +1,13 @@
 package com.houvven.guise.ui.routing.launcher
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,21 +15,20 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DoNotDisturbOnTotalSilence
+import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.RemoveCircleOutline
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -51,6 +54,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -60,6 +65,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -209,11 +215,18 @@ private fun TemplateCard(
         }
     }
 
+    // 副标题：型号代码（如 SGT-AL00）优先，其次用户描述，对齐部署页
+    // 「应用名 + 包名」的双行结构。
+    val subtitle = remember(template.id, template.configuration, template.description) {
+        val model = runCatching { ModuleConfig.fromJson(template.configuration).model.trim() }
+            .getOrDefault("")
+        model.ifBlank { template.description?.trim().orEmpty() }
+    }
+
     val content = @Composable {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 10.dp),
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             headIcon()
@@ -245,13 +258,12 @@ private fun TemplateCard(
                         }
                     }
                 }
-                if (!template.description.isNullOrBlank()) {
-                    Spacer(modifier = Modifier.height(2.dp))
+                if (subtitle.isNotBlank()) {
                     Text(
-                        text = template.description!!,
+                        text = subtitle,
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 2,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.68f),
+                        maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
                 }
@@ -272,8 +284,19 @@ private fun TemplateCard(
         }
     }
 
-    Card(
+    // 扁平行：与部署页一致——圆角裁切、透明底（有应用时铺 surfaceVariant）、
+    // 无卡片边框。
+    Column(
         modifier = Modifier
+            .padding(horizontal = 8.dp)
+            .clip(MaterialTheme.shapes.medium)
+            .background(
+                if (appliedAppCount > 0) {
+                    MaterialTheme.colorScheme.surfaceVariant
+                } else {
+                    Color.Transparent
+                }
+            )
             .fillMaxWidth()
             .combinedClickable(
                 onClick = {
@@ -293,8 +316,8 @@ private fun TemplateCard(
                     }
                 },
                 onLongClick = { expanded = true },
-            ),
-        shape = RoundedCornerShape(10.dp),
+            )
+            .padding(horizontal = 8.dp, vertical = 10.dp),
     ) {
         content()
         DropdownMenu(
@@ -388,58 +411,66 @@ internal fun TemplateScreen() {
     var showCreateGroupDialog by remember { mutableStateOf(false) }
     var renameGroupTarget by remember { mutableStateOf<String?>(null) }
     var moveGroupTemplate by remember { mutableStateOf<Template?>(null) }
-    var showManageDialog by remember { mutableStateOf(false) }
+
+    // 编辑态：长按分区标题进入，行内显示删除按钮、可直接拖拽排序；
+    // 顶栏切换为「完成」退出。
+    var editMode by remember { mutableStateOf(false) }
 
     val topBar = @Composable {
         var topBarMenuExpanded by remember { mutableStateOf(false) }
         var transferDialog by remember { mutableStateOf<TemplateTransferMode?>(null) }
         TopAppBar(
-            title = { Text(stringResource(R.string.action_template)) },
+            title = {
+                Text(
+                    text = stringResource(R.string.action_template),
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.W500,
+                )
+            },
             actions = {
-                IconButton(onClick = { topBarMenuExpanded = true }) {
-                    SimplifyIcon(Icons.Default.MoreVert)
-                }
-                transferDialog?.let { mode ->
-                    TemplateTransferDialog(
-                        mode = mode,
-                        onDismiss = { transferDialog = null },
-                        onScanQr = {
-                            navController.navigate(NavRoutingTypes.SCAN_TEMPLATE_QR.name)
-                        },
-                    )
-                }
-                DropdownMenu(
-                    expanded = topBarMenuExpanded,
-                    onDismissRequest = { topBarMenuExpanded = false },
-                ) {
-                    SimplifyDropdownMenuItem(
-                        text = stringResource(R.string.template_group_create),
-                        onClick = {
-                            topBarMenuExpanded = false
-                            showCreateGroupDialog = true
-                        },
-                    )
-                    SimplifyDropdownMenuItem(
-                        text = stringResource(R.string.template_group_manage),
-                        onClick = {
-                            topBarMenuExpanded = false
-                            showManageDialog = true
-                        },
-                    )
-                    SimplifyDropdownMenuItem(
-                        text = stringResource(R.string.import_data),
-                        onClick = {
-                            topBarMenuExpanded = false
-                            transferDialog = TemplateTransferMode.IMPORT
-                        },
-                    )
-                    SimplifyDropdownMenuItem(
-                        text = stringResource(R.string.export_data),
-                        onClick = {
-                            topBarMenuExpanded = false
-                            transferDialog = TemplateTransferMode.EXPORT
-                        },
-                    )
+                if (editMode) {
+                    TextButton(onClick = { editMode = false }) {
+                        Text(stringResource(R.string.template_group_edit_done))
+                    }
+                } else {
+                    IconButton(onClick = { topBarMenuExpanded = true }) {
+                        SimplifyIcon(Icons.Default.MoreVert)
+                    }
+                    transferDialog?.let { mode ->
+                        TemplateTransferDialog(
+                            mode = mode,
+                            onDismiss = { transferDialog = null },
+                            onScanQr = {
+                                navController.navigate(NavRoutingTypes.SCAN_TEMPLATE_QR.name)
+                            },
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = topBarMenuExpanded,
+                        onDismissRequest = { topBarMenuExpanded = false },
+                    ) {
+                        SimplifyDropdownMenuItem(
+                            text = stringResource(R.string.template_group_create),
+                            onClick = {
+                                topBarMenuExpanded = false
+                                showCreateGroupDialog = true
+                            },
+                        )
+                        SimplifyDropdownMenuItem(
+                            text = stringResource(R.string.import_data),
+                            onClick = {
+                                topBarMenuExpanded = false
+                                transferDialog = TemplateTransferMode.IMPORT
+                            },
+                        )
+                        SimplifyDropdownMenuItem(
+                            text = stringResource(R.string.export_data),
+                            onClick = {
+                                topBarMenuExpanded = false
+                                transferDialog = TemplateTransferMode.EXPORT
+                            },
+                        )
+                    }
                 }
             },
         )
@@ -499,19 +530,56 @@ internal fun TemplateScreen() {
     // opens as a compact manufacturer index.
     val collapsedSections = remember { mutableStateMapOf<String, Boolean>() }
 
-    // 长按分区标题直接在列表内拖拽排序：拖拽期间全部分区强制折叠为等高
-    // 标题行，松手后顺序持久化。headerStridePx 为实测标题行高 + 列表间距。
+    // 长按分区标题进入编辑态并直接拖拽排序：编辑态下全部分区强制折叠为
+    // 等高标题行，松手后顺序持久化。headerStridePx 为实测标题行高+列表间距。
     var draggingSectionKey by remember { mutableStateOf<String?>(null) }
     var draggingOffset by remember { mutableFloatStateOf(0f) }
     val liveOrder = remember { mutableStateListOf<String>() }
     var headerStridePx by remember { mutableFloatStateOf(0f) }
-    val sectionSpacingPx = with(LocalDensity.current) { 8.dp.toPx() }
+    val sectionSpacingPx = with(LocalDensity.current) { 4.dp.toPx() }
+
+    val startSectionDrag: (String) -> Unit = { key ->
+        editMode = true
+        liveOrder.clear()
+        liveOrder.addAll(sections.map { it.first })
+        draggingSectionKey = key
+        draggingOffset = 0f
+    }
+    val onSectionDrag: (String, Float) -> Unit = drag@{ key, dy ->
+        draggingOffset += dy
+        if (headerStridePx <= 0f) return@drag
+        val from = liveOrder.indexOf(key)
+        if (from < 0) return@drag
+        val target = (from + (draggingOffset / headerStridePx).roundToInt())
+            .coerceIn(0, liveOrder.lastIndex)
+        if (target != from) {
+            liveOrder.add(target, liveOrder.removeAt(from))
+            draggingOffset -= (target - from) * headerStridePx
+        }
+    }
+    val endSectionDrag: () -> Unit = {
+        if (liveOrder.isNotEmpty()) {
+            TemplateGroupStore.saveSectionOrder(liveOrder.toList())
+        }
+        draggingSectionKey = null
+        draggingOffset = 0f
+        liveOrder.clear()
+        groupRevision++
+    }
+    val cancelSectionDrag: () -> Unit = {
+        draggingSectionKey = null
+        draggingOffset = 0f
+        liveOrder.clear()
+    }
 
     val displaySections = if (draggingSectionKey != null && liveOrder.isNotEmpty()) {
         liveOrder.mapNotNull { key -> sections.firstOrNull { it.first == key } }
     } else {
         sections
     }
+
+    // 编辑态下手势返回键退出编辑态而不是退出页面。
+    BackHandler(enabled = editMode) { editMode = false }
 
     // Brand sections (not "我的模板") can be deleted as a whole; holds the
     // (key, display name, templates) of the group awaiting confirmation.
@@ -532,13 +600,13 @@ internal fun TemplateScreen() {
                 top = paddingValues.calculateTopPadding(),
                 bottom = paddingValues.calculateBottomPadding(),
             ),
-            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(vertical = 4.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             displaySections.forEach { (key, brandDisplay, groupTemplates) ->
                 val storedCollapsed = collapsedSections[key] != false
-                // 拖拽排序期间全部分区强制折叠，标题行等高才好对位。
-                val collapsed = storedCollapsed || draggingSectionKey != null
+                // 编辑态下全部分区强制折叠，标题行等高才好拖拽对位。
+                val collapsed = storedCollapsed || editMode
                 stickyHeader(key = "header-$key") {
                     val sectionName = sectionDisplayName(key, brandDisplay)
                     Surface(
@@ -559,88 +627,110 @@ internal fun TemplateScreen() {
                                             coordinates.size.height + sectionSpacingPx
                                     }
                                 }
-                                .combinedClickable(
-                                    onClick = {
-                                        collapsedSections[key] = !storedCollapsed
-                                    },
-                                    // 长按不给单击让路，拖拽手势接管；空实现仅
-                                    // 用于避免长按松手后误触发折叠切换。
-                                    onLongClick = {},
-                                )
+                                .padding(horizontal = 16.dp)
                                 .pointerInput(key) {
-                                    detectDragGesturesAfterLongPress(
-                                        onDragStart = {
-                                            liveOrder.clear()
-                                            liveOrder.addAll(sections.map { it.first })
-                                            draggingSectionKey = key
-                                            draggingOffset = 0f
-                                        },
-                                        onDrag = { change, dragAmount ->
-                                            change.consume()
-                                            draggingOffset += dragAmount.y
-                                            if (headerStridePx > 0f) {
-                                                val from = liveOrder.indexOf(key)
-                                                if (from >= 0) {
-                                                    val target = (from +
-                                                        (draggingOffset / headerStridePx)
-                                                            .roundToInt())
-                                                        .coerceIn(0, liveOrder.lastIndex)
-                                                    if (target != from) {
-                                                        liveOrder.add(
-                                                            target,
-                                                            liveOrder.removeAt(from),
-                                                        )
-                                                        draggingOffset -=
-                                                            (target - from) * headerStridePx
-                                                    }
-                                                }
+                                    // 单击折叠/展开（编辑态下点自建组名进入改名）；
+                                    // onLongPress 空实现占住长按，避免拖拽松手后
+                                    // 误触发 onTap。
+                                    detectTapGestures(
+                                        onTap = {
+                                            when {
+                                                editMode &&
+                                                    key.startsWith(GROUP_KEY_PREFIX_CUSTOM) ->
+                                                    renameGroupTarget = sectionName
+                                                editMode -> Unit
+                                                else -> collapsedSections[key] =
+                                                    !storedCollapsed
                                             }
                                         },
-                                        onDragEnd = {
-                                            if (liveOrder.isNotEmpty()) {
-                                                TemplateGroupStore.saveSectionOrder(
-                                                    liveOrder.toList()
-                                                )
-                                            }
-                                            draggingSectionKey = null
-                                            draggingOffset = 0f
-                                            liveOrder.clear()
-                                            groupRevision++
-                                        },
-                                        onDragCancel = {
-                                            draggingSectionKey = null
-                                            draggingOffset = 0f
-                                            liveOrder.clear()
-                                        },
+                                        onLongPress = {},
                                     )
                                 }
-                                .padding(vertical = 6.dp),
+                                .pointerInput(key, editMode) {
+                                    // 编辑态外长按进入编辑态并开始拖；编辑态内直接拖。
+                                    if (editMode) {
+                                        detectDragGestures(
+                                            onDragStart = { startSectionDrag(key) },
+                                            onDrag = { change, dragAmount ->
+                                                change.consume()
+                                                onSectionDrag(key, dragAmount.y)
+                                            },
+                                            onDragEnd = endSectionDrag,
+                                            onDragCancel = cancelSectionDrag,
+                                        )
+                                    } else {
+                                        detectDragGesturesAfterLongPress(
+                                            onDragStart = { startSectionDrag(key) },
+                                            onDrag = { change, dragAmount ->
+                                                change.consume()
+                                                onSectionDrag(key, dragAmount.y)
+                                            },
+                                            onDragEnd = endSectionDrag,
+                                            onDragCancel = cancelSectionDrag,
+                                        )
+                                    }
+                                }
+                                .padding(top = 10.dp, bottom = 2.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
+                            if (editMode) {
+                                if (key != GROUP_KEY_MINE) {
+                                    IconButton(
+                                        onClick = {
+                                            pendingDeleteGroup =
+                                                Triple(key, sectionName, groupTemplates)
+                                        },
+                                        modifier = Modifier.size(28.dp),
+                                    ) {
+                                        SimplifyIcon(
+                                            Icons.Default.RemoveCircleOutline,
+                                            tint = MaterialTheme.colorScheme.error,
+                                            modifier = Modifier.size(18.dp),
+                                        )
+                                    }
+                                } else {
+                                    Spacer(modifier = Modifier.size(28.dp))
+                                }
+                                Spacer(modifier = Modifier.width(6.dp))
+                            }
                             Text(
-                                text = stringResource(
-                                    R.string.template_group_header,
-                                    sectionName,
-                                    groupTemplates.size,
-                                ),
+                                text = sectionName,
                                 modifier = Modifier.weight(1f),
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurface,
+                                style = MaterialTheme.typography.titleSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                             )
-                            SimplifyIcon(
-                                if (collapsed) {
-                                    Icons.AutoMirrored.Filled.KeyboardArrowRight
-                                } else {
-                                    Icons.Default.KeyboardArrowDown
-                                }
-                            )
+                            if (editMode) {
+                                SimplifyIcon(
+                                    Icons.Default.DragHandle,
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            } else {
+                                Text(
+                                    text = stringResource(
+                                        R.string.template_group_count_short,
+                                        groupTemplates.size,
+                                    ),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    maxLines = 1,
+                                )
+                                Spacer(modifier = Modifier.width(2.dp))
+                                SimplifyIcon(
+                                    if (collapsed) {
+                                        Icons.AutoMirrored.Filled.KeyboardArrowRight
+                                    } else {
+                                        Icons.Default.KeyboardArrowDown
+                                    },
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
                         }
                     }
                 }
                 if (!collapsed) {
-                    // 单列整行卡片：两列并排会把长型号名挤成省略号。
+                    // 单列扁平行：名称 + 型号副标题，与部署页同一语言。
                     groupTemplates.forEach { template ->
                         item(key = "tpl-${template.id}") {
                             TemplateCard(
@@ -723,62 +813,6 @@ internal fun TemplateScreen() {
                     LauncherState.renameGroup(oldName, newName)
                     groupRevision++
                     renameGroupTarget = null
-                },
-            )
-        }
-
-        // 分组管理：改名/删除集中在这个弹窗，主界面不放任何管理按钮。
-        if (showManageDialog) {
-            AlertDialog(
-                onDismissRequest = { showManageDialog = false },
-                title = { Text(stringResource(R.string.template_group_manage)) },
-                text = {
-                    LazyColumn(modifier = Modifier.heightIn(max = 400.dp)) {
-                        items(
-                            sections.filter { it.first != GROUP_KEY_MINE },
-                            key = { it.first },
-                        ) { (key, display, groupTemplates) ->
-                            val name = sectionDisplayName(key, display)
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Text(
-                                    text = stringResource(
-                                        R.string.template_group_header,
-                                        name,
-                                        groupTemplates.size,
-                                    ),
-                                    modifier = Modifier.weight(1f),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                )
-                                if (key.startsWith(GROUP_KEY_PREFIX_CUSTOM)) {
-                                    TextButton(onClick = { renameGroupTarget = name }) {
-                                        Text(stringResource(R.string.template_group_rename))
-                                    }
-                                }
-                                TextButton(
-                                    onClick = {
-                                        pendingDeleteGroup =
-                                            Triple(key, name, groupTemplates)
-                                    },
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.delete),
-                                        color = MaterialTheme.colorScheme.error,
-                                    )
-                                }
-                            }
-                        }
-                    }
-                },
-                confirmButton = {},
-                dismissButton = {
-                    TextButton(onClick = { showManageDialog = false }) {
-                        Text(stringResource(R.string.cancel))
-                    }
                 },
             )
         }
