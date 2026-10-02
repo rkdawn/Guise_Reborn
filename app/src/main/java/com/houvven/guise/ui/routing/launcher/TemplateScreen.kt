@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -87,6 +88,27 @@ private fun templateBrandKey(template: Template): String =
 private const val GROUP_KEY_MINE = " mine"
 
 /**
+ * Canonical brand display names keyed by lowercase brand. Source data mixes
+ * casings (samsung/Redmi/REDMI/vivo); sections always show the official form.
+ * Unknown brands (e.g. user-created) fall back to their most frequent casing.
+ */
+private val canonicalBrandDisplayNames = mapOf(
+    "xiaomi" to "Xiaomi",
+    "redmi" to "REDMI",
+    "huawei" to "HUAWEI",
+    "honor" to "HONOR",
+    "oppo" to "OPPO",
+    "oneplus" to "OnePlus",
+    "vivo" to "vivo",
+    "iqoo" to "iQOO",
+    "samsung" to "Samsung",
+    "apple" to "Apple",
+    "asus" to "ASUS",
+    "nubia" to "nubia",
+    "google" to "Google",
+)
+
+/**
  * Section grouping: templates with a brand go to that brand's section (bundled
  * or user-created alike); all brand-less templates (user-created or bundled
  * generic ones) form the first "我的模板" section.
@@ -95,6 +117,36 @@ private fun templateGroupKey(template: Template): String {
     val brand = templateBrandKey(template)
     if (brand.isNotEmpty()) return brand
     return GROUP_KEY_MINE
+}
+
+/**
+ * Numeric-aware name ordering: digit runs compare by value, everything else
+ * case-insensitively. Keeps model generations intuitive
+ * (K70 < K80 < K90 < K100, Xiaomi 13 < 14 < 15 < 17).
+ */
+private val naturalSortChunkRegex = Regex("""(\d+)|(\D+)""")
+
+private fun naturalNameCompare(a: String, b: String): Int {
+    val chunksA = naturalSortChunkRegex.findAll(a).map { it.value }.toList()
+    val chunksB = naturalSortChunkRegex.findAll(b).map { it.value }.toList()
+    val iterA = chunksA.iterator()
+    val iterB = chunksB.iterator()
+    while (iterA.hasNext() && iterB.hasNext()) {
+        val chunkA = iterA.next()
+        val chunkB = iterB.next()
+        val cmp = if (chunkA[0].isDigit() && chunkB[0].isDigit()) {
+            // BigInteger: digit runs can exceed Long (e.g. incremental build ids).
+            chunkA.toBigInteger().compareTo(chunkB.toBigInteger())
+        } else {
+            chunkA.compareTo(chunkB, ignoreCase = true)
+        }
+        if (cmp != 0) return cmp
+    }
+    return when {
+        iterA.hasNext() -> 1
+        iterB.hasNext() -> -1
+        else -> a.compareTo(b, ignoreCase = true)
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -362,13 +414,14 @@ internal fun TemplateScreen() {
     val sections = remember(templates) {
         templates.groupBy(::templateGroupKey)
             .map { (key, group) ->
-                // Most frequent original casing wins (e.g. REDMI vs Redmi).
-                val display = group.map {
-                    runCatching { ModuleConfig.fromJson(it.configuration).brand.trim() }
-                        .getOrDefault("")
-                }.groupingBy { it }.eachCount()
-                    .maxByOrNull { it.value }?.key.orEmpty()
-                val sorted = group.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
+                val display = canonicalBrandDisplayNames[key]
+                    // Unknown brand: most frequent original casing wins.
+                    ?: group.map {
+                        runCatching { ModuleConfig.fromJson(it.configuration).brand.trim() }
+                            .getOrDefault("")
+                    }.groupingBy { it }.eachCount()
+                        .maxByOrNull { it.value }?.key.orEmpty()
+                val sorted = group.sortedWith { x, y -> naturalNameCompare(x.name, y.name) }
                 Triple(key, display, sorted)
             }
             .sortedWith(
@@ -432,11 +485,24 @@ internal fun TemplateScreen() {
                     }
                 }
                 if (!collapsed) {
-                    items(groupTemplates, key = { it.id }) { template ->
-                        TemplateCard(
-                            template = template,
-                            appliedAppCount = appliedCounts[template.id] ?: 0,
-                        )
+                    // Two models per row; a trailing single item gets a spacer
+                    // so both columns stay equally wide.
+                    groupTemplates.chunked(2).forEachIndexed { rowIndex, pair ->
+                        item(key = "row-$key-$rowIndex") {
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                pair.forEach { template ->
+                                    Box(modifier = Modifier.weight(1f)) {
+                                        TemplateCard(
+                                            template = template,
+                                            appliedAppCount = appliedCounts[template.id] ?: 0,
+                                        )
+                                    }
+                                }
+                                if (pair.size == 1) {
+                                    Spacer(modifier = Modifier.weight(1f))
+                                }
+                            }
+                        }
                     }
                 }
             }
