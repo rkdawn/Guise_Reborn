@@ -98,7 +98,10 @@ object BundledTemplateManager {
     private fun BundledTemplateSpec.toTemplate(context: Context): Template = Template(
         id = "$TEMPLATE_ID_PREFIX$seedId",
         name = nameText ?: context.getString(nameRes),
-        description = descriptionText ?: context.getString(descriptionRes),
+        // descriptionRes defaults to 0 for text-only specs; getString(0) throws
+        // Resources.NotFoundException, so only resolve when a real res id exists.
+        description = descriptionText
+            ?: descriptionRes.takeIf { it != 0 }?.let(context::getString),
         type = type,
         configuration = configuration().toJson(),
         packageName = packageName,
