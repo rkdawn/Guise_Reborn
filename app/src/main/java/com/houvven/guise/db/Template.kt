@@ -16,7 +16,11 @@ data class Template(
     var configuration: String,
     var createTime: Long = System.currentTimeMillis(),
     var updateTime: Long = System.currentTimeMillis(),
-    var packageName: String? = null
+    var packageName: String? = null,
+    // 自定义分组名；null = 自动按品牌分组。@Transient：不参与序列化
+    // （二维码分享/指纹比对均不受分组影响），仅由 Room 持久化。
+    @kotlinx.serialization.Transient
+    var groupName: String? = null,
 ) : java.io.Serializable {
 
     object Type {

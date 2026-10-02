@@ -7,7 +7,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.houvven.guise.ContextAmbient
 
-@Database(entities = [Template::class, BundledTemplateState::class], version = 4)
+@Database(entities = [Template::class, BundledTemplateState::class], version = 5)
 abstract class TemplateDBHelper : RoomDatabase() {
 
     abstract fun templateDao(): TemplateDao
@@ -20,7 +20,7 @@ abstract class TemplateDBHelper : RoomDatabase() {
                 "template.db"
             )
                 .allowMainThreadQueries()
-                .addMigrations(MIGRATION_3_4)
+                .addMigrations(MIGRATION_3_4, MIGRATION_4_5)
                 .fallbackToDestructiveMigration(dropAllTables = true)
                 .build()
         }
@@ -46,6 +46,12 @@ abstract class TemplateDBHelper : RoomDatabase() {
                     )
                     """.trimIndent()
                 )
+            }
+        }
+
+        private val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE `Template` ADD COLUMN `groupName` TEXT")
             }
         }
 

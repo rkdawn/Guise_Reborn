@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.runtime.*
 import com.houvven.guise.db.Template
 import com.houvven.guise.db.TemplateDBHelper
+import com.houvven.guise.db.TemplateGroupStore
 import com.houvven.guise.db.defaults.BundledTemplateManager
 import com.houvven.guise.ContextAmbient
 import com.houvven.guise.module.apps.AppInfo
@@ -66,6 +67,36 @@ object LauncherState {
 
     fun deleteTemplates(group: List<Template>) {
         BundledTemplateManager.deleteAll(group)
+        refreshTemplates()
+    }
+
+    /** 把模板移入自建分组（groupName = null 时恢复自动按品牌分组）。 */
+    fun setTemplateGroup(template: Template, groupName: String?) {
+        templateDao.update(
+            template.copy(groupName = groupName, updateTime = System.currentTimeMillis())
+        )
+        refreshTemplates()
+    }
+
+    /** 重命名自建分组：名册改名 + 组内全部模板跟随。 */
+    fun renameGroup(oldName: String, newName: String) {
+        TemplateDBHelper.runInTransaction {
+            templateDao.getAll()
+                .filter { it.groupName == oldName }
+                .forEach {
+                    templateDao.update(
+                        it.copy(groupName = newName, updateTime = System.currentTimeMillis())
+                    )
+                }
+        }
+        TemplateGroupStore.rename(oldName, newName)
+        refreshTemplates()
+    }
+
+    /** 删除自建分组：删除组内模板并从名册移除分组名。 */
+    fun deleteGroup(name: String, templatesInGroup: List<Template>) {
+        BundledTemplateManager.deleteAll(templatesInGroup)
+        TemplateGroupStore.remove(name)
         refreshTemplates()
     }
 
