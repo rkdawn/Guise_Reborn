@@ -11,7 +11,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-iphone-iphone-16-pro-max",
         version = 1,
         nameText = "iPhone 16 Pro Max",
-        descriptionText = "[通用] · 模板作者 GitHub@anorin527 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Apple",
@@ -27,7 +27,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-iphone-iphone-17-pro-max",
         version = 1,
         nameText = "iPhone 17 Pro Max",
-        descriptionText = "[通用] · 模板作者 GitHub@anorin527 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Apple",
@@ -43,7 +43,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-meizu-meizu-18",
         version = 1,
         nameText = "MEIZU 18",
-        descriptionText = "[通用] · 模板作者 未知 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 未知",
         configuration = {
             ModuleConfig(
                 manufacturer = "meizu",
@@ -59,7 +59,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-meizu-meizu-18-pro",
         version = 1,
         nameText = "MEIZU 18 Pro",
-        descriptionText = "[通用] · 模板作者 未知 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 未知",
         configuration = {
             ModuleConfig(
                 manufacturer = "meizu",
@@ -75,7 +75,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-meizu-meizu-20pro",
         version = 1,
         nameText = "MEIZU 20 Pro",
-        descriptionText = "[通用] · 模板作者 未知 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 未知",
         configuration = {
             ModuleConfig(
                 manufacturer = "meizu",
@@ -95,7 +95,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-oppo-oppo-find-x8-ultra",
         version = 1,
         nameText = "Find X8 Ultra",
-        descriptionText = "[通用] · 模板作者 GitHub@Seyud · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Seyud",
         configuration = {
             ModuleConfig(
                 manufacturer = "OPPO",
@@ -112,7 +112,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-pixel-pixel-9a",
         version = 1,
         nameText = "Pixel 9a",
-        descriptionText = "[通用] · 模板作者 Github@jekee550 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 Github@jekee550",
         configuration = {
             ModuleConfig(
                 manufacturer = "Google",
@@ -129,7 +129,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-1",
         version = 1,
         nameText = "Redmi 1",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -145,7 +145,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-1s",
         version = 1,
         nameText = "Redmi 1S",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -161,7 +161,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-2",
         version = 1,
         nameText = "Redmi 2",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -177,7 +177,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-2a",
         version = 1,
         nameText = "Redmi 2A",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -193,7 +193,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-a7-pro-5g",
         version = 1,
         nameText = "REDMI A7 Pro 5G",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -209,7 +209,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k100-pro",
         version = 1,
         nameText = "REDMI K100 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -225,7 +225,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k100-pro-max",
         version = 1,
         nameText = "REDMI K100 Pro Max",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -241,7 +241,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k20",
         version = 1,
         nameText = "Redmi K20",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -257,7 +257,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k30",
         version = 1,
         nameText = "Redmi K30 5G",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -273,7 +273,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k40",
         version = 1,
         nameText = "Redmi K40",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -289,7 +289,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k50-ultra",
         version = 1,
         nameText = "Redmi K50 Ultra",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -305,7 +305,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k60",
         version = 1,
         nameText = "Redmi K60",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -321,7 +321,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k60-pro",
         version = 1,
         nameText = "Redmi K60 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -337,7 +337,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k60-ultra",
         version = 1,
         nameText = "Redmi K60 Ultra",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -353,7 +353,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k70",
         version = 1,
         nameText = "Redmi K70",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -369,7 +369,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k70-pro",
         version = 1,
         nameText = "Redmi K70 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -385,7 +385,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k70-ultra",
         version = 1,
         nameText = "Redmi K70 Ultra",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -401,7 +401,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k70e",
         version = 1,
         nameText = "Redmi K70E",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -417,7 +417,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k80",
         version = 1,
         nameText = "REDMI K80",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -433,7 +433,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k80-pro",
         version = 1,
         nameText = "REDMI K80 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -449,7 +449,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k80-ultra",
         version = 1,
         nameText = "REDMI K80 Ultra",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -465,7 +465,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k90",
         version = 1,
         nameText = "REDMI K90",
-        descriptionText = "[通用] · 模板作者 Github@orangesroof · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 Github@orangesroof",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -481,7 +481,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k90-max",
         version = 1,
         nameText = "REDMI K90 Max",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -497,7 +497,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k90-pro-max",
         version = 1,
         nameText = "REDMI K90 Pro Max",
-        descriptionText = "[通用] · 模板作者 GitHub@anorin527 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -513,7 +513,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k90-ultra",
         version = 1,
         nameText = "REDMI K90 Ultra",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -529,7 +529,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k-pad",
         version = 1,
         nameText = "REDMI K Pad",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -546,7 +546,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-k-pad-2",
         version = 1,
         nameText = "REDMI K Pad 2",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -563,7 +563,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-m100",
         version = 1,
         nameText = "REDMI M100",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -579,7 +579,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-1",
         version = 1,
         nameText = "Redmi Note 4G",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -595,7 +595,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-10",
         version = 1,
         nameText = "Redmi Note 10",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -611,7 +611,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-11",
         version = 1,
         nameText = "Redmi Note 11",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -627,7 +627,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-12-turbo",
         version = 1,
         nameText = "Redmi Note 12 Turbo",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -643,7 +643,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-13-5g",
         version = 1,
         nameText = "Redmi Note 13 5G",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -659,7 +659,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-13-proplus",
         version = 1,
         nameText = "Redmi Note 13 Pro+",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -675,7 +675,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-13-pro",
         version = 1,
         nameText = "Redmi Note 13 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -691,7 +691,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-14-5g",
         version = 1,
         nameText = "Redmi Note 14 5G",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -707,7 +707,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-14-proplus",
         version = 1,
         nameText = "Redmi Note 14 Pro+",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -723,7 +723,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-14-pro",
         version = 1,
         nameText = "Redmi Note 14 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -739,7 +739,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-15",
         version = 1,
         nameText = "REDMI Note 15",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -755,7 +755,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-15-proplus",
         version = 1,
         nameText = "REDMI Note 15 Pro+",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -771,7 +771,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-15-pro",
         version = 1,
         nameText = "REDMI Note 15 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -787,7 +787,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-17",
         version = 1,
         nameText = "REDMI Note 17",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -803,7 +803,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-17-pro",
         version = 1,
         nameText = "REDMI Note 17 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -819,7 +819,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-1s",
         version = 1,
         nameText = "Redmi Note 1S",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -835,7 +835,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-2",
         version = 1,
         nameText = "Redmi Note 2",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -851,7 +851,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-3",
         version = 1,
         nameText = "Redmi Note 3",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -867,7 +867,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-4",
         version = 1,
         nameText = "Redmi Note 4",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -883,7 +883,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-4x",
         version = 1,
         nameText = "Redmi Note 4X",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -899,7 +899,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-5",
         version = 1,
         nameText = "Redmi Note 5",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -915,7 +915,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-6-pro",
         version = 1,
         nameText = "Redmi Note 6 Pro India",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -931,7 +931,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-7",
         version = 1,
         nameText = "Redmi Note 7",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -947,7 +947,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-8",
         version = 1,
         nameText = "Redmi Note 8",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -963,7 +963,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-note-9",
         version = 1,
         nameText = "Redmi Note 9",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -979,7 +979,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-pad-2-pro",
         version = 1,
         nameText = "REDMI Pad 2 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -996,7 +996,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-pad-pro",
         version = 1,
         nameText = "Redmi Pad Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1013,7 +1013,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-pad-se",
         version = 1,
         nameText = "Redmi Pad SE",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1030,7 +1030,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-r70",
         version = 1,
         nameText = "REDMI R70 5G",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1046,7 +1046,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-r70m",
         version = 1,
         nameText = "REDMI R70m 5G",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1062,7 +1062,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-turbo4-pro",
         version = 1,
         nameText = "REDMI Turbo 4 Pro",
-        descriptionText = "[通用] · 模板作者 Github@orangesroof · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 Github@orangesroof",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1078,7 +1078,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-turbo5-max",
         version = 1,
         nameText = "REDMI Turbo 5 Max",
-        descriptionText = "[通用] · 模板作者 Github@orangesroof · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 Github@orangesroof",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1094,7 +1094,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-turbo-3",
         version = 1,
         nameText = "Redmi Turbo 3",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1110,7 +1110,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-turbo-4",
         version = 1,
         nameText = "REDMI Turbo 4",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1126,7 +1126,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-turbo-4-pro",
         version = 1,
         nameText = "REDMI Turbo 4 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1142,7 +1142,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-turbo-5",
         version = 1,
         nameText = "REDMI Turbo 5",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1158,7 +1158,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-redmi-turbo-5-max",
         version = 1,
         nameText = "REDMI Turbo 5 Max",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1174,7 +1174,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-1",
         version = 1,
         nameText = "Xiaomi Mi-One Youth Edition",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1190,7 +1190,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-10",
         version = 1,
         nameText = "Xiaomi 10",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1206,7 +1206,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-10-lite",
         version = 1,
         nameText = "Xiaomi 10 Lite",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1222,7 +1222,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-10-ultra",
         version = 1,
         nameText = "Xiaomi 10 Ultra",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1238,7 +1238,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-10s",
         version = 1,
         nameText = "Xiaomi 10S",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1254,7 +1254,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-11",
         version = 1,
         nameText = "Xiaomi 11",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1270,7 +1270,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-11-lite",
         version = 1,
         nameText = "Xiaomi 11 Lite",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1286,7 +1286,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-11-pro",
         version = 1,
         nameText = "Xiaomi 11 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1302,7 +1302,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-11-ultra",
         version = 1,
         nameText = "Xiaomi 11 Ultra",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1318,7 +1318,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-12",
         version = 1,
         nameText = "Xiaomi 12",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1334,7 +1334,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-12-pro",
         version = 1,
         nameText = "Xiaomi 12 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1350,7 +1350,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-12-pro-mtk",
         version = 1,
         nameText = "Xiaomi 12 Pro 天玑版",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1366,7 +1366,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-12s",
         version = 1,
         nameText = "Xiaomi 12S",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1382,7 +1382,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-12s-pro",
         version = 1,
         nameText = "Xiaomi 12S Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1398,7 +1398,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-12s-ultra",
         version = 1,
         nameText = "Xiaomi 12S Ultra",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1414,7 +1414,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-13",
         version = 1,
         nameText = "Xiaomi 13",
-        descriptionText = "[通用] · 模板作者 GitHub@anorin527 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1430,7 +1430,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-13-pro",
         version = 1,
         nameText = "Xiaomi 13 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@anorin527 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1446,7 +1446,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-13-ultra",
         version = 1,
         nameText = "Xiaomi 13 Ultra",
-        descriptionText = "[通用] · 模板作者 GitHub@anorin527 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1462,7 +1462,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-14",
         version = 1,
         nameText = "Xiaomi 14",
-        descriptionText = "[通用] · 模板作者 GitHub@anorin527 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1478,7 +1478,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-14-pro",
         version = 1,
         nameText = "Xiaomi 14 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@anorin527 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1494,7 +1494,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-14-ultra",
         version = 1,
         nameText = "Xiaomi 14 Ultra",
-        descriptionText = "[通用] · 模板作者 GitHub@anorin527 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1510,7 +1510,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-15",
         version = 1,
         nameText = "Xiaomi 15",
-        descriptionText = "[通用] · 模板作者 GitHub@anorin527 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1526,7 +1526,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-15-pro",
         version = 1,
         nameText = "Xiaomi 15 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@anorin527 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1542,7 +1542,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-15-ultra",
         version = 1,
         nameText = "Xiaomi 15 Ultra",
-        descriptionText = "[通用] · 模板作者 GitHub@anorin527 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1558,7 +1558,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-15s-pro",
         version = 1,
         nameText = "Xiaomi 15S Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@anorin527 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1574,7 +1574,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-17",
         version = 1,
         nameText = "Xiaomi 17",
-        descriptionText = "[通用] · 模板作者 GitHub@anorin527 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1590,7 +1590,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-17-max",
         version = 1,
         nameText = "Xiaomi 17 Max",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1606,7 +1606,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-17-pro",
         version = 1,
         nameText = "Xiaomi 17 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@anorin527 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1622,7 +1622,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-17-pro-max",
         version = 1,
         nameText = "Xiaomi 17 Pro Max",
-        descriptionText = "[通用] · 模板作者 GitHub@anorin527 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1638,7 +1638,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-17-ultra",
         version = 1,
         nameText = "Xiaomi 17 Ultra",
-        descriptionText = "[通用] · 模板作者 Github@orangesroof · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 Github@orangesroof",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1654,7 +1654,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-17-ultra-by-leica",
         version = 1,
         nameText = "Xiaomi 17 Ultra by Leica",
-        descriptionText = "[通用] · 模板作者 GitHub@oTnTo233 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@oTnTo233",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1670,7 +1670,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-17t",
         version = 1,
         nameText = "Xiaomi 17T",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1686,7 +1686,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-17t-pro",
         version = 1,
         nameText = "Xiaomi 17T Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1702,7 +1702,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-18-fold",
         version = 1,
         nameText = "Xiaomi 18 Fold",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1718,7 +1718,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-18-pro",
         version = 1,
         nameText = "Xiaomi 18 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1734,7 +1734,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-18-pro-max",
         version = 1,
         nameText = "Xiaomi 18 Pro Max",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1750,7 +1750,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-2",
         version = 1,
         nameText = "Xiaomi 2",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1767,7 +1767,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-2a",
         version = 1,
         nameText = "Xiaomi 2A",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1783,7 +1783,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-2s",
         version = 1,
         nameText = "Xiaomi 2S",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1800,7 +1800,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-3",
         version = 1,
         nameText = "Xiaomi 3 TD",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1816,7 +1816,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-4",
         version = 1,
         nameText = "Xiaomi 4 LTE",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1832,7 +1832,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-4i",
         version = 1,
         nameText = "Xiaomi 4i",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1848,7 +1848,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-5",
         version = 1,
         nameText = "Xiaomi 5",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1864,7 +1864,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-5c",
         version = 1,
         nameText = "Xiaomi 5c",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1880,7 +1880,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-6",
         version = 1,
         nameText = "Xiaomi 6",
-        descriptionText = "[通用] · 模板作者 GitHub@anorin527 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@anorin527",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1896,7 +1896,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-8",
         version = 1,
         nameText = "Xiaomi 8 Explorer Edition",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1913,7 +1913,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-9",
         version = 1,
         nameText = "Xiaomi 9",
-        descriptionText = "[通用] · 模板作者 GitHub@Z-fly · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@Z-fly",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1929,7 +1929,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-civi",
         version = 1,
         nameText = "Xiaomi Civi",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1945,7 +1945,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-civi-1s",
         version = 1,
         nameText = "Xiaomi Civi 1S",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1961,7 +1961,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-civi-2",
         version = 1,
         nameText = "Xiaomi Civi 2",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1977,7 +1977,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-civi-3",
         version = 1,
         nameText = "Xiaomi Civi 3",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -1993,7 +1993,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-civi-4-pro",
         version = 1,
         nameText = "Xiaomi Civi 4 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2009,7 +2009,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-civi-5-pro",
         version = 1,
         nameText = "Xiaomi Civi 5 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2025,7 +2025,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-mix-4",
         version = 1,
         nameText = "Xiaomi MIX 4",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2041,7 +2041,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-mix-filp-2",
         version = 1,
         nameText = "Xiaomi MIX Flip 2",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2057,7 +2057,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-mix-flip",
         version = 1,
         nameText = "Xiaomi MIX Flip",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2073,7 +2073,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-mix-fold",
         version = 1,
         nameText = "Xiaomi MIX FOLD",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2089,7 +2089,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-mix-fold-2",
         version = 1,
         nameText = "Xiaomi MIX Fold 2",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2105,7 +2105,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-mix-fold-3",
         version = 1,
         nameText = "Xiaomi MIX Fold 3",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2121,7 +2121,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-mix-fold-4",
         version = 1,
         nameText = "Xiaomi MIX Fold 4",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2137,7 +2137,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-5",
         version = 1,
         nameText = "Xiaomi Pad 5",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2154,7 +2154,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-5-pro",
         version = 1,
         nameText = "Xiaomi Pad 5 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2171,7 +2171,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-5-pro-12-4",
         version = 1,
         nameText = "Xiaomi Pad 5 Pro 12.4",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2188,7 +2188,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-5-pro-5g",
         version = 1,
         nameText = "Xiaomi Pad 5 Pro 5G",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2205,7 +2205,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-6",
         version = 1,
         nameText = "Xiaomi Pad 6",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2222,7 +2222,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-6-max",
         version = 1,
         nameText = "Xiaomi Pad 6 Max",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2239,7 +2239,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-6-pro",
         version = 1,
         nameText = "Xiaomi Pad 6 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2256,7 +2256,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-6s-pro",
         version = 1,
         nameText = "Xiaomi Pad 6S Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2273,7 +2273,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-7",
         version = 1,
         nameText = "Xiaomi Pad 7",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2290,7 +2290,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-7-pro",
         version = 1,
         nameText = "Xiaomi Pad 7 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2307,7 +2307,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-7-ultra",
         version = 1,
         nameText = "Xiaomi Pad 7 Ultra",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2324,7 +2324,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-7s-pro-12-5",
         version = 1,
         nameText = "Xiaomi Pad 7S Pro 12.5",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2341,7 +2341,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-8",
         version = 1,
         nameText = "Xiaomi Pad 8",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2358,7 +2358,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-8-pro",
         version = 1,
         nameText = "Xiaomi Pad 8 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2375,7 +2375,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-9",
         version = 1,
         nameText = "Xiaomi Pad 9",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2392,7 +2392,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-9-pro",
         version = 1,
         nameText = "Xiaomi Pad 9 Pro",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2409,7 +2409,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-common-xiaomi-xiaomi-pad-9-pro-max",
         version = 1,
         nameText = "Xiaomi Pad 9 Pro Max",
-        descriptionText = "[通用] · 模板作者 GitHub@JokerQi666 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "作者 GitHub@JokerQi666",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",
@@ -2426,7 +2426,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-gaming-iqoo-iqoo-12-pro",
         version = 1,
         nameText = "VIVO IQOO 12 PRO",
-        descriptionText = "[游戏] · 特点：王者和平都能开启120帧（非插帧模式） · 模板作者 GitHub@qianxiao1234 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "游戏 · 特点：王者和平都能开启120帧（非插帧模式） · 作者 GitHub@qianxiao1234",
         configuration = {
             ModuleConfig(
                 manufacturer = "vivo",
@@ -2442,7 +2442,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-gaming-iqoo-iqoo-13",
         version = 1,
         nameText = "VIVO IQOO 13",
-        descriptionText = "[游戏] · 特点：王者144帧 · 模板作者 GitHub@qianxiao1234 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "游戏 · 特点：王者144帧 · 作者 GitHub@qianxiao1234",
         configuration = {
             ModuleConfig(
                 manufacturer = "vivo",
@@ -2458,7 +2458,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-gaming-iqoo-iqoo-15-ultra",
         version = 1,
         nameText = "VIVO iQOO 15 Ultra",
-        descriptionText = "[游戏] · 模板作者 GitHub@oTnTo233 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "游戏 · 作者 GitHub@oTnTo233",
         configuration = {
             ModuleConfig(
                 manufacturer = "vivo",
@@ -2475,7 +2475,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-gaming-oneplus-oneplus-15",
         version = 1,
         nameText = "OnePlus 15",
-        descriptionText = "[游戏] · 特点：部分游戏165帧 · 模板作者 GitHub@oTnTo233 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "游戏 · 特点：部分游戏165帧 · 作者 GitHub@oTnTo233",
         configuration = {
             ModuleConfig(
                 manufacturer = "OnePlus",
@@ -2491,7 +2491,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-gaming-oneplus-oneplus-16",
         version = 1,
         nameText = "一加 16",
-        descriptionText = "[游戏] · OnePlus 16 · 模板作者 浅雾川 · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "游戏 · OnePlus 16 · 作者 浅雾川",
         configuration = {
             ModuleConfig(
                 manufacturer = "OnePlus",
@@ -2507,7 +2507,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-transcend-samsung-samsung-z-fold6",
         version = 1,
         nameText = "Samsung Galaxy Z Fold6",
-        descriptionText = "[破限] · 微信平板模式 · 模板作者 GitHub@Seyud · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "破限 · 微信平板模式 · 作者 GitHub@Seyud",
         configuration = {
             ModuleConfig(
                 manufacturer = "samsung",
@@ -2520,7 +2520,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
         seedId = "df-transcend-xiaomi-xiaomi-pad-6",
         version = 1,
         nameText = "Xiaomi Pad 6",
-        descriptionText = "[破限] · QQ 平板模式 · 模板作者 GitHub@Seyud · 数据: Seyud/device_faker_config (MIT)",
+        descriptionText = "破限 · QQ 平板模式 · 作者 GitHub@Seyud",
         configuration = {
             ModuleConfig(
                 manufacturer = "Xiaomi",

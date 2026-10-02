@@ -82,8 +82,15 @@ internal fun TemplateTransferDialog(
 
     fun exportJson() = scope.launch {
         runCatching {
+            // Bundled templates re-seed automatically on every install; exporting
+            // them only bloats the payload (and breaks QR encoding entirely).
+            val exportable = LauncherState.templates.value
+                .filterNot { it.id.startsWith("bundled:") }
+            check(exportable.isNotEmpty()) {
+                resources.getString(R.string.template_export_none)
+            }
             val encoded = withContext(Dispatchers.Default) {
-                TemplateTransfer.encode(LauncherState.templates.value)
+                TemplateTransfer.encode(exportable)
             }
             withContext(Dispatchers.IO) {
                 saveFileToDownloadDir(
@@ -102,8 +109,13 @@ internal fun TemplateTransferDialog(
 
     fun createQr(onReady: suspend (Bitmap) -> Unit) = scope.launch {
         runCatching {
+            val exportable = LauncherState.templates.value
+                .filterNot { it.id.startsWith("bundled:") }
+            check(exportable.isNotEmpty()) {
+                resources.getString(R.string.template_export_none)
+            }
             val bitmap = withContext(Dispatchers.Default) {
-                encodeTemplateQrBitmap(TemplateTransfer.encode(LauncherState.templates.value))
+                encodeTemplateQrBitmap(TemplateTransfer.encode(exportable))
             }
             try { onReady(bitmap) } finally { bitmap.recycle() }
         }.onFailure {
