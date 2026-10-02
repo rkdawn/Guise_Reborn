@@ -15,6 +15,24 @@ object BundledTemplateManager {
         TemplateDBHelper.runInTransaction {
             val templates = dao.getAll().associateBy(Template::id).toMutableMap()
             val states = dao.getBundledTemplateStates().associateBy(BundledTemplateState::seedId)
+            val activeSeedIds = BundledTemplateCatalog.entries.mapTo(mutableSetOf()) { it.seedId }
+
+            // Retire bundled templates that no longer ship (e.g. the library was
+            // curated down). Only auto-delete when the user never touched them;
+            // modified copies survive as user data.
+            states.values
+                .filter { it.seedId !in activeSeedIds && !it.deleted }
+                .forEach { state ->
+                    val current = templates[state.templateId]
+                    if (current != null &&
+                        state.managed &&
+                        current.fingerprint() == state.installedFingerprint
+                    ) {
+                        dao.delete(current)
+                        templates.remove(current.id)
+                        dao.upsertBundledTemplateState(state.copy(deleted = true))
+                    }
+                }
 
             BundledTemplateCatalog.entries.forEach { spec ->
                 val desired = spec.toTemplate(context)
