@@ -1692,30 +1692,4 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
             )
         },
     ),
-    BundledTemplateSpec(
-        seedId = "df-extra-rog-phone-8",
-        version = 1,
-        nameText = "ROG Phone 8",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "asus",
-                brand = "asus",
-                model = "AI2401",
-                marketname = "ROG Phone 8",
-            )
-        },
-    ),
-    BundledTemplateSpec(
-        seedId = "df-extra-rog-phone-9",
-        version = 1,
-        nameText = "ROG Phone 9",
-        configuration = {
-            ModuleConfig(
-                manufacturer = "asus",
-                brand = "asus",
-                model = "AI2501",
-                marketname = "ROG Phone 9",
-            )
-        },
-    ),
 )

@@ -99,12 +99,11 @@ private val canonicalBrandDisplayNames = mapOf(
     "honor" to "HONOR",
     "oppo" to "OPPO",
     "oneplus" to "OnePlus",
-    "vivo" to "vivo",
+    "vivo" to "Vivo",
     "iqoo" to "iQOO",
     "samsung" to "Samsung",
     "apple" to "Apple",
-    "asus" to "ASUS",
-    "nubia" to "nubia",
+    "nubia" to "Nubia",
     "google" to "Google",
 )
 
