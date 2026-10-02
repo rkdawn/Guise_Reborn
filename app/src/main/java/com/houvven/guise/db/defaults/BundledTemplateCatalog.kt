@@ -9,8 +9,10 @@ import com.houvven.guise.xposed.config.ModuleConfig
 internal data class BundledTemplateSpec(
     val seedId: String,
     val version: Int,
-    @StringRes val nameRes: Int,
-    @StringRes val descriptionRes: Int,
+    @StringRes val nameRes: Int = 0,
+    @StringRes val descriptionRes: Int = 0,
+    val nameText: String? = null,
+    val descriptionText: String? = null,
     val type: Int = Template.Type.COMMON,
     val packageName: String? = null,
     val configuration: () -> ModuleConfig,
@@ -42,5 +44,5 @@ internal object BundledTemplateCatalog {
                 ModuleConfig(screenshotsFlag = HooksValue.SCREENSHOTS_ENABLE)
             },
         ),
-    )
+    ) + bundledDeviceTemplateEntries
 }

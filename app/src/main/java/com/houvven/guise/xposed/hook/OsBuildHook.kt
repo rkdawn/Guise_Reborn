@@ -13,6 +13,11 @@ class OsBuildHook : LoadPackageHandler {
     override fun onHook() {
         val fakedProps = mutableMapOf<String, String>()
 
+        fun MutableMap<String, String>.putWithVariants(key: String, value: String) {
+            put(key, value)
+            expandPropVariants(key).forEach { put(it, value) }
+        }
+
         config.run {
             // Triple: Build field name, configured value, matching ro.* property
             listOf(
@@ -25,16 +30,35 @@ class OsBuildHook : LoadPackageHandler {
                 Triple("HARDWARE", hardware, "ro.hardware"),
                 Triple("ID", buildId, "ro.build.id"),
                 Triple("FINGERPRINT", fingerPrint, "ro.build.fingerprint"),
+                Triple("DISPLAY", displayId, "ro.build.display.id"),
             ).forEach { (field, value, propKey) ->
                 if (value.isNotBlank()) {
                     Build::class.java.setStaticField(field, value)
-                    fakedProps[propKey] = value
+                    fakedProps.putWithVariants(propKey, value)
                 }
+            }
+
+            if (incremental.isNotBlank()) {
+                Build.VERSION::class.java.setStaticField("INCREMENTAL", incremental)
+                fakedProps.putWithVariants("ro.build.version.incremental", incremental)
+            }
+            if (securityPatch.isNotBlank()) {
+                Build.VERSION::class.java.setStaticField("SECURITY_PATCH", securityPatch)
+                fakedProps.putWithVariants("ro.build.version.security_patch", securityPatch)
+            }
+            if (marketname.isNotBlank()) {
+                // No Build field; HyperOS/ColorOS surfaces and some apps read the
+                // property directly. OPPO/OnePlus read the vendor oplus variant.
+                fakedProps.putWithVariants("ro.product.marketname", marketname)
+                fakedProps["ro.vendor.oplus.market.name"] = marketname
+            }
+            if (characteristics.isNotBlank()) {
+                fakedProps["ro.build.characteristics"] = characteristics
             }
 
             if (androidVersion.isNotBlank()) {
                 Build.VERSION::class.java.setStaticField("RELEASE", androidVersion)
-                fakedProps["ro.build.version.release"] = androidVersion
+                fakedProps.putWithVariants("ro.build.version.release", androidVersion)
             }
             if (sdkInt != -1) {
                 if (sdkInt < Build.VERSION.SDK_INT) {
@@ -46,12 +70,50 @@ class OsBuildHook : LoadPackageHandler {
                     )
                 } else {
                     Build.VERSION::class.java.setStaticField<Any>("SDK_INT", sdkInt)
-                    fakedProps["ro.build.version.sdk"] = sdkInt.toString()
+                    fakedProps.putWithVariants("ro.build.version.sdk", sdkInt.toString())
                 }
             }
         }
 
         hookSystemProperties(fakedProps)
+    }
+
+    companion object {
+        // Partition variant families, mirroring how bionic routes ro.* reads on
+        // modern devices (notably OnePlus/OPPO). Only writing the base key leaves
+        // apps that read a partition-specific variant with the real value.
+        private val PRODUCT_PARTITIONS =
+            listOf("odm", "vendor", "system", "system_ext", "product", "bootimage")
+        private val BUILD_PARTITIONS = listOf("system", "vendor", "product")
+        private val FINGERPRINT_PARTITIONS =
+            listOf("system", "vendor", "product", "odm", "bootimage")
+        private val SECURITY_PATCH_PARTITIONS = listOf(
+            "system", "system_ext", "product", "vendor", "odm",
+            "bootimage", "system_dlkm", "vendor_dlkm", "odm_dlkm",
+        )
+
+        private fun expandPropVariants(key: String): List<String> = when {
+            key.startsWith("ro.product.") -> PRODUCT_PARTITIONS.map {
+                "ro.product.$it.${key.removePrefix("ro.product.")}"
+            }
+            key == "ro.build.fingerprint" -> FINGERPRINT_PARTITIONS.map {
+                "ro.$it.build.fingerprint"
+            }
+            key == "ro.build.id" -> BUILD_PARTITIONS.map { "ro.$it.build.id" }
+            key == "ro.build.version.release" -> BUILD_PARTITIONS.map {
+                "ro.$it.build.version.release"
+            }
+            key == "ro.build.version.sdk" -> BUILD_PARTITIONS.map {
+                "ro.$it.build.version.sdk"
+            }
+            key == "ro.build.version.incremental" -> BUILD_PARTITIONS.map {
+                "ro.$it.build.version.incremental"
+            }
+            key == "ro.build.version.security_patch" ->
+                SECURITY_PATCH_PARTITIONS.map { "ro.$it.build.version.security_patch" } +
+                    "ro.vendor.build.security_patch"
+            else -> emptyList()
+        }
     }
 
     /**
@@ -60,8 +122,7 @@ class OsBuildHook : LoadPackageHandler {
      * Build fields may not be writable at all. Intercepting SystemProperties.get
      * covers both cases — same approach as the original Guise PropertiesHooker.
      */
-    private fun hookSystemProperties(fakedProps: Map<String, String>) {
-        if (fakedProps.isEmpty()) return
+    private fun hookSystemProperties(fakedProps: Map<String, String>) {        if (fakedProps.isEmpty()) return
         runXposedCatching {
             val systemProperties = findClass("android.os.SystemProperties")
 

@@ -191,15 +191,30 @@ private fun ConfigEditorItems(state: ModuleConfigState, launch: () -> Unit) {
         stringResource(R.string.device_system_finger_print),
     ) {
         val generatedBuildId = Randoms.randomBuildId(state.androidVersion.value)
+        val generatedIncremental = Randoms.randomIncremental()
         state.buildId.value = generatedBuildId
+        state.incremental.value = generatedIncremental
+        if (state.securityPatch.value.isBlank()) {
+            state.securityPatch.value = Randoms.securityPatchFromBuildId(generatedBuildId)
+        }
         Randoms.randomFingerprint(
             brand = state.brand.value,
             product = state.product.value,
             device = state.device.value,
             androidVersion = state.androidVersion.value,
             buildId = generatedBuildId,
+            incremental = generatedIncremental,
         )
     }
+    InputBox(state.marketname, stringResource(R.string.device_marketname))
+    InputBox(state.displayId, stringResource(R.string.device_display_id))
+    InputBox(state.incremental, stringResource(R.string.device_incremental))
+    InputBox(state.securityPatch, stringResource(R.string.device_security_patch))
+    InputBox(
+        state.characteristics,
+        stringResource(R.string.device_characteristics),
+        supportingText = stringResource(R.string.device_characteristics_summary),
+    )
 
 
     Title(text = stringResource(R.string.title_net_info))

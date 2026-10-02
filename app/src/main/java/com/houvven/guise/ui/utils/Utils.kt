@@ -37,6 +37,7 @@ suspend fun oneClickRandom(state: ModuleConfigState, context: Context) {
         val version = values.android.substringBefore('|')
         val api = values.android.substringAfter('|')
         val generatedBuildId = Randoms.randomBuildId(version)
+        val generatedIncremental = Randoms.randomIncremental()
 
         brand.value = values.brand
         manufacturer.value = values.manufacturer
@@ -45,12 +46,15 @@ suspend fun oneClickRandom(state: ModuleConfigState, context: Context) {
         androidVersion.value = version
         sdkInt.value = api
         buildId.value = generatedBuildId
+        incremental.value = generatedIncremental
+        securityPatch.value = Randoms.securityPatchFromBuildId(generatedBuildId)
         fingerPrint.value = Randoms.randomFingerprint(
             brand = values.brand,
             product = fingerprintProduct,
             device = values.device,
             androidVersion = version,
             buildId = generatedBuildId,
+            incremental = generatedIncremental,
         )
 
         networkType.value = PresetRepository.get(context).networks.random().value

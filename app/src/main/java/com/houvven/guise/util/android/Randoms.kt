@@ -100,14 +100,39 @@ object Randoms {
         device: String,
         androidVersion: String,
         buildId: String,
+        incremental: String = randomIncremental(),
     ): String {
         val safeBrand = brand.fingerprintPart("generic")
         val safeDevice = device.fingerprintPart("device")
         val safeProduct = product.fingerprintPart(safeDevice)
         val safeRelease = androidVersion.fingerprintPart("16")
         val safeBuildId = buildId.fingerprintPart(randomBuildId(androidVersion))
+        val safeIncremental = incremental.fingerprintPart(randomIncremental())
         return "$safeBrand/$safeProduct/$safeDevice:$safeRelease/$safeBuildId/" +
-            "${randomDigits(7)}:user/release-keys"
+            "$safeIncremental:user/release-keys"
+    }
+
+    /** INCREMENTAL is conventionally a short digits-only build sequence. */
+    fun randomIncremental(): String = randomDigits(7)
+
+    /**
+     * Derives a plausible security patch date (yyyy-mm-dd) from a build id of the
+     * form "BP2A.250816.003" (YYMMDD segment). Falls back to a recent-ish date.
+     */
+    fun securityPatchFromBuildId(buildId: String): String {
+        val match = Regex("\\.(\\d{2})(\\d{2})(\\d{2})\\.").find(buildId)
+        return if (match != null) {
+            val (yy, mm, dd) = match.destructured
+            "20$yy-$mm-$dd"
+        } else {
+            String.format(
+                Locale.ROOT,
+                "202%d-%02d-%02d",
+                Random.nextInt(4, 7),
+                Random.nextInt(1, 13),
+                Random.nextInt(1, 29),
+            )
+        }
     }
 
     fun randomBatteryLevel(): Int = Random.nextInt(101)

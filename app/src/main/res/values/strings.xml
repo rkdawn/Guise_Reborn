@@ -55,6 +55,12 @@
     <string name="device_system_finger_print" translatable="false">FingerPrint</string>
     <string name="device_cpu">CPU Code</string>
     <string name="device_build_id" translatable="false">Build ID</string>
+    <string name="device_marketname">Market Name</string>
+    <string name="device_display_id" translatable="false">Display ID</string>
+    <string name="device_incremental" translatable="false">Incremental</string>
+    <string name="device_security_patch">Security Patch</string>
+    <string name="device_characteristics">Characteristics</string>
+    <string name="device_characteristics_summary">e.g. tablet — unlocks tablet/foldable UI checks</string>
     <string name="net_type">Internet Type</string>
     <string name="net_wifi_ssid">WiFi-SSID</string>
     <string name="net_wifi_bssid" translatable="false">WiFi-BSSID</string>

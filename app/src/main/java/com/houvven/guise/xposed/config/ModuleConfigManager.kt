@@ -222,6 +222,11 @@ private constructor(
         densityDpi = state.densityDpi.value.toIntOrNull() ?: -1
         networkType = state.networkType.value.toIntOrNull() ?: HooksValue.NET_UNHOOK
         fingerPrint = state.fingerPrint.value
+        marketname = state.marketname.value
+        displayId = state.displayId.value
+        incremental = state.incremental.value
+        securityPatch = state.securityPatch.value
+        characteristics = state.characteristics.value
         wifiSSID = state.wifiSSID.value
         wifiBSSID = state.wifiBSSID.value
         wifiMacAddress = state.wifiMacAddress.value

@@ -79,8 +79,8 @@ object BundledTemplateManager {
 
     private fun BundledTemplateSpec.toTemplate(context: Context): Template = Template(
         id = "$TEMPLATE_ID_PREFIX$seedId",
-        name = context.getString(nameRes),
-        description = context.getString(descriptionRes),
+        name = nameText ?: context.getString(nameRes),
+        description = descriptionText ?: context.getString(descriptionRes),
         type = type,
         configuration = configuration().toJson(),
         packageName = packageName,

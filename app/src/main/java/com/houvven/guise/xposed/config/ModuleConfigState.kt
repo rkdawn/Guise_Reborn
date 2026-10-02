@@ -17,6 +17,11 @@ class ModuleConfigState private constructor(moduleConfig: ModuleConfig) {
     val sdkInt = mutableStateOf(moduleConfig.sdkInt.display(-1))
     val densityDpi = mutableStateOf(moduleConfig.densityDpi.display(-1))
     val fingerPrint = mutableStateOf(moduleConfig.fingerPrint)
+    val marketname = mutableStateOf(moduleConfig.marketname)
+    val displayId = mutableStateOf(moduleConfig.displayId)
+    val incremental = mutableStateOf(moduleConfig.incremental)
+    val securityPatch = mutableStateOf(moduleConfig.securityPatch)
+    val characteristics = mutableStateOf(moduleConfig.characteristics)
 
     val networkType = mutableStateOf(moduleConfig.networkType.display(HooksValue.NET_UNHOOK))
     val wifiSSID = mutableStateOf(moduleConfig.wifiSSID)
@@ -64,7 +69,7 @@ class ModuleConfigState private constructor(moduleConfig: ModuleConfig) {
         get() = listOf(
             brand, manufacturer, model, product, device, board, hardware, buildId,
             androidVersion, sdkInt, densityDpi,
-            fingerPrint,
+            fingerPrint, marketname, displayId, incremental, securityPatch, characteristics,
             networkType, wifiSSID, wifiBSSID, wifiMacAddress, simOperator, simOperatorName,
             simCountry, imei, phoneNum, androidId, lac, cid, longitude, latitude, versionCode,
             versionName, batteryLevel, language, timeZone,
