@@ -5,9 +5,12 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.awaitLongPressOrCancellation
+import androidx.compose.foundation.gestures.awaitTouchSlopOrCancellation
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.drag
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -51,6 +54,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -69,6 +73,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.Lifecycle
@@ -261,8 +266,8 @@ private fun TemplateCard(
                 if (subtitle.isNotBlank()) {
                     Text(
                         text = subtitle,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.68f),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.75f),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -277,6 +282,7 @@ private fun TemplateCard(
                         appliedAppCount,
                     ),
                     style = MaterialTheme.typography.labelMedium,
+                    fontSize = 13.sp,
                     color = MaterialTheme.colorScheme.primary,
                     maxLines = 1,
                 )
@@ -413,8 +419,11 @@ internal fun TemplateScreen() {
     var moveGroupTemplate by remember { mutableStateOf<Template?>(null) }
 
     // 编辑态：长按分区标题进入，行内显示删除按钮、可直接拖拽排序；
-    // 顶栏切换为「完成」退出。
+    // 顶栏切换为「完成」退出。editModeState 供手势协程读当前值——
+    // 手势通道的 key 不能含 editMode，否则长按开始拖拽的瞬间
+    // （startSectionDrag 置 true）会重启 pointerInput，把这次拖拽掐断。
     var editMode by remember { mutableStateOf(false) }
+    val editModeState by rememberUpdatedState(editMode)
 
     val topBar = @Composable {
         var topBarMenuExpanded by remember { mutableStateOf(false) }
@@ -622,10 +631,10 @@ internal fun TemplateScreen() {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .onGloballyPositioned { coordinates ->
-                                    if (headerStridePx == 0f) {
-                                        headerStridePx =
-                                            coordinates.size.height + sectionSpacingPx
-                                    }
+                                    // 每次都更新：编辑态行高（含删除按钮）与普通态不同，
+                                    // 只在首次测量会导致拖拽换位阈值算偏。
+                                    headerStridePx =
+                                        coordinates.size.height + sectionSpacingPx
                                 }
                                 .padding(horizontal = 16.dp)
                                 .pointerInput(key) {
@@ -646,31 +655,32 @@ internal fun TemplateScreen() {
                                         onLongPress = {},
                                     )
                                 }
-                                .pointerInput(key, editMode) {
-                                    // 编辑态外长按进入编辑态并开始拖；编辑态内直接拖。
-                                    if (editMode) {
-                                        detectDragGestures(
-                                            onDragStart = { startSectionDrag(key) },
-                                            onDrag = { change, dragAmount ->
-                                                change.consume()
-                                                onSectionDrag(key, dragAmount.y)
-                                            },
-                                            onDragEnd = endSectionDrag,
-                                            onDragCancel = cancelSectionDrag,
-                                        )
-                                    } else {
-                                        detectDragGesturesAfterLongPress(
-                                            onDragStart = { startSectionDrag(key) },
-                                            onDrag = { change, dragAmount ->
-                                                change.consume()
-                                                onSectionDrag(key, dragAmount.y)
-                                            },
-                                            onDragEnd = endSectionDrag,
-                                            onDragCancel = cancelSectionDrag,
-                                        )
+                                .pointerInput(key) {
+                                    // 单一手势通道，key 不含 editMode：手势中途不重启。
+                                    // 编辑态外需长按激活；编辑态内越过触控阈值即拖。
+                                    awaitEachGesture {
+                                        val down = awaitFirstDown(requireUnconsumed = false)
+                                        val dragPointerId = if (editModeState) {
+                                            down.id
+                                        } else {
+                                            awaitLongPressOrCancellation(down.id)?.id
+                                        } ?: return@awaitEachGesture
+                                        // 普通点击（未过阈值）不进入拖拽，留给点按手势。
+                                        awaitTouchSlopOrCancellation(dragPointerId) { change, _ ->
+                                            change.consume()
+                                        } ?: return@awaitEachGesture
+                                        startSectionDrag(key)
+                                        val completed = drag(dragPointerId) { change ->
+                                            change.consume()
+                                            onSectionDrag(
+                                                key,
+                                                change.position.y - change.previousPosition.y,
+                                            )
+                                        }
+                                        if (completed) endSectionDrag() else cancelSectionDrag()
                                     }
                                 }
-                                .padding(top = 10.dp, bottom = 2.dp),
+                                .padding(top = 12.dp, bottom = 4.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             if (editMode) {
@@ -680,24 +690,25 @@ internal fun TemplateScreen() {
                                             pendingDeleteGroup =
                                                 Triple(key, sectionName, groupTemplates)
                                         },
-                                        modifier = Modifier.size(28.dp),
+                                        modifier = Modifier.size(32.dp),
                                     ) {
                                         SimplifyIcon(
                                             Icons.Default.RemoveCircleOutline,
                                             tint = MaterialTheme.colorScheme.error,
-                                            modifier = Modifier.size(18.dp),
+                                            modifier = Modifier.size(20.dp),
                                         )
                                     }
                                 } else {
-                                    Spacer(modifier = Modifier.size(28.dp))
+                                    Spacer(modifier = Modifier.size(32.dp))
                                 }
                                 Spacer(modifier = Modifier.width(6.dp))
                             }
                             Text(
                                 text = sectionName,
                                 modifier = Modifier.weight(1f),
-                                style = MaterialTheme.typography.titleSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.W500,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                             )
@@ -705,6 +716,7 @@ internal fun TemplateScreen() {
                                 SimplifyIcon(
                                     Icons.Default.DragHandle,
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.size(20.dp),
                                 )
                             } else {
                                 Text(
@@ -713,6 +725,7 @@ internal fun TemplateScreen() {
                                         groupTemplates.size,
                                     ),
                                     style = MaterialTheme.typography.labelMedium,
+                                    fontSize = 13.sp,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     maxLines = 1,
                                 )
@@ -724,6 +737,7 @@ internal fun TemplateScreen() {
                                         Icons.Default.KeyboardArrowDown
                                     },
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.size(20.dp),
                                 )
                             }
                         }
@@ -811,6 +825,10 @@ internal fun TemplateScreen() {
                 onDismiss = { renameGroupTarget = null },
                 onConfirm = { newName ->
                     LauncherState.renameGroup(oldName, newName)
+                    TemplateGroupStore.renameSectionKey(
+                        GROUP_KEY_PREFIX_CUSTOM + oldName,
+                        GROUP_KEY_PREFIX_CUSTOM + newName,
+                    )
                     groupRevision++
                     renameGroupTarget = null
                 },

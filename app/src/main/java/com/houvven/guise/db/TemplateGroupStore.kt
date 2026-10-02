@@ -43,6 +43,13 @@ object TemplateGroupStore {
         prefs.edit().putString(KEY_SECTION_ORDER, keys.joinToString("\n")).apply()
     }
 
+    /** 分组改名后排序记录里的 key 跟随，保住手动排好的位置。 */
+    fun renameSectionKey(oldKey: String, newKey: String) {
+        val order = sectionOrder()
+        if (oldKey !in order) return
+        saveSectionOrder(order.map { if (it == oldKey) newKey else it })
+    }
+
     private fun update(transform: (Set<String>) -> Set<String>) {
         val current = prefs.getStringSet(KEY_NAMES, emptySet()) ?: emptySet()
         prefs.edit().putStringSet(KEY_NAMES, transform(current.toSet())).apply()
