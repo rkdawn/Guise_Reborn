@@ -2467,7 +2467,7 @@ internal val bundledDeviceTemplateEntries: List<BundledTemplateSpec> = listOf(
                 device = "V2546A",
                 fingerPrint = "vivo/PD2546/PD2546:16/BP2A.250605.031.A3/compiler260228234011:user/release-keys",
                 marketname = "VIVO iQOO 15 Ultra",
-                product = "V2546A",
+                product = "PD2546",
             )
         },
     ),

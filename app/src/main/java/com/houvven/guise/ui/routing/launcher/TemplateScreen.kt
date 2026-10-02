@@ -4,6 +4,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -84,8 +86,16 @@ private object TemplateTypeFilter {
 
 private val typeFilter = mutableIntStateOf(TemplateTypeFilter.ALL)
 private val searchKey = mutableStateOf("")
+private val brandFilter = mutableStateOf<String?>(null)
 private val requestEnable = mutableStateOf(false)
 private val requestEnableTemplate = mutableStateOf<Template?>(null)
+
+private const val BRAND_KEY_OTHER = ""
+
+/** Brand identity used for grouping; blank brands collapse into one "other" bucket. */
+private fun templateBrandKey(template: Template): String =
+    runCatching { ModuleConfig.fromJson(template.configuration).brand.trim() }
+        .getOrNull().orEmpty().lowercase()
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -399,6 +409,60 @@ internal fun TemplateScreen() {
         }
     }
 
+    @Composable
+    fun BrandFilter() {
+        val brandGroups = remember(templates) {
+            templates.groupBy(::templateBrandKey)
+                .mapValues { (_, group) ->
+                    // Most frequent original casing wins (e.g. REDMI vs Redmi).
+                    group.map {
+                        runCatching { ModuleConfig.fromJson(it.configuration).brand.trim() }
+                            .getOrDefault("")
+                    }.groupingBy { it }.eachCount()
+                        .maxByOrNull { it.value }?.key.orEmpty() to group.size
+                }
+                .toList()
+                .sortedByDescending { it.second.second }
+        }
+        if (brandGroups.size <= 1) return
+        Row(
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState())
+                .padding(start = 15.dp, top = 4.dp),
+        ) {
+            FilterChip(
+                selected = brandFilter.value == null,
+                onClick = { brandFilter.value = null },
+                label = {
+                    Text(
+                        stringResource(
+                            R.string.template_type_with_count,
+                            stringResource(R.string.template_type_all),
+                            templates.size,
+                        )
+                    )
+                },
+            )
+            brandGroups.forEach { (key, group) ->
+                val (display, count) = group
+                Spacer(modifier = Modifier.width(5.dp))
+                FilterChip(
+                    selected = brandFilter.value == key,
+                    onClick = { brandFilter.value = key },
+                    label = {
+                        Text(
+                            stringResource(
+                                R.string.template_type_with_count,
+                                display.ifBlank { stringResource(R.string.template_brand_other) },
+                                count,
+                            )
+                        )
+                    },
+                )
+            }
+        }
+    }
+
     Scaffold(
         topBar = topBar,
         floatingActionButton = floatingButton,
@@ -409,6 +473,7 @@ internal fun TemplateScreen() {
                 bottom = paddingValues.calculateBottomPadding(),
             )
         ) {
+            BrandFilter()
             TypeFilter()
             SearchBox(value = searchKey.value, onValueChange = { searchKey.value = it })
             LazyColumn(
@@ -421,10 +486,13 @@ internal fun TemplateScreen() {
                         it.description?.contains(key, ignoreCase = true) == true ||
                         it.configuration.contains(key, ignoreCase = true)
                 }
+                val brandFiltered = brandFilter.value?.let { selectedBrand ->
+                    searched.filter { templateBrandKey(it) == selectedBrand }
+                } ?: searched
                 val visibleTemplates = if (typeFilter.intValue == TemplateTypeFilter.ALL) {
-                    searched
+                    brandFiltered
                 } else {
-                    searched.filter { it.type == typeFilter.intValue }
+                    brandFiltered.filter { it.type == typeFilter.intValue }
                 }
                 items(visibleTemplates, key = { it.id }) { template ->
                     TemplateCard(
