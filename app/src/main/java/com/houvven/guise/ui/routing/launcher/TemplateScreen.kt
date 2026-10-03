@@ -8,6 +8,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -54,6 +56,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -62,6 +65,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalResources
@@ -97,6 +101,7 @@ import com.houvven.guise.xposed.config.ModuleConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 // =============================================================================
@@ -136,6 +141,12 @@ private const val GROUP_KEY_PREFIX_CUSTOM = "custom:"
 
 /** 分区行间距（LazyColumn spacedBy 与拖拽步长共用，必须一致）。 */
 private val SECTION_SPACING = 4.dp
+
+/** 拖拽时距视口上下边缘多近开始自动滚动。 */
+private val AUTO_SCROLL_EDGE = 72.dp
+
+/** 自动滚动每帧的步长（px）。约 60fps 下 8px/帧 ≈ 480px/s。 */
+private const val AUTO_SCROLL_STEP_PX = 8f
 
 /** 品牌标识：取配置里的 brand，空白归入「我的模板」。 */
 private fun templateBrandKey(template: Template): String =
@@ -257,9 +268,13 @@ private fun naturalNameCompare(a: String, b: String): Int {
 // ---------------------------------------------------------------------------
 
 /**
- * 长按（或编辑态按住手柄）开始拖拽：拖动中按实测行高换算目标位置就地
- * 换位，松手后由调用方持久化。行高由布局实时回写——编辑态行高与普通态
- * 不同，必须每次测量，不能用首次值缓存。
+ * 长按（或编辑态按住手柄）开始拖拽：拖动中按实测的分区头位置换算目标位置
+ * 就地换位，松手后由调用方持久化。
+ *
+ * 位置一律走实测而不是固定步长：stickyHeader 会把滚动中的分区头钉在视口
+ * 顶部，它的 onGloballyPositioned 报告的是被钳制后的位置。若把这份数据写进
+ * 共享字段，最后一个复合的分区会覆盖掉正在拖拽分区的真实行高，换位阈值随之
+ * 漂移。因此每个分区的 bounds 各自记录，只信任「本次布局真正移动过」的那些。
  */
 @Stable
 private class SectionDragState {
@@ -267,58 +282,114 @@ private class SectionDragState {
     var draggingKey by mutableStateOf<String?>(null)
         private set
 
-    /** 累计位移：被拖分区视觉跟随 + 换位换算。 */
-    var offsetPx by mutableFloatStateOf(0f)
+    /** 被拖分区叠加的视觉位移（px，正数向下）。同时决定它落在哪个槽位。 */
+    var offsetY by mutableFloatStateOf(0f)
         private set
 
-    /** 分区头行高 + 列表间距，onGloballyPositioned 每次布局回写。 */
-    var stridePx by mutableFloatStateOf(0f)
+    /**
+     * 各分区头的实测基准位置（相对列表原点，已剔除拖动位移）。
+     *
+     * 必须按分区各记一份，不能用共享的单一「行高」：stickyHeader 会把滚动中的
+     * 分区头钉在视口顶部，它的测量值被钳制，写入共享字段后会覆盖掉正在拖拽
+     * 分区的真实位置，换位阈值随之漂移。
+     */
+    var layoutBounds by mutableStateOf<Map<String, HeaderBounds>>(emptyMap())
+        private set
+
+    /** 本帧累积的指针拖动增量，由布局效果消费。 */
+    private var pointerDeltaY = 0f
+
+    /** 本帧累积的自动滚动增量，由布局效果消费。 */
+    private var scrollDeltaY = 0f
 
     /** 拖拽中的实时顺序。 */
     val liveOrder = mutableStateListOf<String>()
 
-    /** 本次拖拽开始时的顺序，用于判断是否真的换过位。 */
-    private val originalOrder = mutableListOf<String>()
+    /** 进入拖拽那一刻的顺序，用于判断松手时是否真的换过位。 */
+    private var originalOrder: List<String> = emptyList()
 
-    /** 本次拖拽是否真的发生过换位（长按只是进编辑态，未拖动时不算）。 */
+    /** 本次拖拽是否真的发生过换位（长按只是进编辑态、未拖动时不算）。 */
     private var reordered = false
 
     val isDragging: Boolean get() = draggingKey != null
 
-    fun start(key: String, currentOrder: List<String>) {
+    /** 被拖分区头的实测基准位置（相对列表原点）；尚未测量到时为 null。 */
+    val draggingBoundsTop: Float?
+        get() = draggingKey?.let(layoutBounds::get)?.top
+
+    /** 开启本次拖拽，[currentOrder] 为进入拖拽那一刻的顺序。 */
+    fun begin(key: String, currentOrder: List<String>) {
         liveOrder.clear()
         liveOrder.addAll(currentOrder)
-        originalOrder.clear()
-        originalOrder.addAll(currentOrder)
+        originalOrder = currentOrder.toList()
         reordered = false
         draggingKey = key
-        offsetPx = 0f
+        offsetY = 0f
+        pointerDeltaY = 0f
+        scrollDeltaY = 0f
+        layoutBounds = emptyMap()
     }
 
-    fun dragBy(key: String, deltaY: Float) {
-        offsetPx += deltaY
-        if (stridePx <= 0f) return
-        val from = liveOrder.indexOf(key)
-        if (from < 0) return
-        val target = (from + (offsetPx / stridePx).roundToInt())
-            .coerceIn(0, liveOrder.lastIndex)
-        if (target != from) {
-            liveOrder.add(target, liveOrder.removeAt(from))
-            offsetPx -= (target - from) * stridePx
-            reordered = true
-        }
+    /** 记录指针拖动增量。位置计算与换位判定都在 [tick] 里统一做。 */
+    fun dragBy(deltaY: Float) {
+        pointerDeltaY += deltaY
     }
 
     /**
-     * 正常松手：仅当真的换过位时返回待持久化的顺序，否则返回 null 并重置。
+     * 回写一个分区头的实测基准位置。
      *
-     * 这里是「长按 = 进编辑态」和「长按拖动 = 排序」共用入口的坑：start() 总会把
-     * 当前顺序灌进 liveOrder，若只看 liveOrder 是否非空，则每次长按松手都会把当时
-     * 的分区顺序整体固化进 savedOrder。一旦固化，之后新增的品牌分区不在 savedOrder
-     * 里，indexOf 得到 -1 而被排到末尾，默认排序规则就永久失效了。
+     * 每帧所有可见分区头都会走一遍这里，写完之后 [tick] 才能拿到同一帧的一致
+     * 布局；因此这里只累积、不做换位判定。
+     */
+    fun measure(key: String, baselineTop: Float, height: Float) {
+        if (baselineTop.isNaN() || height <= 0f) return
+        val existing = layoutBounds[key]
+        if (existing != null && existing.top == baselineTop && existing.height == height) return
+        layoutBounds = layoutBounds + (key to HeaderBounds(baselineTop, height))
+    }
+
+    /** 自动滚动带动列表后，等价于被拖分区反向位移了这么多。 */
+    fun scrollBy(deltaY: Float) {
+        scrollDeltaY += deltaY
+    }
+
+    /**
+     * 拖拽帧循环：消费本帧增量 → 平移 → 判定换位。由 LaunchedEffect 驱动，
+     * 只在 [draggingKey] 非空时运行。
+     */
+    fun tick() {
+        val key = draggingKey ?: return
+        val delta = pointerDeltaY + scrollDeltaY
+        pointerDeltaY = 0f
+        scrollDeltaY = 0f
+
+        val from = liveOrder.indexOf(key)
+        if (from < 0) return
+
+        // 先平移，再按平移后的落点判定槽位 —— 顺序反了会永远慢一帧。
+        offsetY += delta
+
+        val dragged = layoutBounds[key] ?: return
+        val to = nearestSlot(dragged, layoutBounds, liveOrder, key, offsetY) ?: return
+        if (to == from) return
+
+        // 被拖分区头渲染在 dragged.top + offsetY，换位后它应当落在新槽位，
+        // 因此 offsetY 要加上「新槽位 - 基准位置」，否则视觉位置会跳一格。
+        val anchorTop = slotTop(to, layoutBounds, liveOrder)
+        liveOrder.add(to, liveOrder.removeAt(from))
+        offsetY += anchorTop - dragged.top
+        reordered = true
+    }
+
+    /**
+     * 拖拽结束后取最终顺序。仅当真的换过位才返回待持久化的顺序，否则返回
+     * null —— 长按只是进编辑态，未拖动时不能把当时的顺序固化下来。
+     *
+     * 固化一次的后果：此后新增的品牌分区不在 savedOrder 里，indexOf 得到 -1
+     * 被排到末尾，默认排序规则永久失效。
      */
     fun finish(): List<String>? {
-        val order = if (reordered && liveOrder != originalOrder) liveOrder.toList() else null
+        val order = if (reordered && liveOrder.toList() != originalOrder) liveOrder.toList() else null
         reset()
         return order
     }
@@ -327,12 +398,50 @@ private class SectionDragState {
 
     private fun reset() {
         draggingKey = null
-        offsetPx = 0f
+        offsetY = 0f
+        layoutBounds = emptyMap()
+        pointerDeltaY = 0f
+        scrollDeltaY = 0f
         liveOrder.clear()
-        originalOrder.clear()
+        originalOrder = emptyList()
         reordered = false
     }
+
+    /**
+     * [dragged] 在 [offsetY] 位移后落在哪个槽位。
+     *
+     * 判定方式：把「除被拖分区以外的所有分区头」按与预测落点的距离排序，取最近的
+     * 作为锚点，落在锚点上方则插入锚点之前，下方则之后。不能拿被拖分区自己的
+     * 实测值参与比较 —— 那是拖动开始前的旧值，会把结果吸回原位。
+     */
+    private fun nearestSlot(
+        dragged: HeaderBounds,
+        bounds: Map<String, HeaderBounds>,
+        order: List<String>,
+        draggingKey: String,
+        offsetY: Float,
+    ): Int? {
+        val predictedTop = dragged.top + offsetY
+        val anchor = order.withIndex()
+            .filter { it.value != draggingKey }
+            .mapNotNull { (index, key) -> bounds[key]?.let { index to it.top } }
+            .minByOrNull { (_, top) -> abs(top - predictedTop) }
+            ?: return null
+        return if (predictedTop < anchor.second) anchor.first else anchor.first + 1
+    }
+
+    /** 槽位对应的分区头位置；无实测数据时返回 0。 */
+    private fun slotTop(index: Int, bounds: Map<String, HeaderBounds>, order: List<String>): Float =
+        order.getOrNull(index)?.let(bounds::get)?.top ?: 0f
 }
+
+/** 分区头相对列表原点的基准位置（已剔除自身 translationY）。
+ *
+ * [top] 是「渲染位置 = top + offsetY」里的那个 top：非拖拽分区 offsetY 恒为 0，
+ * 拖拽分区由调用方把已叠加的 translationY 减掉。这样反复测量不会把视觉位移
+ * 当成真实位移累积进判定。
+ */
+private data class HeaderBounds(val top: Float, val height: Float)
 
 // ---------------------------------------------------------------------------
 // 主界面
@@ -385,10 +494,25 @@ internal fun TemplateScreen() {
     // —— 编辑态 + 拖拽排序 ——
     var editMode by remember { mutableStateOf(false) }
     val dragState = remember { SectionDragState() }
+    val listState = rememberLazyListState()
+    val density = LocalDensity.current
+    /** 列表自身在窗口中的纵坐标，用于把分区头的窗口测量换算成列表内坐标。 */
+    var listWindowTop by remember { mutableFloatStateOf(0f) }
+    /** 列表视口高度（px），自动滚动的边界判定用。 */
+    var viewportPx by remember { mutableFloatStateOf(0f) }
+    /**
+     * 进入编辑态前的折叠状态快照。
+     *
+     * 编辑态把所有分区强制折叠只是「显示上折叠」，不能写回 collapsedKeys ——
+     * 那份状态是用户手动设置的结果，写回等于借一次排序把用户的展开习惯抹掉，
+     * 退出编辑态后内容会莫名其妙全部收起来。这里整体备份、退出时还原。
+     */
+    var collapsedSnapshot by remember { mutableStateOf<Map<String, Boolean>?>(null) }
 
     fun startSectionDrag(key: String) {
+        if (!editMode) collapsedSnapshot = collapsedKeys.toMap()
         editMode = true
-        dragState.start(key, sections.map { it.key })
+        dragState.begin(key, sections.map { it.key })
     }
 
     fun finishSectionDrag(persist: Boolean) {
@@ -403,6 +527,37 @@ internal fun TemplateScreen() {
     fun exitEditMode() {
         dragState.cancel()
         editMode = false
+        collapsedSnapshot?.let { snapshot ->
+            collapsedKeys.clear()
+            snapshot.forEach { (key, value) -> collapsedKeys[key] = value }
+        }
+        collapsedSnapshot = null
+    }
+
+    // B5：拖拽帧循环。指针增量与自动滚动增量统一在这里消费，保证「平移」和
+    // 「换位」用的是同一帧的数据。分区头位置由各自回写，不依赖任何全局步长，
+    // 因此 stickyHeader 钉住谁都不影响判定。
+    LaunchedEffect(dragState) {
+        while (dragState.isDragging) {
+            withFrameNanos { }
+            dragState.tick()
+            // 拖到视口上下边缘时自动滚动，让被拖分区能到达屏幕外的目标位置。
+            val baselineTop = dragState.draggingBoundsTop
+            if (baselineTop != null && viewportPx > 0f) {
+                val top = baselineTop + dragState.offsetY
+                val edgePx = with(density) { AUTO_SCROLL_EDGE.toPx() }
+                val stepPx = when {
+                    top < edgePx -> -AUTO_SCROLL_STEP_PX
+                    top > viewportPx - edgePx -> AUTO_SCROLL_STEP_PX
+                    else -> 0f
+                }
+                if (stepPx != 0f) {
+                    val consumed = listState.scrollBy(stepPx)
+                    // 列表内容上移 consumed，等价于被拖分区在该坐标系里反向位移。
+                    if (consumed != 0f) dragState.scrollBy(consumed)
+                }
+            }
+        }
     }
 
     // 拖拽中按实时顺序渲染，松手后回到正式顺序。
@@ -491,10 +646,18 @@ internal fun TemplateScreen() {
         },
     ) { paddingValues ->
         LazyColumn(
-            modifier = Modifier.padding(
-                top = paddingValues.calculateTopPadding(),
-                bottom = paddingValues.calculateBottomPadding(),
-            ),
+            state = listState,
+            modifier = Modifier
+                .padding(
+                    top = paddingValues.calculateTopPadding(),
+                    bottom = paddingValues.calculateBottomPadding(),
+                )
+                // 分区头的测量以窗口为原点，这里记录列表自身的窗口纵坐标，
+                // 换算成「列表内布局坐标」后才能与滚动偏移相减。
+                .onGloballyPositioned { coordinates ->
+                    listWindowTop = coordinates.positionInWindow().y
+                    viewportPx = coordinates.size.height.toFloat()
+                },
             contentPadding = PaddingValues(vertical = 4.dp),
             verticalArrangement = Arrangement.spacedBy(SECTION_SPACING),
         ) {
@@ -508,6 +671,7 @@ internal fun TemplateScreen() {
                         collapsed = collapsed,
                         editMode = editMode,
                         dragState = dragState,
+                        listWindowTop = listWindowTop,
                         onTap = {
                             when {
                                 editMode && section.isCustom ->
@@ -614,12 +778,12 @@ private fun SectionHeader(
     collapsed: Boolean,
     editMode: Boolean,
     dragState: SectionDragState,
+    listWindowTop: Float,
     onTap: () -> Unit,
     onDeleteRequest: () -> Unit,
     onDragStart: () -> Unit,
     onDragFinish: (persist: Boolean) -> Unit,
 ) {
-    val spacingPx = with(LocalDensity.current) { SECTION_SPACING.toPx() }
     val dragging = dragState.draggingKey == section.key
     // 铁律 3：pointerInput 协程只启动一次，捕获首次组合的 lambda；
     // 经 rememberUpdatedState 转发，保证手势回调永远读到最新值
@@ -637,15 +801,26 @@ private fun SectionHeader(
         modifier = Modifier
             .zIndex(if (dragging) 1f else 0f)
             .graphicsLayer {
-                translationY = if (dragging) dragState.offsetPx else 0f
+                translationY = if (dragging) dragState.offsetY else 0f
             },
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .onGloballyPositioned { coordinates ->
-                    // 每次布局都更新：编辑态行高与普通态不同。
-                    dragState.stridePx = coordinates.size.height + spacingPx
+                    // 换算成「相对列表原点的坐标」：窗口坐标 - 列表原点。
+                    // 这个差值已经把滚动算了进去（内容随滚动整体上移），
+                    // 因此列表滚不滚都不影响槽位之间的比较，无需单独读
+                    // scrollOffset —— 那反而会和自动滚动赛跑。
+                    // 再减掉自身的 translationY，剔除拖动带来的视觉位移。
+                    val baseline = coordinates.positionInWindow().y -
+                        listWindowTop -
+                        if (dragging) dragState.offsetY else 0f
+                    dragState.measure(
+                        key = section.key,
+                        baselineTop = baseline,
+                        height = coordinates.size.height.toFloat(),
+                    )
                 }
                 .padding(horizontal = 16.dp)
                 .pointerInput(section.key) {
@@ -660,7 +835,7 @@ private fun SectionHeader(
                         onDragStart = { currentOnDragStart() },
                         onDrag = { change, dragAmount ->
                             change.consume()
-                            dragState.dragBy(section.key, dragAmount.y)
+                            dragState.dragBy(dragAmount.y)
                         },
                         onDragEnd = { currentOnDragFinish(true) },
                         onDragCancel = { currentOnDragFinish(false) },
@@ -708,7 +883,7 @@ private fun SectionHeader(
                                 onDragStart = { currentOnDragStart() },
                                 onDrag = { change, dragAmount ->
                                     change.consume()
-                                    dragState.dragBy(section.key, dragAmount.y)
+                                    dragState.dragBy(dragAmount.y)
                                 },
                                 onDragEnd = { currentOnDragFinish(true) },
                                 onDragCancel = { currentOnDragFinish(false) },
