@@ -10,10 +10,12 @@ import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -52,6 +54,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
@@ -61,6 +64,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -75,7 +79,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.Lifecycle
@@ -86,6 +89,7 @@ import com.houvven.guise.db.Template
 import com.houvven.guise.db.TemplateGroupStore
 import com.houvven.guise.db.TemplateTransfer
 import com.houvven.guise.ui.GlobalSnackbarHost
+import com.houvven.guise.ui.components.SearchBox
 import com.houvven.guise.ui.components.simplify.SimplifyDropdownMenuItem
 import com.houvven.guise.ui.components.simplify.SimplifyIcon
 import com.houvven.guise.ui.components.simplify.SimplifyImage
@@ -148,6 +152,9 @@ private val AUTO_SCROLL_EDGE = 72.dp
 /** 自动滚动每帧的步长（px）。约 60fps 下 8px/帧 ≈ 480px/s。 */
 private const val AUTO_SCROLL_STEP_PX = 8f
 
+/** 顶部搜索框占位高度：列表顶部内边距要让开这么多，否则首行被压住。 */
+private val SEARCH_BAR_HEIGHT = 56.dp
+
 /** 品牌标识：取配置里的 brand，空白归入「我的模板」。 */
 private fun templateBrandKey(template: Template): String =
     runCatching { ModuleConfig.fromJson(template.configuration).brand.trim() }
@@ -196,10 +203,17 @@ private data class TemplateSection(
  * - 名册（TemplateGroupStore）里的空自建分组也要出现；
  * - 排序：用户手动拖拽过的顺序优先，未记录过的分区按
  *   「我的模板 < 自建分组 < 厂商（按展示名）」排在末尾。
+ *
+ * [customGroups] 由调用方一次读好传进来：这是同步的 SharedPreferences 读取，
+ * 不放在组合里反复调用。
  */
-private fun buildSections(templates: List<Template>, mineLabel: String): List<TemplateSection> {
+private fun buildSections(
+    templates: List<Template>,
+    mineLabel: String,
+    customGroups: List<String>,
+): List<TemplateSection> {
     val grouped = templates.groupBy(::templateGroupKey).toMutableMap()
-    TemplateGroupStore.customGroups().forEach { name ->
+    customGroups.forEach { name ->
         grouped.putIfAbsent(GROUP_KEY_PREFIX_CUSTOM + name, emptyList())
     }
     val savedOrder = TemplateGroupStore.sectionOrder()
@@ -261,6 +275,18 @@ private fun naturalNameCompare(a: String, b: String): Int {
         iterB.hasNext() -> -1
         else -> a.compareTo(b, ignoreCase = true)
     }
+}
+
+/**
+ * 模板是否命中搜索词：匹配模板名，也匹配型号副标题（用户常记得的是
+ * 「SGT-AL00」这类型号代码而不是模板名）。
+ */
+private fun Template.matchesQuery(query: String): Boolean {
+    if (name.contains(query, ignoreCase = true)) return true
+    val model = runCatching { ModuleConfig.fromJson(configuration).model.trim() }
+        .getOrDefault("")
+    if (model.isNotBlank() && model.contains(query, ignoreCase = true)) return true
+    return description?.contains(query, ignoreCase = true) == true
 }
 
 // ---------------------------------------------------------------------------
@@ -485,14 +511,33 @@ internal fun TemplateScreen() {
     // —— 分区数据：groupRevision 驱动名册/排序变化后的重算 ——
     var groupRevision by remember { mutableIntStateOf(0) }
     val mineLabel = stringResource(R.string.template_group_mine)
-    val sections = remember(templates, groupRevision, mineLabel) {
-        buildSections(templates, mineLabel)
+    // 自建分组名单只读一次，交给分区组装和「移动到分组」对话框共用；
+    // TemplateGroupStore 走的是同步 SharedPreferences，不能在组合里反复调用。
+    val customGroups = remember(groupRevision) { TemplateGroupStore.customGroups() }
+    val sections = remember(templates, customGroups, mineLabel) {
+        buildSections(templates, mineLabel, customGroups)
     }
+    // 建组/改名时用于查重的名字集合。
+    //
+    // 只比对现有分区的展示名是不够的：「自建分组」与「品牌分区」是两套互不
+    // 相干的 key 空间（custom: 前缀 vs 品牌 key），用户可以建一个叫「Xiaomi」
+    // 的自建分组，它不会与品牌分区撞 key，于是列表里出现两个都叫 Xiaomi 的
+    // 分区、行为却完全不同。把已知品牌名一并纳入，从入口堵住。
+    val sectionDisplayNames = sections.map { it.displayName }
+    val brandDisplayNames = canonicalBrandDisplayNames.values.toList()
     // 折叠状态；缺省折叠，页面打开时是紧凑的索引视图。
     val collapsedKeys = remember { mutableStateMapOf<String, Boolean>() }
+    // 分区被删除/改名后清掉对应条目。不清的话名字会一直挂在表里，同一个 key
+    // 再次出现（重建同名分组）时会带着删除前的折叠状态回来。
+    val sectionKeys = sections.map { it.key }
+    LaunchedEffect(sectionKeys) {
+        collapsedKeys.keys.retainAll(sectionKeys.toSet())
+    }
 
     // —— 编辑态 + 拖拽排序 ——
     var editMode by remember { mutableStateOf(false) }
+    /** 搜索词：按模板名/型号副标题过滤，命中分区自动展开。 */
+    var searchQuery by remember { mutableStateOf("") }
     val dragState = remember { SectionDragState() }
     val listState = rememberLazyListState()
     val density = LocalDensity.current
@@ -512,6 +557,8 @@ internal fun TemplateScreen() {
     fun startSectionDrag(key: String) {
         if (!editMode) collapsedSnapshot = collapsedKeys.toMap()
         editMode = true
+        // 搜索框在编辑态隐藏，残留的查询会把分区过滤掉，看起来像分区丢了。
+        searchQuery = ""
         dragState.begin(key, sections.map { it.key })
     }
 
@@ -565,6 +612,22 @@ internal fun TemplateScreen() {
         dragState.liveOrder.mapNotNull { key -> sections.firstOrNull { it.key == key } }
     } else {
         sections
+    }
+
+    // —— 搜索过滤 ——
+    //
+    // 只过滤展示，不动 visibleSections —— 拖拽预览用的是分区全集，
+    // 搜索过滤掺进去会让排序时缺少分区。
+    val searching = searchQuery.isNotBlank()
+    val displayedSections = remember(visibleSections, searchQuery) {
+        if (searchQuery.isBlank()) {
+            visibleSections
+        } else {
+            visibleSections.mapNotNull { section ->
+                val hit = section.templates.filter { it.matchesQuery(searchQuery) }
+                section.copy(templates = hit).takeIf { hit.isNotEmpty() }
+            }
+        }
     }
 
     // —— 对话框状态 ——
@@ -645,11 +708,13 @@ internal fun TemplateScreen() {
             }
         },
     ) { paddingValues ->
+        Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
             state = listState,
             modifier = Modifier
+                .fillMaxSize()
                 .padding(
-                    top = paddingValues.calculateTopPadding(),
+                    top = paddingValues.calculateTopPadding() + SEARCH_BAR_HEIGHT,
                     bottom = paddingValues.calculateBottomPadding(),
                 )
                 // 分区头的测量以窗口为原点，这里记录列表自身的窗口纵坐标，
@@ -661,10 +726,11 @@ internal fun TemplateScreen() {
             contentPadding = PaddingValues(vertical = 4.dp),
             verticalArrangement = Arrangement.spacedBy(SECTION_SPACING),
         ) {
-            visibleSections.forEach { section ->
+            displayedSections.forEach { section ->
                 val storedCollapsed = collapsedKeys[section.key] != false
                 // 编辑态全部强制折叠：标题行等高，拖拽才好对位。
-                val collapsed = storedCollapsed || editMode
+                // 搜索时反过来全部展开，否则命中结果藏在折叠的分区里看不见。
+                val collapsed = if (searching) false else storedCollapsed || editMode
                 stickyHeader(key = "header-${section.key}") {
                     SectionHeader(
                         section = section,
@@ -699,6 +765,21 @@ internal fun TemplateScreen() {
             }
         }
 
+            // 搜索框浮在列表之上；进入编辑态时隐藏（编辑态下所有分区强制
+            // 折叠，搜索的展开结果会被折叠逻辑覆盖，两者语义冲突）。
+            if (!editMode) {
+                SearchBox(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    placeholder = stringResource(R.string.search_placeholder),
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(horizontal = 15.dp, vertical = 3.dp)
+                        .zIndex(2f),
+                )
+            }
+        }
+
         requestEnableTemplate.value?.let {
             EnableTemplateDialog(state = requestEnable, template = it)
         }
@@ -726,7 +807,7 @@ internal fun TemplateScreen() {
             GroupNameDialog(
                 title = stringResource(R.string.template_group_create),
                 initialName = "",
-                existingNames = sections.map { it.displayName },
+                existingNames = sectionDisplayNames + brandDisplayNames,
                 onDismiss = { showCreateGroupDialog = false },
                 onConfirm = { name ->
                     TemplateGroupStore.add(name)
@@ -741,7 +822,7 @@ internal fun TemplateScreen() {
             GroupNameDialog(
                 title = stringResource(R.string.template_group_rename),
                 initialName = oldName,
-                existingNames = sections.map { it.displayName },
+                existingNames = sectionDisplayNames + brandDisplayNames,
                 onDismiss = { renameGroupTarget = null },
                 onConfirm = { newName ->
                     LauncherState.renameGroup(oldName, newName)
@@ -758,6 +839,7 @@ internal fun TemplateScreen() {
         // —— 移动模板到分组（「自动」= 恢复按品牌分组）——
         moveGroupTemplate?.let { template ->
             MoveToGroupDialog(
+                customGroups = customGroups,
                 onDismiss = { moveGroupTemplate = null },
                 onSelect = { groupName ->
                     LauncherState.setTemplateGroup(template, groupName)
@@ -815,7 +897,7 @@ private fun SectionHeader(
                     // 再减掉自身的 translationY，剔除拖动带来的视觉位移。
                     val baseline = coordinates.positionInWindow().y -
                         listWindowTop -
-                        if (dragging) dragState.offsetY else 0f
+                        (if (dragging) dragState.offsetY else 0f)
                     dragState.measure(
                         key = section.key,
                         baselineTop = baseline,
@@ -866,7 +948,9 @@ private fun SectionHeader(
                 modifier = Modifier.weight(1f),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.W500,
-                color = MaterialTheme.colorScheme.onSurface,
+                // 分区标题用主色，与顶栏标题、其它页面的小节标题保持同一套
+                // 「标题 = primary」的用法。
+                color = MaterialTheme.colorScheme.primary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -897,7 +981,6 @@ private fun SectionHeader(
                         section.templates.size,
                     ),
                     style = MaterialTheme.typography.labelMedium,
-                    fontSize = 13.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                 )
@@ -931,20 +1014,31 @@ private fun TemplateRow(
     val resources = LocalResources.current
     val scope = rememberCoroutineScope()
     val isExclusive = template.type == Template.Type.EXCLUSIVE
-    val exclusiveIcon = remember(isExclusive, template.packageName) {
-        if (!isExclusive) {
+    val exclusivePackage = template.packageName?.takeIf { isExclusive }
+    // 「是否安装」以包名能否解析为准，不能拿图标是否已解码来判断：图标是异步
+    // 加载的，加载期间为 null，若据此判定会对着已安装的应用弹「未安装」。
+    val installed = exclusivePackage == null ||
+        remember(exclusivePackage) {
+            runCatching {
+                context.packageManager.getApplicationInfo(exclusivePackage, 0)
+            }.isSuccess
+        }
+    // B8：图标解码放在 IO 线程。原实现在组合期直接 getApplicationIcon + toBitmap，
+    // 自适应图标要先渲染到 Bitmap 再读回，主线程做这件事会让列表滚动掉帧；
+    // 一轮编辑态下所有模板行同时组合时尤其明显。
+    val exclusiveIcon by produceState<ImageBitmap?>(null, exclusivePackage) {
+        value = if (exclusivePackage == null) {
             null
         } else {
-            template.packageName?.let { packageName ->
+            withContext(Dispatchers.IO) {
                 runCatching {
-                    context.packageManager.getApplicationIcon(packageName)
+                    context.packageManager.getApplicationIcon(exclusivePackage)
                         .toBitmap()
                         .asImageBitmap()
                 }.getOrNull()
             }
         }
     }
-    val installed = !isExclusive || exclusiveIcon != null
     var menuExpanded by remember { mutableStateOf(false) }
 
     // 副标题：型号代码（如 SGT-AL00）优先，其次用户描述。
@@ -994,13 +1088,15 @@ private fun TemplateRow(
                 val iconModifier = Modifier
                     .size(25.dp)
                     .padding(bottom = 5.dp)
-                if (exclusiveIcon == null) {
+                // 用局部变量接收，才能对这种委托属性做智能转换。
+                val icon = exclusiveIcon
+                if (icon == null) {
                     SimplifyImage(
                         Icons.Default.DoNotDisturbOnTotalSilence,
                         modifier = iconModifier,
                     )
                 } else {
-                    SimplifyImage(exclusiveIcon, iconModifier)
+                    SimplifyImage(icon, iconModifier)
                 }
                 Spacer(modifier = Modifier.width(10.dp))
             }
@@ -1010,7 +1106,6 @@ private fun TemplateRow(
                         text = template.name,
                         modifier = Modifier.weight(1f),
                         style = MaterialTheme.typography.titleSmall,
-                        fontSize = 15.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -1034,7 +1129,6 @@ private fun TemplateRow(
                     Text(
                         text = subtitle,
                         style = MaterialTheme.typography.bodySmall,
-                        fontSize = 13.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.75f),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -1050,7 +1144,6 @@ private fun TemplateRow(
                         appliedAppCount,
                     ),
                     style = MaterialTheme.typography.labelMedium,
-                    fontSize = 13.sp,
                     color = MaterialTheme.colorScheme.primary,
                     maxLines = 1,
                 )
@@ -1208,6 +1301,7 @@ private fun GroupNameDialog(
 /** 移动模板到分组：null = 自动（按品牌分组），其余为全部自建分组。 */
 @Composable
 private fun MoveToGroupDialog(
+    customGroups: List<String>,
     onDismiss: () -> Unit,
     onSelect: (String?) -> Unit,
 ) {
@@ -1216,7 +1310,7 @@ private fun MoveToGroupDialog(
         title = { Text(stringResource(R.string.template_group_move)) },
         text = {
             Column {
-                (listOf<String?>(null) + TemplateGroupStore.customGroups())
+                (listOf<String?>(null) + customGroups)
                     .forEach { option ->
                         Text(
                             text = option ?: stringResource(R.string.template_group_auto),
