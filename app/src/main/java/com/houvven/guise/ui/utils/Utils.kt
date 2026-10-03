@@ -2,6 +2,9 @@ package com.houvven.guise.ui.utils
 
 import android.content.Context
 import com.houvven.guise.db.TemplateDBHelper
+import com.houvven.guise.device.DeviceBrand
+import com.houvven.guise.device.DeviceCatalogRepository
+import com.houvven.guise.device.DeviceModel
 import com.houvven.guise.module.preset.CarrierPreset
 import com.houvven.guise.module.preset.CarrierPresetRepository
 import com.houvven.guise.module.preset.PresetRepository
@@ -15,12 +18,20 @@ import kotlinx.coroutines.withContext
 suspend fun oneClickRandom(state: ModuleConfigState, context: Context) {
     val values = withContext(Dispatchers.IO) {
         // Prefer a real device profile from the template library (bundled +
-        // user templates); fall back to fully random identity when none exist.
+        // user templates); fall back to a real model from the device catalog so the
+        // generated identity stays coherent, then to plain randomness.
         val template = TemplateDBHelper.templateDao.getAll()
             .asSequence()
             .mapNotNull { runCatching { ModuleConfig.fromJson(it.configuration) }.getOrNull() }
             .filter { it.brand.isNotBlank() || it.model.isNotBlank() }
             .toList()
+            .randomOrNull()
+        // Only consulted when the template library is empty (or lacks a given field).
+        val catalogPick = runCatching { DeviceCatalogRepository.get(context) }
+            .getOrNull()
+            ?.brands
+            .orEmpty()
+            .flatMap { brand -> brand.models.map { model -> brand to model } }
             .randomOrNull()
         val android = PresetRepository.get(context).androidVersions
             .filter { it.value.substringAfter('|').toIntOrNull()?.let { api -> api >= 29 } == true }
@@ -28,6 +39,8 @@ suspend fun oneClickRandom(state: ModuleConfigState, context: Context) {
         val carrier = CarrierPresetRepository.get(context).random()
         RandomSelection(
             template = template,
+            catalogBrand = catalogPick?.first,
+            catalogModel = catalogPick?.second,
             android = android.value,
             carrier = carrier,
         )
@@ -43,20 +56,34 @@ suspend fun oneClickRandom(state: ModuleConfigState, context: Context) {
         val resolvedIncremental = values.template?.incremental?.takeIf(String::isNotBlank)
             ?: Randoms.randomIncremental()
 
-        val tplBrand = values.template?.brand.orEmpty()
-        val tplDevice = values.template?.device.orEmpty()
-        val tplProduct = values.template?.product.orEmpty()
+        // Each field falls back independently: a template may predate a field that was
+        // added later (marketname / displayId / incremental / …), and blanking those was
+        // the old behaviour — it produced an identity with empty Build fields, which is
+        // worse than plain randomness rather than a "fully random identity".
+        val catalogBrand = values.catalogBrand
+        val catalogModel = values.catalogModel
+        val tplBrand = values.template?.brand?.takeIf(String::isNotBlank)
+            ?: catalogBrand?.buildBrand.orEmpty()
+        val tplDevice = values.template?.device?.takeIf(String::isNotBlank)
+            ?: catalogModel?.resolvedDevice().orEmpty()
+        val tplProduct = values.template?.product?.takeIf(String::isNotBlank)
+            ?: tplDevice
 
         brand.value = tplBrand
-        manufacturer.value = values.template?.manufacturer.orEmpty().ifBlank { tplBrand }
-        model.value = values.template?.model.orEmpty()
+        manufacturer.value = values.template?.manufacturer?.takeIf(String::isNotBlank)
+            ?: catalogBrand?.manufacturer.orEmpty().ifBlank { tplBrand }
+        model.value = values.template?.model?.takeIf(String::isNotBlank)
+            ?: catalogModel?.model.orEmpty()
         device.value = tplDevice
         product.value = tplProduct
-        board.value = values.template?.board.orEmpty()
-        hardware.value = values.template?.hardware.orEmpty()
-        marketname.value = values.template?.marketname.orEmpty()
-        displayId.value = values.template?.displayId.orEmpty()
-        characteristics.value = values.template?.characteristics.orEmpty()
+        board.value = values.template?.board?.takeIf(String::isNotBlank) ?: tplDevice
+        hardware.value = values.template?.hardware?.takeIf(String::isNotBlank) ?: tplDevice
+        marketname.value = values.template?.marketname?.takeIf(String::isNotBlank)
+            ?: catalogModel?.name.orEmpty()
+        displayId.value = values.template?.displayId?.takeIf(String::isNotBlank)
+            ?: resolvedBuildId
+        characteristics.value = values.template?.characteristics?.takeIf(String::isNotBlank)
+            ?: "default"
         androidVersion.value = version
         sdkInt.value = api
         buildId.value = resolvedBuildId
@@ -99,6 +126,10 @@ suspend fun oneClickRandom(state: ModuleConfigState, context: Context) {
 
 private data class RandomSelection(
     val template: ModuleConfig?,
+    /** 设备目录中随机选中的品牌，仅当模板库无可用档案时作为兜底。 */
+    val catalogBrand: DeviceBrand?,
+    /** 设备目录中随机选中的机型，与 [catalogBrand] 配对。 */
+    val catalogModel: DeviceModel?,
     val android: String,
     val carrier: CarrierPreset,
 )
