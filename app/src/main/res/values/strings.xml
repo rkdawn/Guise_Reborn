@@ -61,7 +61,6 @@
     <string name="device_security_patch">Security Patch</string>
     <string name="device_characteristics">Characteristics</string>
     <string name="device_characteristics_summary">e.g. tablet — unlocks tablet/foldable UI checks</string>
-    <string name="template_brand_other">Other</string>
     <string name="template_group_count">%1$d templates</string>
     <string name="template_group_count_short">%1$d</string>
     <string name="template_group_mine">My Templates</string>

@@ -116,23 +116,32 @@ object Randoms {
     fun randomIncremental(): String = randomDigits(7)
 
     /**
-     * Derives a plausible security patch date (yyyy-mm-dd) from a build id of the
-     * form "BP2A.250816.003" (YYMMDD segment). Falls back to a recent-ish date.
+     * 从形如 "BP2A.250816.003" 的 build id 推导一个合理的补丁日期（yyyy-mm-dd），
+     * 取其中的 YYMMDD 段；该段不是合法日期时回落到随机日期。
+     *
+     * 正则本身只管「三位两两分组」，管不住数值范围：像 "BP2A.259999.003" 这种
+     * 用户随手编的 build id 会原样还原成 2099-99-99。补丁日期是要注入进系统
+     * 属性暴露给应用的，非法值比随机值更容易被识别成伪装。
      */
     fun securityPatchFromBuildId(buildId: String): String {
         val match = Regex("\\.(\\d{2})(\\d{2})(\\d{2})\\.").find(buildId)
-        return if (match != null) {
+        if (match != null) {
             val (yy, mm, dd) = match.destructured
-            "20$yy-$mm-$dd"
-        } else {
-            String.format(
-                Locale.ROOT,
-                "202%d-%02d-%02d",
-                Random.nextInt(4, 7),
-                Random.nextInt(1, 13),
-                Random.nextInt(1, 29),
-            )
+            val year = yy.toInt()
+            val month = mm.toInt()
+            val day = dd.toInt()
+            // 年份上限与随机兜底保持一致（2020..2026），月份/日期按最宽的日历范围校验。
+            if (year in 20..26 && month in 1..12 && day in 1..31) {
+                return "20$yy-$mm-$dd"
+            }
         }
+        return String.format(
+            Locale.ROOT,
+            "202%d-%02d-%02d",
+            Random.nextInt(4, 7),
+            Random.nextInt(1, 13),
+            Random.nextInt(1, 29),
+        )
     }
 
     fun randomBatteryLevel(): Int = Random.nextInt(101)

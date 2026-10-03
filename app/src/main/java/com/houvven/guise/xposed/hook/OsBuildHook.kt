@@ -122,7 +122,8 @@ class OsBuildHook : LoadPackageHandler {
      * Build fields may not be writable at all. Intercepting SystemProperties.get
      * covers both cases — same approach as the original Guise PropertiesHooker.
      */
-    private fun hookSystemProperties(fakedProps: Map<String, String>) {        if (fakedProps.isEmpty()) return
+    private fun hookSystemProperties(fakedProps: Map<String, String>) {
+        if (fakedProps.isEmpty()) return
         runXposedCatching {
             val systemProperties = findClass("android.os.SystemProperties")
 
