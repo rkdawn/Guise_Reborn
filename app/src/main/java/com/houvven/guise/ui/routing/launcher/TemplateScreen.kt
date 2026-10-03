@@ -277,11 +277,20 @@ private class SectionDragState {
     /** 拖拽中的实时顺序。 */
     val liveOrder = mutableStateListOf<String>()
 
+    /** 本次拖拽开始时的顺序，用于判断是否真的换过位。 */
+    private val originalOrder = mutableListOf<String>()
+
+    /** 本次拖拽是否真的发生过换位（长按只是进编辑态，未拖动时不算）。 */
+    private var reordered = false
+
     val isDragging: Boolean get() = draggingKey != null
 
     fun start(key: String, currentOrder: List<String>) {
         liveOrder.clear()
         liveOrder.addAll(currentOrder)
+        originalOrder.clear()
+        originalOrder.addAll(currentOrder)
+        reordered = false
         draggingKey = key
         offsetPx = 0f
     }
@@ -296,12 +305,20 @@ private class SectionDragState {
         if (target != from) {
             liveOrder.add(target, liveOrder.removeAt(from))
             offsetPx -= (target - from) * stridePx
+            reordered = true
         }
     }
 
-    /** 正常松手：返回待持久化的顺序（未拖过为 null）并重置。 */
+    /**
+     * 正常松手：仅当真的换过位时返回待持久化的顺序，否则返回 null 并重置。
+     *
+     * 这里是「长按 = 进编辑态」和「长按拖动 = 排序」共用入口的坑：start() 总会把
+     * 当前顺序灌进 liveOrder，若只看 liveOrder 是否非空，则每次长按松手都会把当时
+     * 的分区顺序整体固化进 savedOrder。一旦固化，之后新增的品牌分区不在 savedOrder
+     * 里，indexOf 得到 -1 而被排到末尾，默认排序规则就永久失效了。
+     */
     fun finish(): List<String>? {
-        val order = if (liveOrder.isNotEmpty()) liveOrder.toList() else null
+        val order = if (reordered && liveOrder != originalOrder) liveOrder.toList() else null
         reset()
         return order
     }
@@ -312,6 +329,8 @@ private class SectionDragState {
         draggingKey = null
         offsetPx = 0f
         liveOrder.clear()
+        originalOrder.clear()
+        reordered = false
     }
 }
 

@@ -19,13 +19,17 @@ object BundledTemplateManager {
 
             // Retire bundled templates that no longer ship (e.g. the library was
             // curated down). Only auto-delete when the user never touched them;
-            // modified copies survive as user data.
+            // modified copies survive as user data. A user-assigned groupName counts as
+            // "touched" — it is @Transient, so it never shows up in the fingerprint,
+            // and without this check a template the user filed away would be silently
+            // deleted on the next library curation.
             states.values
                 .filter { it.seedId !in activeSeedIds && !it.deleted }
                 .forEach { state ->
                     val current = templates[state.templateId]
                     if (current != null &&
                         state.managed &&
+                        current.groupName == null &&
                         current.fingerprint() == state.installedFingerprint
                     ) {
                         dao.delete(current)
@@ -65,10 +69,14 @@ object BundledTemplateManager {
                         templates.getValue(state.templateId).fingerprint() == state.installedFingerprint &&
                         (state.installedVersion < spec.version || state.installedFingerprint != desiredFingerprint) -> {
                         val current = templates.getValue(state.templateId)
+                        // Carry over the user's group assignment: `desired` is built from
+                        // the catalog and always has groupName = null, so without this the
+                        // sync silently un-files a template the user placed in a custom group.
                         val updated = desired.copy(
                             id = current.id,
                             createTime = current.createTime,
                             updateTime = System.currentTimeMillis(),
+                            groupName = current.groupName,
                         )
                         dao.update(updated)
                         templates[updated.id] = updated
