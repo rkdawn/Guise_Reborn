@@ -1,5 +1,7 @@
 package com.houvven.guise.util.android
 
+import java.time.LocalDate
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -43,6 +45,20 @@ class RandomsTest {
         assertTrue(Randoms.randomBuildId("15").startsWith("AP3A."))
         assertTrue(Randoms.randomBuildId("16").startsWith("BP2A."))
         assertTrue(Randoms.randomBuildId("17").startsWith("CP1A."))
+    }
+
+    @Test
+    fun securityPatchRejectsImpossibleCalendarDates() {
+        listOf("250231", "260431", "250229", "259999").forEach { date ->
+            val patch = Randoms.securityPatchFromBuildId("BP2A.$date.003")
+            LocalDate.parse(patch)
+        }
+    }
+
+    @Test
+    fun securityPatchPreservesValidLeapDay() {
+        assertEquals("2024-02-29", Randoms.securityPatchFromBuildId("AP3A.240229.003"))
+        assertEquals("2025-06-30", Randoms.securityPatchFromBuildId("BP2A.250630.003"))
     }
 
     private fun isValidImei(value: String): Boolean {

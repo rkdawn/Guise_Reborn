@@ -26,13 +26,10 @@ suspend fun oneClickRandom(state: ModuleConfigState, context: Context) {
             .filter { it.brand.isNotBlank() || it.model.isNotBlank() }
             .toList()
             .randomOrNull()
-        // Only consulted when the template library is empty (or lacks a given field).
+        // 从完整目录里挑选匹配条目，不先随机品牌，也不在合并前二次抽取机型。
         val catalogPick = runCatching { DeviceCatalogRepository.get(context) }
             .getOrNull()
-            ?.brands
-            .orEmpty()
-            .flatMap { brand -> brand.models.map { model -> brand to model } }
-            .randomOrNull()
+            ?.let { RandomDeviceIdentity.pickCatalogDevice(template, it) }
         val android = PresetRepository.get(context).androidVersions
             .filter { it.value.substringAfter('|').toIntOrNull()?.let { api -> api >= 29 } == true }
             .random()
@@ -46,59 +43,31 @@ suspend fun oneClickRandom(state: ModuleConfigState, context: Context) {
         )
     }
 
+    val identity = RandomDeviceIdentity.from(
+        template = values.template,
+        catalogBrand = values.catalogBrand,
+        catalogModel = values.catalogModel,
+        androidPreset = values.android,
+    )
+
     state.run {
-        val version = values.template?.androidVersion?.takeIf(String::isNotBlank)
-            ?: values.android.substringBefore('|')
-        val api = values.template?.sdkInt?.takeIf { it > 0 }?.toString()
-            ?: values.android.substringAfter('|')
-        val resolvedBuildId = values.template?.buildId?.takeIf(String::isNotBlank)
-            ?: Randoms.randomBuildId(version)
-        val resolvedIncremental = values.template?.incremental?.takeIf(String::isNotBlank)
-            ?: Randoms.randomIncremental()
-
-        // Each field falls back independently: a template may predate a field that was
-        // added later (marketname / displayId / incremental / …), and blanking those was
-        // the old behaviour — it produced an identity with empty Build fields, which is
-        // worse than plain randomness rather than a "fully random identity".
-        val catalogBrand = values.catalogBrand
-        val catalogModel = values.catalogModel
-        val tplBrand = values.template?.brand?.takeIf(String::isNotBlank)
-            ?: catalogBrand?.buildBrand.orEmpty()
-        val tplDevice = values.template?.device?.takeIf(String::isNotBlank)
-            ?: catalogModel?.resolvedDevice().orEmpty()
-        val tplProduct = values.template?.product?.takeIf(String::isNotBlank)
-            ?: tplDevice
-
-        brand.value = tplBrand
-        manufacturer.value = values.template?.manufacturer?.takeIf(String::isNotBlank)
-            ?: catalogBrand?.manufacturer.orEmpty().ifBlank { tplBrand }
-        model.value = values.template?.model?.takeIf(String::isNotBlank)
-            ?: catalogModel?.model.orEmpty()
-        device.value = tplDevice
-        product.value = tplProduct
-        board.value = values.template?.board?.takeIf(String::isNotBlank) ?: tplDevice
-        hardware.value = values.template?.hardware?.takeIf(String::isNotBlank) ?: tplDevice
-        marketname.value = values.template?.marketname?.takeIf(String::isNotBlank)
-            ?: catalogModel?.name.orEmpty()
+        brand.value = identity.brand
+        manufacturer.value = identity.manufacturer
+        model.value = identity.model
+        device.value = identity.device
+        product.value = identity.product
+        board.value = identity.board
+        hardware.value = identity.hardware
+        marketname.value = identity.marketname
+        characteristics.value = identity.characteristics
+        androidVersion.value = identity.androidVersion
+        sdkInt.value = identity.sdkInt
+        buildId.value = identity.buildId
+        incremental.value = identity.incremental
+        securityPatch.value = identity.securityPatch
+        fingerPrint.value = identity.fingerPrint
         displayId.value = values.template?.displayId?.takeIf(String::isNotBlank)
-            ?: resolvedBuildId
-        characteristics.value = values.template?.characteristics?.takeIf(String::isNotBlank)
-            ?: "default"
-        androidVersion.value = version
-        sdkInt.value = api
-        buildId.value = resolvedBuildId
-        incremental.value = resolvedIncremental
-        securityPatch.value = values.template?.securityPatch?.takeIf(String::isNotBlank)
-            ?: Randoms.securityPatchFromBuildId(resolvedBuildId)
-        fingerPrint.value = values.template?.fingerPrint?.takeIf(String::isNotBlank)
-            ?: Randoms.randomFingerprint(
-                brand = tplBrand,
-                product = tplProduct,
-                device = tplDevice,
-                androidVersion = version,
-                buildId = resolvedBuildId,
-                incremental = resolvedIncremental,
-            )
+            ?: identity.buildId
 
         networkType.value = PresetRepository.get(context).networks.random().value
 

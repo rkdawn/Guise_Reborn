@@ -27,6 +27,7 @@ import com.houvven.guise.BuildConfig
 import com.houvven.guise.R
 import com.houvven.guise.db.Template
 import com.houvven.guise.db.TemplateTransfer
+import com.houvven.guise.db.defaults.BundledTemplateManager
 import com.houvven.guise.ui.GlobalSnackbarHost
 import com.houvven.guise.ui.routing.LauncherState
 import com.houvven.guise.ui.utils.encodeTemplateQrBitmap
@@ -82,10 +83,7 @@ internal fun TemplateTransferDialog(
 
     fun exportJson() = scope.launch {
         runCatching {
-            // Bundled templates re-seed automatically on every install; exporting
-            // them only bloats the payload (and breaks QR encoding entirely).
-            val exportable = LauncherState.templates.value
-                .filterNot { it.id.startsWith("bundled:") }
+            val exportable = loadExportableTemplates()
             check(exportable.isNotEmpty()) {
                 resources.getString(R.string.template_export_none)
             }
@@ -109,8 +107,7 @@ internal fun TemplateTransferDialog(
 
     fun createQr(onReady: suspend (Bitmap) -> Unit) = scope.launch {
         runCatching {
-            val exportable = LauncherState.templates.value
-                .filterNot { it.id.startsWith("bundled:") }
+            val exportable = loadExportableTemplates()
             check(exportable.isNotEmpty()) {
                 resources.getString(R.string.template_export_none)
             }
@@ -142,7 +139,7 @@ internal fun TemplateTransferDialog(
                     }
                 } else {
                     TransferChoice(stringResource(R.string.export_json_file)) {
-                        onDismiss(); exportJson()
+                        exportJson()
                     }
                     TransferChoice(stringResource(R.string.show_qr_code)) {
                         createQr { source ->
@@ -234,6 +231,10 @@ internal fun TemplateTransferDialog(
             },
         )
     }
+}
+
+private suspend fun loadExportableTemplates(): List<Template> = withContext(Dispatchers.IO) {
+    BundledTemplateManager.exportableTemplates()
 }
 
 @Composable

@@ -7,10 +7,8 @@
     <string name="action_log">Log</string>
     <string name="action_setting">Setting</string>
 
-    <string name="template_type_all">ALL</string>
     <string name="template_type_app">APP</string>
     <string name="template_type_common">COMMON</string>
-    <string name="template_type_with_count">%1$s (%2$d)</string>
     <plurals name="template_applied_app_count">
         <item quantity="one">%1$d app</item>
         <item quantity="other">%1$d apps</item>
@@ -61,7 +59,6 @@
     <string name="device_security_patch">Security Patch</string>
     <string name="device_characteristics">Characteristics</string>
     <string name="device_characteristics_summary">e.g. tablet — unlocks tablet/foldable UI checks</string>
-    <string name="template_group_count">%1$d templates</string>
     <string name="template_group_count_short">%1$d</string>
     <string name="template_group_mine">My Templates</string>
     <string name="template_group_edit_done">Done</string>

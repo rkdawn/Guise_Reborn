@@ -101,7 +101,11 @@ object LauncherState {
     }
 
     fun updateTemplate(template: Template) {
-        templateDao.update(template)
+        TemplateDBHelper.runInTransaction {
+            templateDao.getById(template.id)?.let { current ->
+                templateDao.update(current.withEdits(template))
+            }
+        }
         refreshTemplates()
     }
 

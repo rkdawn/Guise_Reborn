@@ -5,10 +5,8 @@
     <string name="action_template">テンプレート</string>
     <string name="action_log">ログ</string>
     <string name="action_setting">設定</string>
-    <string name="template_type_all">すべて</string>
     <string name="template_type_app">アプリ</string>
     <string name="template_type_common">一般</string>
-    <string name="template_type_with_count">%1$s (%2$d)</string>
     <plurals name="template_applied_app_count">
         <item quantity="other">%1$d 個のアプリ</item>
     </plurals>
@@ -48,6 +46,22 @@
     <string name="device_display_density_summary">数値が大きいほど、画面要素が大きく表示されます</string>
     <string name="device_display_density_summary_with_dp">数値が大きいほど表示が大きくなります · 開発者向けオプションの「最小幅」で約 %1$d dp</string>
     <string name="device_cpu">CPU コード</string>
+    <string name="device_marketname">マーケット名</string>
+    <string name="device_security_patch">セキュリティパッチ</string>
+    <string name="device_characteristics">デバイス特性</string>
+    <string name="device_characteristics_summary">例: tablet — タブレット/折りたたみ UI 判定を有効にします</string>
+    <string name="template_group_count_short">%1$d</string>
+    <string name="template_group_mine">マイテンプレート</string>
+    <string name="template_group_edit_done">完了</string>
+    <string name="template_group_delete_title">グループを削除</string>
+    <string name="template_group_delete_message">「%1$s」内の %2$d 件のテンプレートをすべて削除しますか？この操作は元に戻せません。</string>
+    <string name="template_group_create">新しいグループ</string>
+    <string name="template_group_rename">名前を変更</string>
+    <string name="template_group_move">移動</string>
+    <string name="template_group_auto">自動</string>
+    <string name="template_group_name_hint">グループ名</string>
+    <string name="template_group_name_duplicate">同じ名前のグループが既に存在します</string>
+    <string name="template_export_none">エクスポートできるカスタムテンプレートがありません（内蔵テンプレートは自動同期されます）</string>
     <string name="net_type">インターネットの種類</string>
     <string name="net_wifi_ssid">WiFi-SSID</string>
     <string name="net_sim_code">SIM コード</string>

@@ -1,5 +1,6 @@
 package com.houvven.guise.util.android
 
+import java.time.LocalDate
 import java.util.UUID
 import java.util.Locale
 import kotlin.math.round
@@ -130,9 +131,9 @@ object Randoms {
             val year = yy.toInt()
             val month = mm.toInt()
             val day = dd.toInt()
-            // 年份上限与随机兜底保持一致（2020..2026），月份/日期按最宽的日历范围校验。
-            if (year in 20..26 && month in 1..12 && day in 1..31) {
-                return "20$yy-$mm-$dd"
+            if (year in 20..26) {
+                runCatching { LocalDate.of(2000 + year, month, day).toString() }
+                    .getOrNull()?.let { return it }
             }
         }
         return String.format(

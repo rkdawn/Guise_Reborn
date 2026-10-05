@@ -47,7 +47,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -105,8 +104,6 @@ import com.houvven.guise.xposed.config.ModuleConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.math.abs
-import kotlin.math.roundToInt
 
 // =============================================================================
 // 模板页（整页重构版）
@@ -290,186 +287,6 @@ private fun Template.matchesQuery(query: String): Boolean {
 }
 
 // ---------------------------------------------------------------------------
-// 分区拖拽排序状态机
-// ---------------------------------------------------------------------------
-
-/**
- * 长按（或编辑态按住手柄）开始拖拽：拖动中按实测的分区头位置换算目标位置
- * 就地换位，松手后由调用方持久化。
- *
- * 位置一律走实测而不是固定步长：stickyHeader 会把滚动中的分区头钉在视口
- * 顶部，它的 onGloballyPositioned 报告的是被钳制后的位置。若把这份数据写进
- * 共享字段，最后一个复合的分区会覆盖掉正在拖拽分区的真实行高，换位阈值随之
- * 漂移。因此每个分区的 bounds 各自记录，只信任「本次布局真正移动过」的那些。
- */
-@Stable
-private class SectionDragState {
-    /** 正在拖拽的分区 key；null = 未拖拽。 */
-    var draggingKey by mutableStateOf<String?>(null)
-        private set
-
-    /** 被拖分区叠加的视觉位移（px，正数向下）。同时决定它落在哪个槽位。 */
-    var offsetY by mutableFloatStateOf(0f)
-        private set
-
-    /**
-     * 各分区头的实测基准位置（相对列表原点，已剔除拖动位移）。
-     *
-     * 必须按分区各记一份，不能用共享的单一「行高」：stickyHeader 会把滚动中的
-     * 分区头钉在视口顶部，它的测量值被钳制，写入共享字段后会覆盖掉正在拖拽
-     * 分区的真实位置，换位阈值随之漂移。
-     */
-    var layoutBounds by mutableStateOf<Map<String, HeaderBounds>>(emptyMap())
-        private set
-
-    /** 本帧累积的指针拖动增量，由布局效果消费。 */
-    private var pointerDeltaY = 0f
-
-    /** 本帧累积的自动滚动增量，由布局效果消费。 */
-    private var scrollDeltaY = 0f
-
-    /** 拖拽中的实时顺序。 */
-    val liveOrder = mutableStateListOf<String>()
-
-    /** 进入拖拽那一刻的顺序，用于判断松手时是否真的换过位。 */
-    private var originalOrder: List<String> = emptyList()
-
-    /** 本次拖拽是否真的发生过换位（长按只是进编辑态、未拖动时不算）。 */
-    private var reordered = false
-
-    val isDragging: Boolean get() = draggingKey != null
-
-    /** 被拖分区头的实测基准位置（相对列表原点）；尚未测量到时为 null。 */
-    val draggingBoundsTop: Float?
-        get() = draggingKey?.let(layoutBounds::get)?.top
-
-    /** 开启本次拖拽，[currentOrder] 为进入拖拽那一刻的顺序。 */
-    fun begin(key: String, currentOrder: List<String>) {
-        liveOrder.clear()
-        liveOrder.addAll(currentOrder)
-        originalOrder = currentOrder.toList()
-        reordered = false
-        draggingKey = key
-        offsetY = 0f
-        pointerDeltaY = 0f
-        scrollDeltaY = 0f
-        layoutBounds = emptyMap()
-    }
-
-    /** 记录指针拖动增量。位置计算与换位判定都在 [tick] 里统一做。 */
-    fun dragBy(deltaY: Float) {
-        pointerDeltaY += deltaY
-    }
-
-    /**
-     * 回写一个分区头的实测基准位置。
-     *
-     * 每帧所有可见分区头都会走一遍这里，写完之后 [tick] 才能拿到同一帧的一致
-     * 布局；因此这里只累积、不做换位判定。
-     */
-    fun measure(key: String, baselineTop: Float, height: Float) {
-        if (baselineTop.isNaN() || height <= 0f) return
-        val existing = layoutBounds[key]
-        if (existing != null && existing.top == baselineTop && existing.height == height) return
-        layoutBounds = layoutBounds + (key to HeaderBounds(baselineTop, height))
-    }
-
-    /** 自动滚动带动列表后，等价于被拖分区反向位移了这么多。 */
-    fun scrollBy(deltaY: Float) {
-        scrollDeltaY += deltaY
-    }
-
-    /**
-     * 拖拽帧循环：消费本帧增量 → 平移 → 判定换位。由 LaunchedEffect 驱动，
-     * 只在 [draggingKey] 非空时运行。
-     */
-    fun tick() {
-        val key = draggingKey ?: return
-        val delta = pointerDeltaY + scrollDeltaY
-        pointerDeltaY = 0f
-        scrollDeltaY = 0f
-
-        val from = liveOrder.indexOf(key)
-        if (from < 0) return
-
-        // 先平移，再按平移后的落点判定槽位 —— 顺序反了会永远慢一帧。
-        offsetY += delta
-
-        val dragged = layoutBounds[key] ?: return
-        val to = nearestSlot(dragged, layoutBounds, liveOrder, key, offsetY) ?: return
-        if (to == from) return
-
-        // 被拖分区头渲染在 dragged.top + offsetY，换位后它应当落在新槽位，
-        // 因此 offsetY 要加上「新槽位 - 基准位置」，否则视觉位置会跳一格。
-        val anchorTop = slotTop(to, layoutBounds, liveOrder)
-        liveOrder.add(to, liveOrder.removeAt(from))
-        offsetY += anchorTop - dragged.top
-        reordered = true
-    }
-
-    /**
-     * 拖拽结束后取最终顺序。仅当真的换过位才返回待持久化的顺序，否则返回
-     * null —— 长按只是进编辑态，未拖动时不能把当时的顺序固化下来。
-     *
-     * 固化一次的后果：此后新增的品牌分区不在 savedOrder 里，indexOf 得到 -1
-     * 被排到末尾，默认排序规则永久失效。
-     */
-    fun finish(): List<String>? {
-        val order = if (reordered && liveOrder.toList() != originalOrder) liveOrder.toList() else null
-        reset()
-        return order
-    }
-
-    fun cancel() = reset()
-
-    private fun reset() {
-        draggingKey = null
-        offsetY = 0f
-        layoutBounds = emptyMap()
-        pointerDeltaY = 0f
-        scrollDeltaY = 0f
-        liveOrder.clear()
-        originalOrder = emptyList()
-        reordered = false
-    }
-
-    /**
-     * [dragged] 在 [offsetY] 位移后落在哪个槽位。
-     *
-     * 判定方式：把「除被拖分区以外的所有分区头」按与预测落点的距离排序，取最近的
-     * 作为锚点，落在锚点上方则插入锚点之前，下方则之后。不能拿被拖分区自己的
-     * 实测值参与比较 —— 那是拖动开始前的旧值，会把结果吸回原位。
-     */
-    private fun nearestSlot(
-        dragged: HeaderBounds,
-        bounds: Map<String, HeaderBounds>,
-        order: List<String>,
-        draggingKey: String,
-        offsetY: Float,
-    ): Int? {
-        val predictedTop = dragged.top + offsetY
-        val anchor = order.withIndex()
-            .filter { it.value != draggingKey }
-            .mapNotNull { (index, key) -> bounds[key]?.let { index to it.top } }
-            .minByOrNull { (_, top) -> abs(top - predictedTop) }
-            ?: return null
-        return if (predictedTop < anchor.second) anchor.first else anchor.first + 1
-    }
-
-    /** 槽位对应的分区头位置；无实测数据时返回 0。 */
-    private fun slotTop(index: Int, bounds: Map<String, HeaderBounds>, order: List<String>): Float =
-        order.getOrNull(index)?.let(bounds::get)?.top ?: 0f
-}
-
-/** 分区头相对列表原点的基准位置（已剔除自身 translationY）。
- *
- * [top] 是「渲染位置 = top + offsetY」里的那个 top：非拖拽分区 offsetY 恒为 0，
- * 拖拽分区由调用方把已叠加的 translationY 减掉。这样反复测量不会把视觉位移
- * 当成真实位移累积进判定。
- */
-private data class HeaderBounds(val top: Float, val height: Float)
-
-// ---------------------------------------------------------------------------
 // 主界面
 // ---------------------------------------------------------------------------
 
@@ -514,7 +331,7 @@ internal fun TemplateScreen() {
     // 自建分组名单只读一次，交给分区组装和「移动到分组」对话框共用；
     // TemplateGroupStore 走的是同步 SharedPreferences，不能在组合里反复调用。
     val customGroups = remember(groupRevision) { TemplateGroupStore.customGroups() }
-    val sections = remember(templates, customGroups, mineLabel) {
+    val sections = remember(templates, customGroups, mineLabel, groupRevision) {
         buildSections(templates, mineLabel, customGroups)
     }
     // 建组/改名时用于查重的名字集合。
@@ -581,14 +398,15 @@ internal fun TemplateScreen() {
         collapsedSnapshot = null
     }
 
-    // B5：拖拽帧循环。指针增量与自动滚动增量统一在这里消费，保证「平移」和
-    // 「换位」用的是同一帧的数据。分区头位置由各自回写，不依赖任何全局步长，
-    // 因此 stickyHeader 钉住谁都不影响判定。
-    LaunchedEffect(dragState) {
+    // B5：拖拽帧循环。key 是 draggingKey 本身——begin/finish 都会改变它，
+    // 循环随之启动/退出；恒定对象做 key 时首次 isDragging=false 会直接退出，
+    // 之后的拖拽再也没有帧循环消费（这正是旧实现拖不动的根因）。
+    LaunchedEffect(dragState.draggingKey) {
         while (dragState.isDragging) {
             withFrameNanos { }
             dragState.tick()
             // 拖到视口上下边缘时自动滚动，让被拖分区能到达屏幕外的目标位置。
+            // 滚动引起的基准位置变化由 measure 的位移补偿吸收，不在此重复记账。
             val baselineTop = dragState.draggingBoundsTop
             if (baselineTop != null && viewportPx > 0f) {
                 val top = baselineTop + dragState.offsetY
@@ -598,11 +416,7 @@ internal fun TemplateScreen() {
                     top > viewportPx - edgePx -> AUTO_SCROLL_STEP_PX
                     else -> 0f
                 }
-                if (stepPx != 0f) {
-                    val consumed = listState.scrollBy(stepPx)
-                    // 列表内容上移 consumed，等价于被拖分区在该坐标系里反向位移。
-                    if (consumed != 0f) dragState.scrollBy(consumed)
-                }
+                if (stepPx != 0f) listState.scrollBy(stepPx)
             }
         }
     }
@@ -645,11 +459,8 @@ internal fun TemplateScreen() {
             var transferDialog by remember { mutableStateOf<TemplateTransferMode?>(null) }
             TopAppBar(
                 title = {
-                    Text(
-                        text = stringResource(R.string.action_template),
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.W500,
-                    )
+                    // 与日志/设置页一致用 TopAppBar 默认标题色，不单独调色。
+                    Text(stringResource(R.string.action_template))
                 },
                 actions = {
                     if (editMode) {
@@ -708,13 +519,18 @@ internal fun TemplateScreen() {
             }
         },
     ) { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            // 本页有自己的 TopAppBar：content 必须避让顶栏，否则搜索框直接
+            // 叠在顶栏后面（此前只有列表避让，预留的搜索区域反而空着）。
+            .padding(top = paddingValues.calculateTopPadding())
+        ) {
         LazyColumn(
             state = listState,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(
-                    top = paddingValues.calculateTopPadding() + SEARCH_BAR_HEIGHT,
+                    top = SEARCH_BAR_HEIGHT,
                     bottom = paddingValues.calculateBottomPadding(),
                 )
                 // 分区头的测量以窗口为原点，这里记录列表自身的窗口纵坐标，
@@ -943,14 +759,20 @@ private fun SectionHeader(
                 }
                 Spacer(modifier = Modifier.width(6.dp))
             }
+            // 分组标题前的主色小色条：标题保持默认色，层级由色条体现
+            //（呼应设置页「小节标题 = primary」的语义，但不整行染色）。
+            Box(
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .size(width = 3.dp, height = 14.dp)
+                    .clip(RoundedCornerShape(1.5.dp))
+                    .background(MaterialTheme.colorScheme.primary),
+            )
             Text(
                 text = section.displayName,
                 modifier = Modifier.weight(1f),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.W500,
-                // 分区标题用主色，与顶栏标题、其它页面的小节标题保持同一套
-                // 「标题 = primary」的用法。
-                color = MaterialTheme.colorScheme.primary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -1129,7 +951,8 @@ private fun TemplateRow(
                     Text(
                         text = subtitle,
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.75f),
+                        // 与原版模板卡片及 DeployScreen 的副标题一致，不加透明度。
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )

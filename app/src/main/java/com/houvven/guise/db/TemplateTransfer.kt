@@ -1,6 +1,7 @@
 package com.houvven.guise.db
 
 import com.houvven.guise.xposed.config.ModuleConfig
+import java.util.UUID
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
@@ -22,6 +23,31 @@ object TemplateTransfer {
         ignoreUnknownKeys = true
         encodeDefaults = true
         prettyPrint = true
+    }
+
+    internal fun prepareForExport(
+        templates: List<Template>,
+        states: List<BundledTemplateState>,
+        activeSeedIds: Set<String>,
+    ): List<Template> {
+        val statesById = states.associateBy(BundledTemplateState::templateId)
+        return templates.mapNotNull { template ->
+            val state = statesById[template.id]
+            val unchangedManaged = state != null && state.managed && !state.deleted &&
+                state.seedId in activeSeedIds &&
+                template.contentFingerprint() == state.installedFingerprint
+            when {
+                unchangedManaged -> null
+                template.id.startsWith("bundled:") -> {
+                    // 修改版作为普通模板恢复，避免与新安装时的内置 ID 冲突而被忽略。
+                    val identity = "${template.id}:${template.contentFingerprint()}"
+                    val id = UUID.nameUUIDFromBytes(identity.toByteArray(Charsets.UTF_8))
+                        .toString().replace("-", "")
+                    template.copy(id = id)
+                }
+                else -> template
+            }
+        }
     }
 
     fun encode(templates: List<Template>): String =

@@ -60,11 +60,15 @@ class LocationHook : LoadPackageHandler, LocationHookBase() {
     // any satellites?" before trusting a fix would otherwise reject the spoofed location.
     private val svCount = 5
     private val satelliteIds = intArrayOf(1, 2, 3, 4, 5)
-    private val svidWithFlags = satelliteIds.map { svid ->
-        (svid shl SVID_SHIFT_WIDTH) or
-            (GnssStatus.CONSTELLATION_GPS shl CONSTELLATION_TYPE_SHIFT_WIDTH) or
-            SVID_FLAGS_FULLY_USABLE
-    }.toIntArray()
+    private val svidWithFlags = satelliteIds.map(::packedGpsSatelliteId).toIntArray()
+
+    /**
+     * 隐藏构造函数取的是打包后的 (svid | 星座 | 标志位) 值，但打包宽度在发布版本间
+     * 变过：Android 10 是 svid << 8 | 星座 << 4，Android 11 起是 svid << 12 | 星座 << 8。
+     * 用错宽度会让 getSvid() 读出发散的 PRN、甚至把星座位读成标志位。
+     */
+    private fun packedGpsSatelliteId(svid: Int): Int =
+        packGpsSatelliteId(svid, Build.VERSION.SDK_INT)
     private val cn0s = floatArrayOf(0F, 0F, 0F, 0F, 0F)
     private val elevations = cn0s.clone()
     private val azimuths = cn0s.clone()
@@ -434,9 +438,10 @@ class LocationHook : LoadPackageHandler, LocationHookBase() {
                 for (index in 0 until svCount) {
                     // Only the 12-arg overload exists on current SDKs; the has* flags
                     // (carrier frequency, baseband C/N0) stay false like the original.
+                    // Builder takes the constellation type before the raw SVID.
                     addSatellite(
-                        satelliteIds[index],
                         GnssStatus.CONSTELLATION_GPS,
+                        satelliteIds[index],
                         cn0s[index],
                         elevations[index],
                         azimuths[index],
@@ -528,11 +533,6 @@ class LocationHook : LoadPackageHandler, LocationHookBase() {
     private fun log(message: String) = XposedLogger.i(message, CATEGORY)
 
     private companion object {
-        // Hidden GnssStatus constructors take packed values; Builder takes raw SVIDs.
-        const val SVID_SHIFT_WIDTH = 12
-        const val CONSTELLATION_TYPE_SHIFT_WIDTH = 8
-        const val SVID_FLAGS_FULLY_USABLE = 0b111
-
         const val CATEGORY = "Location"
         const val UNSET_COORDINATE = -1.0
         const val FAKE_ACCURACY_METERS = 10.0f

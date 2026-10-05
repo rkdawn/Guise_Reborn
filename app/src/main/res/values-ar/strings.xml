@@ -5,10 +5,8 @@
     <string name="action_log">سجل</string>
     <string name="action_setting">الإعدادات</string>
 
-    <string name="template_type_all">الكل</string>
     <string name="template_type_app">خاص بالتطبيق</string>
     <string name="template_type_common">عام</string>
-    <string name="template_type_with_count">%1$s (%2$d)</string>
     <plurals name="template_applied_app_count">
         <item quantity="zero">0 تطبيقات</item>
         <item quantity="one">تطبيق واحد</item>
@@ -53,6 +51,22 @@
     <string name="device_display_density_summary">كلما زادت القيمة، ظهرت عناصر الواجهة بحجم أكبر</string>
     <string name="device_display_density_summary_with_dp">كلما زادت القيمة، كبرت عناصر الواجهة · تعادل تقريبًا %1$d dp لخيار «أصغر عرض» في خيارات المطوّر</string>
     <string name="device_cpu">كود وحدة المعالجة المركزية</string>
+    <string name="device_marketname">الاسم التجاري</string>
+    <string name="device_security_patch">رقعة الأمان</string>
+    <string name="device_characteristics">خصائص الجهاز</string>
+    <string name="device_characteristics_summary">مثال: tablet — يفعّل فحوصات واجهة الأجهزة اللوحية والقابلة للطي</string>
+    <string name="template_group_count_short">%1$d</string>
+    <string name="template_group_mine">قوالبي</string>
+    <string name="template_group_edit_done">تم</string>
+    <string name="template_group_delete_title">حذف المجموعة</string>
+    <string name="template_group_delete_message">حذف جميع قوالب %2$d في «%1$s»؟ لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="template_group_create">مجموعة جديدة</string>
+    <string name="template_group_rename">إعادة التسمية</string>
+    <string name="template_group_move">نقل</string>
+    <string name="template_group_auto">تلقائي</string>
+    <string name="template_group_name_hint">اسم المجموعة</string>
+    <string name="template_group_name_duplicate">توجد مجموعة بهذا الاسم بالفعل</string>
+    <string name="template_export_none">لا توجد قوالب مخصصة للتصدير (تتزامن القوالب المضمنة تلقائيًا)</string>
     <string name="net_type">نوع الإنترنت</string>
     <string name="net_wifi_ssid">شبكة WiFi-SSID</string>
     <string name="net_sim_code">كود SIM</string>

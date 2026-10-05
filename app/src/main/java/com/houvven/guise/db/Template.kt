@@ -3,6 +3,7 @@ package com.houvven.guise.db
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.houvven.guise.util.android.Randoms
+import java.security.MessageDigest
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
@@ -26,6 +27,21 @@ data class Template(
     object Type {
         const val COMMON = 0
         const val EXCLUSIVE = 1
+    }
+
+    /** 编辑页面只修改内容；分组和创建信息以数据库中的最新记录为准。 */
+    internal fun withEdits(edited: Template): Template = edited.copy(
+        id = id,
+        createTime = createTime,
+        groupName = groupName,
+    )
+
+    /** 与内置模板的已安装指纹保持兼容，不包含本地分组和时间戳。 */
+    internal fun contentFingerprint(): String {
+        val stable = copy(id = "", createTime = 0L, updateTime = 0L).serialization()
+        return MessageDigest.getInstance("SHA-256")
+            .digest(stable.toByteArray(Charsets.UTF_8))
+            .joinToString("") { "%02x".format(it) }
     }
 
     fun serialization(): String {

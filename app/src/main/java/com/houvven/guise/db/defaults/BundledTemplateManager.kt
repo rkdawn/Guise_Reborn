@@ -4,8 +4,8 @@ import android.content.Context
 import com.houvven.guise.db.BundledTemplateState
 import com.houvven.guise.db.Template
 import com.houvven.guise.db.TemplateDBHelper
+import com.houvven.guise.db.TemplateTransfer
 import com.houvven.guise.xposed.config.ModuleConfig
-import java.security.MessageDigest
 
 object BundledTemplateManager {
     private const val TEMPLATE_ID_PREFIX = "bundled:"
@@ -30,7 +30,7 @@ object BundledTemplateManager {
                     if (current != null &&
                         state.managed &&
                         current.groupName == null &&
-                        current.fingerprint() == state.installedFingerprint
+                        current.contentFingerprint() == state.installedFingerprint
                     ) {
                         dao.delete(current)
                         templates.remove(current.id)
@@ -40,7 +40,7 @@ object BundledTemplateManager {
 
             BundledTemplateCatalog.entries.forEach { spec ->
                 val desired = spec.toTemplate(context)
-                val desiredFingerprint = desired.fingerprint()
+                val desiredFingerprint = desired.contentFingerprint()
                 val state = states[spec.seedId]
 
                 when {
@@ -56,7 +56,7 @@ object BundledTemplateManager {
                                 seedId = spec.seedId,
                                 templateId = installed.id,
                                 installedVersion = spec.version,
-                                installedFingerprint = installed.fingerprint(),
+                                installedFingerprint = installed.contentFingerprint(),
                                 deleted = false,
                                 managed = adopted == null,
                             )
@@ -66,7 +66,7 @@ object BundledTemplateManager {
                         dao.upsertBundledTemplateState(state.copy(deleted = true))
                     }
                     state.managed &&
-                        templates.getValue(state.templateId).fingerprint() == state.installedFingerprint &&
+                        templates.getValue(state.templateId).contentFingerprint() == state.installedFingerprint &&
                         (state.installedVersion < spec.version || state.installedFingerprint != desiredFingerprint) -> {
                         val current = templates.getValue(state.templateId)
                         // Carry over the user's group assignment: `desired` is built from
@@ -83,7 +83,7 @@ object BundledTemplateManager {
                         dao.upsertBundledTemplateState(
                             state.copy(
                                 installedVersion = spec.version,
-                                installedFingerprint = updated.fingerprint(),
+                                installedFingerprint = updated.contentFingerprint(),
                             )
                         )
                     }
@@ -91,6 +91,20 @@ object BundledTemplateManager {
             }
         }
         return dao.getAll()
+    }
+
+    /** 导出与同步使用同一份安装状态，无法确认可重建的数据一律保留。 */
+    fun exportableTemplates(): List<Template> {
+        val dao = TemplateDBHelper.templateDao
+        var exportable = emptyList<Template>()
+        TemplateDBHelper.runInTransaction {
+            exportable = TemplateTransfer.prepareForExport(
+                dao.getAll(),
+                dao.getBundledTemplateStates(),
+                BundledTemplateCatalog.entries.mapTo(mutableSetOf()) { it.seedId },
+            )
+        }
+        return exportable
     }
 
     fun delete(template: Template) {
@@ -135,10 +149,4 @@ object BundledTemplateManager {
         return ownSignature != null && ownSignature == otherSignature
     }
 
-    private fun Template.fingerprint(): String {
-        val stable = copy(id = "", createTime = 0L, updateTime = 0L).serialization()
-        return MessageDigest.getInstance("SHA-256")
-            .digest(stable.toByteArray(Charsets.UTF_8))
-            .joinToString("") { "%02x".format(it) }
-    }
 }
